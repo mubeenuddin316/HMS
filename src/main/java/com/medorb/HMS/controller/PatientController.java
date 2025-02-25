@@ -1,0 +1,73 @@
+package com.medorb.HMS.controller;
+
+import com.medorb.HMS.model.Patient; // Import Patient entity
+import com.medorb.HMS.service.PatientService; // Import PatientService
+import org.springframework.beans.factory.annotation.Autowired; // Import Autowired
+import org.springframework.http.HttpStatus; // Import HttpStatus
+import org.springframework.http.ResponseEntity; // Import ResponseEntity
+import org.springframework.web.bind.annotation.*; // Import Controller annotations
+
+import java.util.List; // Import List
+import java.util.Optional; // Import Optional
+
+@RestController // Marks this class as a REST Controller
+@RequestMapping("/api/patients") // Base URL path for all endpoints in this controller
+public class PatientController {
+
+    private final PatientService patientService; // Inject PatientService
+
+    @Autowired // Constructor injection of PatientService
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
+    }
+
+    // 1. POST /api/patients - Create a new patient
+    @PostMapping
+    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+        Patient createdPatient = patientService.createPatient(patient);
+        return new ResponseEntity<>(createdPatient, HttpStatus.CREATED); // 201 Created status
+    }
+
+    // 2. GET /api/patients - Get all patients
+    @GetMapping
+    public ResponseEntity<List<Patient>> getAllPatients() {
+        List<Patient> patients = patientService.getAllPatients();
+        return new ResponseEntity<>(patients, HttpStatus.OK); // 200 OK status
+    }
+
+    // 3. GET /api/patients/{patientId} - Get a patient by ID
+    @GetMapping("/{patientId}")
+    public ResponseEntity<Patient> getPatientById(@PathVariable Integer patientId) {
+        Optional<Patient> patient = patientService.getPatientById(patientId);
+        return patient.map(value -> new ResponseEntity<>(value, HttpStatus.OK)) // 200 OK if found
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // 404 Not Found if not found
+    }
+
+    // 4. PUT /api/patients/{patientId} - Update an existing patient
+    @PutMapping("/{patientId}")
+    public ResponseEntity<Patient> updatePatient(@PathVariable Integer patientId, @RequestBody Patient patient) {
+        Patient updatedPatient = patientService.updatePatient(patientId, patient);
+        if (updatedPatient != null) {
+            return new ResponseEntity<>(updatedPatient, HttpStatus.OK); // 200 OK if updated
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Not Found if patient ID doesn't exist
+        }
+    }
+
+    // 5. DELETE /api/patients/{patientId} - Delete a patient by ID
+    @DeleteMapping("/{patientId}")
+    public ResponseEntity<Void> deletePatient(@PathVariable Integer patientId) {
+        patientService.deletePatient(patientId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content after successful delete
+    }
+
+    // Custom Endpoints (Optional for now, but good to have based on PatientService)
+
+    // 6. GET /api/patients/email/{email} - Get patient by email
+    @GetMapping("/email/{email}")
+    public ResponseEntity<Patient> getPatientByEmail(@PathVariable String email) {
+        Optional<Patient> patient = patientService.getPatientByEmail(email);
+        return patient.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+}
