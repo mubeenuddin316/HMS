@@ -76,11 +76,28 @@ public class HospitalAdminController {
     // 7. GET /api/hospitalAdmins/email/{email} - Get Hospital Admin by Email (for login/auth scenarios later)
     @GetMapping("/email/{email}")
     public ResponseEntity<HospitalAdmin> getHospitalAdminByEmail(@PathVariable String email) {
-        HospitalAdmin admin = hospitalAdminService.getHospitalAdminByEmail(email);
-        if (admin != null) {
-            return new ResponseEntity<>(admin, HttpStatus.OK);
+        Optional<HospitalAdmin> adminOptional = hospitalAdminService.getHospitalAdminByEmail(email); // Get Optional<HospitalAdmin>
+
+        return adminOptional.map(admin -> new ResponseEntity<>(admin, HttpStatus.OK)) // Use map to return ResponseEntity<HospitalAdmin> if present
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Use orElseGet to return 404 if Optional is empty
+    }
+    
+    @GetMapping("/login")
+    public ResponseEntity<HospitalAdmin> loginHospitalAdmin(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password) {
+
+        Optional<HospitalAdmin> hospitalAdminOptional = hospitalAdminService.getHospitalAdminByEmail(email); // Get Optional<HospitalAdmin>
+
+        if (hospitalAdminOptional.isPresent()) { // Check if HospitalAdmin is present in the Optional
+            HospitalAdmin hospitalAdmin = hospitalAdminOptional.get(); // Get the HospitalAdmin object from Optional
+            if (hospitalAdmin.getPassword().equals(password)) {
+                return new ResponseEntity<>(hospitalAdmin, HttpStatus.OK); // Login Success
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Incorrect password
+            }
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Email not found (Optional is empty)
         }
     }
 }

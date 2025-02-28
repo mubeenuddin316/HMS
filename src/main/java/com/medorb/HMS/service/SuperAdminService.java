@@ -12,7 +12,7 @@ public interface SuperAdminService {
     SuperAdmin createSuperAdmin(SuperAdmin superAdmin);
     SuperAdmin updateSuperAdmin(Integer superAdminId, SuperAdmin superAdmin);
     void deleteSuperAdmin(Integer superAdminId);
-    SuperAdmin getSuperAdminByEmail(String email);
+    Optional<SuperAdmin> getSuperAdminByEmail(String email); // Returns Optional<SuperAdmin>
 
     // --- Super Admin's Control over Hospitals ---
     List<Hospital> getAllHospitals(); // Super Admin can view all hospitals

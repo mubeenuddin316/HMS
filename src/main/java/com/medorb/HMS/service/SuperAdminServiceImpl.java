@@ -59,8 +59,8 @@ public class SuperAdminServiceImpl implements SuperAdminService {
     }
 
     @Override
-    public SuperAdmin getSuperAdminByEmail(String email) {
-        return superAdminRepository.findByEmail(email);
+    public Optional<SuperAdmin> getSuperAdminByEmail(String email) { // Correct return type to Optional<SuperAdmin>
+        return superAdminRepository.findByEmail(email); // Directly return repository result (which is now Optional<SuperAdmin>)
     }
 
     // --- Super Admin's Control over Hospitals (Implemented using HospitalRepository) ---

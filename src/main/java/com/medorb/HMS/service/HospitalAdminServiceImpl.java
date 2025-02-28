@@ -56,7 +56,7 @@ public class HospitalAdminServiceImpl implements HospitalAdminService {
     }
 
     @Override
-    public HospitalAdmin getHospitalAdminByEmail(String email) {
+    public Optional<HospitalAdmin> getHospitalAdminByEmail(String email) {
         return hospitalAdminRepository.findByEmail(email);
     }
 

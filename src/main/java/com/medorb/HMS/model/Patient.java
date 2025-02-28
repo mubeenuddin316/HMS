@@ -13,16 +13,26 @@ public class Patient {
 
     @Column(nullable = false)
     private String name;
+    
+    @Column
     private LocalDate dob; // Use LocalDate for DATE type
+    
+    @Column    
     private String gender; // Consider using an Enum for Gender in a real app
+    
+    @Column
     private String contactNumber;
 
-    @Column(unique = true, nullable = false) // Email can be nullable or not nullable based on requirement
+    @Column(unique = true, nullable = false)
     private String email;
+    
+    
     @Column(nullable = false)
-    private String password; // Storing plain password - for undergrad project ONLY
-
+    private String password;
+    
+    @Column
     private String address;
+    
 
     public Patient() {
     }

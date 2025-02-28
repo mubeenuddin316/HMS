@@ -1,14 +1,25 @@
 package com.medorb.HMS.controller;
 
-import com.medorb.HMS.model.Patient; // Import Patient entity
-import com.medorb.HMS.service.PatientService; // Import PatientService
+import java.util.List; // Import List
+import java.util.Optional; // Import Optional
+
 import org.springframework.beans.factory.annotation.Autowired; // Import Autowired
 import org.springframework.http.HttpStatus; // Import HttpStatus
 import org.springframework.http.ResponseEntity; // Import ResponseEntity
-import org.springframework.web.bind.annotation.*; // Import Controller annotations
+import org.springframework.ui.Model;
+// Import Controller annotations
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List; // Import List
-import java.util.Optional; // Import Optional
+import com.medorb.HMS.model.Patient; // Import Patient entity
+import com.medorb.HMS.service.PatientService; // Import PatientService
 
 @RestController // Marks this class as a REST Controller
 @RequestMapping("/api/patients") // Base URL path for all endpoints in this controller
@@ -69,5 +80,28 @@ public class PatientController {
         Optional<Patient> patient = patientService.getPatientByEmail(email);
         return patient.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
+    @PostMapping("/login") // Use PostMapping for form submission
+    public String loginPatient(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            Model model) {
+
+        Optional<Patient> patientOptional = patientService.getPatientByEmail(email);
+
+        if (patientOptional.isPresent()) {
+            Patient patient = patientOptional.get();
+            if (patient.getPassword().equals(password)) {
+                model.addAttribute("loggedInPatient", patient);
+                return "patient-dashboard"; // Success: Redirect to dashboard
+            } else {
+                model.addAttribute("loginError", "Invalid password."); // Add error message to model
+                return "index"; // Failure: Redirect back to index with error
+            }
+        } else {
+            model.addAttribute("loginError", "Email not found."); // Add error message to model
+            return "index"; // Failure: Redirect back to index with error
+        }
     }
 }

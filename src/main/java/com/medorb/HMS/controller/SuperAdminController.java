@@ -1,16 +1,27 @@
 package com.medorb.HMS.controller;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.service.SuperAdminService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/superAdmins") // You can adjust the API endpoint path
@@ -70,12 +81,10 @@ public class SuperAdminController {
     // 6. GET /api/superAdmins/email/{email} - Get Super Admin by Email
     @GetMapping("/email/{email}")
     public ResponseEntity<SuperAdmin> getSuperAdminByEmail(@PathVariable String email) {
-        SuperAdmin admin = superAdminService.getSuperAdminByEmail(email);
-        if (admin != null) {
-            return new ResponseEntity<>(admin, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Optional<SuperAdmin> adminOptional = superAdminService.getSuperAdminByEmail(email); // Get Optional<SuperAdmin>
+
+        return adminOptional.map(admin -> new ResponseEntity<>(admin, HttpStatus.OK)) // Use map for 200 OK if present
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Use orElseGet for 404 Not Found if empty
     }
 
     // --- Super Admin's API Endpoints for Managing Hospitals ---
@@ -164,4 +173,51 @@ public class SuperAdminController {
         superAdminService.deleteHospitalAdminBySuperAdmin(hospitalAdminId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> loginSuperAdmin(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        if (email == null || password == null) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Email and password are required"
+                    ));
+        }
+
+        Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
+
+        if (superAdminOptional.isPresent()) {
+            SuperAdmin superAdmin = superAdminOptional.get();
+            // For production, compare hashed passwords, not plain text!
+            if (superAdmin.getPassword().equals(password)) {
+                // Login success
+            	return ResponseEntity.ok(Map.of(
+            		    "success", true,
+            		    "message", "Login successful",
+            		    "adminId", superAdmin.getSuperAdminId(),
+            		    "redirect", "/superAdmin/dashboard"
+            		));
+
+            } else {
+                // Wrong password
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of(
+                                "success", false,
+                                "message", "Invalid password"
+                        ));
+            }
+        } else {
+            // Email not found
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "success", false,
+                            "message", "Email not found"
+                    ));
+        }
+    }
+
+
 }

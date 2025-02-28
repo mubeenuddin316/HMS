@@ -9,24 +9,26 @@
     <title>Login Page</title>
     <link rel="stylesheet" href="css/index-style.css">
     <script>
-        // Show the correct login form
         function showLoginForm(role) {
             console.log("Button clicked for: " + role);
+            
             // Hide all login forms
             document.querySelectorAll('.form-container').forEach(form => {
                 form.style.display = 'none';
             });
-            // Display the selected form
-            const formId = role + '-form';
-            const form = document.getElementById(formId);
+            
+            // Show the selected form
+            var formId = role + '-form';
+            var form = document.getElementById(formId);
             if (form) {
+                console.log("Showing form: " + formId);
                 form.style.display = 'block';
             } else {
                 console.error("Form with ID " + formId + " not found.");
             }
         }
         
-        // Handle Super Admin login form submission (using JSON)
+        // Handle admin login form submission
         document.addEventListener('DOMContentLoaded', function() {
             const adminForm = document.getElementById('admin-login-form');
             
@@ -37,35 +39,25 @@
                     const email = this.querySelector('input[name="email"]').value;
                     const password = this.querySelector('input[name="password"]').value;
                     
-                    // Prepare JSON payload
-                    const payload = { email: email, password: password };
-
-                    console.log('Attempting super admin login...', payload);
-                    
-                    // Use relative path "api/superAdmins/login" so that
-                    // if your app is at /HMS, it becomes /HMS/api/superAdmins/login
-                    fetch('api/superAdmins/login', {
+                    fetch('/api/superAdmins/login', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/x-www-form-urlencoded',
                         },
-                        body: JSON.stringify(payload)
+                        body: 'email=' + encodeURIComponent(email) + '&password=' + encodeURIComponent(password)
                     })
-                    .then(response => {
-                        const contentType = response.headers.get('content-type');
-                        if (contentType && contentType.includes('application/json')) {
-                            return response.json();
-                        }
-                        throw new Error('Server returned non-JSON response');
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         console.log('Login response:', data);
                         if (data.success) {
-                            window.location.href = data.redirect; // "/superAdmin/dashboard"
+                            // Store admin ID in session storage if needed
+                            sessionStorage.setItem('adminId', data.adminId);
+                            // Redirect to dashboard
+                            window.location.href = data.redirect;
                         } else {
-                            alert(data.message || 'Login failed');
+                            // Show error message
+                            alert(data.message);
                         }
-
                     })
                     .catch(error => {
                         console.error('Login error:', error);
@@ -77,10 +69,9 @@
     </script>
 </head>
 <body>
-    <!-- Top Bar for Selecting Login Role -->
     <div class="login-container">
         <div class="left-section-container">
-            <img src="images/logo.png" alt="Hospital Logo" style="max-width: 100%; height: 100%;">
+            <img src="images/logo.png" alt="Hospital Image" style="max-width: 100%; height: 100%;">
         </div>
         
         <div class="login-section" onclick="showLoginForm('admin')">Admin Login</div>
@@ -89,17 +80,15 @@
         <div class="login-section" onclick="showLoginForm('patient')">Patient Login</div>
     </div>
 
-    <!-- Main Container -->
+    <!-- Main Content (Divided into Left & Right) -->
     <div class="main-container">
         <!-- Left: Image -->
         <div class="left-section">
             <img src="images/indeximage.jpg" alt="Hospital Image" style="max-width: 100%; height: auto;">
         </div>
 
-        <!-- Right: Login Forms -->
         <div class="right-section">
-            <!-- Super Admin Login Form -->
-            <div id="admin-form" class="form-container" style="display: none;">
+            <div id="admin-form" class="form-container">
                 <h3>Admin Login</h3>
                 <form id="admin-login-form">
                     <input type="email" name="email" placeholder="Enter Email" required><br>
@@ -108,7 +97,6 @@
                 </form>
             </div>
 
-            <!-- Hospital Admin Login Form -->
             <div id="hospital-form" class="form-container" style="display: none;">
                 <h3>Hospital Admin Login</h3>
                 <form action="hospitalLogin" method="post">
@@ -118,7 +106,6 @@
                 </form>
             </div>
 
-            <!-- Doctor Login Form -->
             <div id="doctor-form" class="form-container" style="display: none;">
                 <h3>Doctor Login</h3>
                 <form action="doctorLogin" method="post">
@@ -128,7 +115,6 @@
                 </form>
             </div>
 
-            <!-- Patient Login Form -->
             <div id="patient-form" class="form-container" style="display: none;">
                 <h3>Patient Login</h3>
                 <form action="patientLogin" method="post">

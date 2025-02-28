@@ -13,7 +13,7 @@ public interface HospitalAdminService {
 
     // Custom service methods
     List<HospitalAdmin> getHospitalAdminsByHospitalId(Integer hospitalId);
-    HospitalAdmin getHospitalAdminByEmail(String email); // Find admin by email
+    Optional<HospitalAdmin> getHospitalAdminByEmail(String email);
 
     // Optional: Service method for authentication (if you uncommented in Repository)
     // HospitalAdmin authenticateHospitalAdmin(String email, String password);

@@ -77,4 +77,23 @@ public class DoctorController {
         List<Doctor> doctors = doctorService.getDoctorsByHospitalId(hospitalId);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
+    
+    @GetMapping("/login")
+    public ResponseEntity<Doctor> loginDoctor(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password) {
+
+        Optional<Doctor> doctorOptional = doctorService.getDoctorByEmail(email);
+
+        if (doctorOptional.isPresent()) {
+            Doctor doctor = doctorOptional.get();
+            if (doctor.getPassword().equals(password)) {
+                return new ResponseEntity<>(doctor, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
