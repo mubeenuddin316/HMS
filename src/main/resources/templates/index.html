@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" th:href="@{/css/index-style.css}">
+</head>
+<body>
+    <!-- Top Bar for Selecting Login Role -->
+    <div class="login-container">
+        <div class="left-section-container">
+            <img th:src="@{/images/logo.png}" alt="Hospital Logo" style="max-width: 100%; height: 100%;">
+        </div>
+
+        <div class="login-section" onclick="showLoginForm('admin')">Admin Login</div>
+        <div class="login-section" onclick="showLoginForm('hospital')">Hospital Admin Login</div>
+        <div class="login-section" onclick="showLoginForm('doctor')">Doctor Login</div>
+        <div class="login-section" onclick="showLoginForm('patient')">Patient Login</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left: Image -->
+        <div class="left-section">
+            <img th:src="@{/images/indeximage.jpg}" alt="Hospital Image" style="max-width: 100%; height: auto;">
+        </div>
+
+        <!-- Right: Login Forms -->
+        <div class="right-section">
+            <!-- Super Admin Login Form -->
+            <div id="admin-form" class="form-container" style="display: none;">
+                <h3>Admin Login</h3>
+                <form th:action="@{/login}" method="post">
+                    <input type="email" name="email" placeholder="Enter Email" required><br>
+                    <input type="password" name="password" placeholder="Enter Password" required><br>
+                    <input type="submit" value="Login">
+                </form>
+                <p th:if="${error}" th:text="${error}" style="color: red;"></p> <!-- Error message if login fails -->
+            </div>
+
+            <!-- Hospital Admin Login Form -->
+            <div id="hospital-form" class="form-container" style="display: none;">
+                <h3>Hospital Admin Login</h3>
+                <form th:action="@{/hospitalLogin}" method="post">
+                    <input type="text" name="username" placeholder="Enter Username" required><br>
+                    <input type="password" name="password" placeholder="Enter Password" required><br>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+
+            <!-- Doctor Login Form -->
+            <div id="doctor-form" class="form-container" style="display: none;">
+                <h3>Doctor Login</h3>
+                <form th:action="@{/doctorLogin}" method="post">
+                    <input type="text" name="username" placeholder="Enter Username" required><br>
+                    <input type="password" name="password" placeholder="Enter Password" required><br>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+
+            <!-- Patient Login Form -->
+            <div id="patient-form" class="form-container" style="display: none;">
+                <h3>Patient Login</h3>
+                <form th:action="@{/patientLogin}" method="post">
+                    <input type="text" name="username" placeholder="Enter Username" required><br>
+                    <input type="password" name="password" placeholder="Enter Password" required><br>
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm(role) {
+            console.log("Button clicked for: " + role);
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.style.display = 'none';
+            });
+            let selectedForm = document.getElementById(role + '-form');
+            if (selectedForm) {
+                selectedForm.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

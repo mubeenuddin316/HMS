@@ -51,17 +51,24 @@
 		    <artifactId>spring-boot-starter-tomcat</artifactId>
 		    <scope>provided</scope> <!-- scope provided for external Tomcat -->
 		</dependency>
+		<!--
 		<dependency>
 		    <groupId>jakarta.servlet.jsp.jstl</groupId>
 		    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-		    <version>3.0.0</version><!--$NO-MVN-MAN-VER$--> <!-- JSTL API version 3.0.0 -->
+		    <version>3.0.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.glassfish.web</groupId>
 		    <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-		    <version>3.0.1</version><!--$NO-MVN-MAN-VER$--> <!-- JSTL Implementation version 3.0.1 -->
-		    <!-- <scope>runtime</scope> -->
+		    <version>3.0.1</version> 
+		    
 		</dependency>
+		-->
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

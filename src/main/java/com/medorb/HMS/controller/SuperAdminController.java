@@ -174,50 +174,80 @@ public class SuperAdminController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     
+//    @PostMapping("/login")
+//    public ResponseEntity<?> loginSuperAdmin(@RequestBody Map<String, String> credentials) {
+//        String email = credentials.get("email");
+//        String password = credentials.get("password");
+//
+//        if (email == null || password == null) {
+//            return ResponseEntity.badRequest()
+//                    .body(Map.of(
+//                            "success", false,
+//                            "message", "Email and password are required"
+//                    ));
+//        }
+//
+//        Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
+//
+//        if (superAdminOptional.isPresent()) {
+//            SuperAdmin superAdmin = superAdminOptional.get();
+//            // For production, compare hashed passwords, not plain text!
+//            if (superAdmin.getPassword().equals(password)) {
+//                // Login success
+//            	return ResponseEntity.ok(Map.of(
+//            		    "success", true,
+//            		    "message", "Login successful",
+//            		    "adminId", superAdmin.getSuperAdminId(),
+//            		    "redirect", "/superAdmin/dashboard"
+//            		));
+//
+//            } else {
+//                // Wrong password
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                        .body(Map.of(
+//                                "success", false,
+//                                "message", "Invalid password"
+//                        ));
+//            }
+//        } else {
+//            // Email not found
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(Map.of(
+//                            "success", false,
+//                            "message", "Email not found"
+//                    ));
+//        }
+//    }
+    
     @PostMapping("/login")
     public ResponseEntity<?> loginSuperAdmin(@RequestBody Map<String, String> credentials) {
         String email = credentials.get("email");
         String password = credentials.get("password");
 
         if (email == null || password == null) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Email and password are required"
-                    ));
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Email and password are required"
+            ));
         }
 
         Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
 
-        if (superAdminOptional.isPresent()) {
-            SuperAdmin superAdmin = superAdminOptional.get();
-            // For production, compare hashed passwords, not plain text!
-            if (superAdmin.getPassword().equals(password)) {
-                // Login success
-            	return ResponseEntity.ok(Map.of(
-            		    "success", true,
-            		    "message", "Login successful",
-            		    "adminId", superAdmin.getSuperAdminId(),
-            		    "redirect", "/superAdmin/dashboard"
-            		));
-
-            } else {
-                // Wrong password
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(Map.of(
-                                "success", false,
-                                "message", "Invalid password"
-                        ));
-            }
+        if (superAdminOptional.isPresent() && superAdminOptional.get().getPassword().equals(password)) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Login successful",
+                    "adminId", superAdminOptional.get().getSuperAdminId(),
+                    "redirect", "/superAdmin/dashboard"
+            ));
         } else {
-            // Email not found
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of(
-                            "success", false,
-                            "message", "Email not found"
-                    ));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "success", false,
+                    "message", "Invalid email or password"
+            ));
         }
     }
+
 
 
 }
