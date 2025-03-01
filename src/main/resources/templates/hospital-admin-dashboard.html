@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin Dashboard</title>
+    <title>Hospital Admin Dashboard</title>
     <link rel="stylesheet" th:href="@{/css/dashboard-style.css}">
 </head>
 <body>
-    <h1>Welcome to Super Admin Dashboard</h1>
-    <p th:text="'Logged in as: ' + ${superAdmin.adminName}"></p>
-    <p th:text="'Email: ' + ${superAdmin.email}"></p>
+    <h1>Welcome to Hospital Admin Dashboard</h1>
+    <p th:text="'Logged in as: ' + ${hospitalAdmin.adminName}"></p>
+    <p th:text="'Email: ' + ${hospitalAdmin.email}"></p>
     <p><a href="/">Logout</a></p>
 </body>
 </html>

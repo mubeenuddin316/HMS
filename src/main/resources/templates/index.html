@@ -28,26 +28,28 @@
 
         <!-- Right: Login Forms -->
         <div class="right-section">
-            <!-- Super Admin Login Form -->
-            <div id="admin-form" class="form-container" style="display: none;">
-                <h3>Admin Login</h3>
-                <form th:action="@{/login}" method="post">
-                    <input type="email" name="email" placeholder="Enter Email" required><br>
-                    <input type="password" name="password" placeholder="Enter Password" required><br>
-                    <input type="submit" value="Login">
-                </form>
-                <p th:if="${error}" th:text="${error}" style="color: red;"></p> <!-- Error message if login fails -->
-            </div>
+        <!-- Super Admin Login Form -->
+        <div id="admin-form" class="form-container" style="display: none;">
+            <h3>Super Admin Login</h3>
+            <form th:action="@{/login}" method="post">
+                <input type="email" name="email" placeholder="Enter Email" required><br>
+                <input type="password" name="password" placeholder="Enter Password" required><br>
+                <input type="submit" value="Login">
+            </form>
+            <p th:if="${error}" th:text="${error}" style="color: red;"></p> <!-- Show error if login fails -->
+        </div>
 
-            <!-- Hospital Admin Login Form -->
-            <div id="hospital-form" class="form-container" style="display: none;">
-                <h3>Hospital Admin Login</h3>
-                <form th:action="@{/hospitalLogin}" method="post">
-                    <input type="text" name="username" placeholder="Enter Username" required><br>
-                    <input type="password" name="password" placeholder="Enter Password" required><br>
-                    <input type="submit" value="Login">
-                </form>
-            </div>
+        <!-- Hospital Admin Login Form -->
+        <div id="hospital-form" class="form-container" style="display: none;">
+            <h3>Hospital Admin Login</h3>
+            <form th:action="@{/hospitalAdmin/login}" method="post">
+                <input type="email" name="email" placeholder="Enter Email" required><br>
+                <input type="password" name="password" placeholder="Enter Password" required><br>
+                <input type="submit" value="Login">
+            </form>
+            <p th:if="${hospitalAdminError}" th:text="${hospitalAdminError}" style="color: red;"></p> <!-- Show error if login fails -->
+        </div>
+
 
             <!-- Doctor Login Form -->
             <div id="doctor-form" class="form-container" style="display: none;">

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -82,22 +83,32 @@ public class HospitalAdminController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND)); // Use orElseGet to return 404 if Optional is empty
     }
     
-    @GetMapping("/login")
-    public ResponseEntity<HospitalAdmin> loginHospitalAdmin(
-            @RequestParam("email") String email,
-            @RequestParam("password") String password) {
+    @PostMapping("/login")
+    public ResponseEntity<?> loginHospitalAdmin(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
 
-        Optional<HospitalAdmin> hospitalAdminOptional = hospitalAdminService.getHospitalAdminByEmail(email); // Get Optional<HospitalAdmin>
+        if (email == null || password == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Email and password are required"
+            ));
+        }
 
-        if (hospitalAdminOptional.isPresent()) { // Check if HospitalAdmin is present in the Optional
-            HospitalAdmin hospitalAdmin = hospitalAdminOptional.get(); // Get the HospitalAdmin object from Optional
-            if (hospitalAdmin.getPassword().equals(password)) {
-                return new ResponseEntity<>(hospitalAdmin, HttpStatus.OK); // Login Success
-            } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // Incorrect password
-            }
+        Optional<HospitalAdmin> hospitalAdminOptional = hospitalAdminService.getHospitalAdminByEmail(email);
+
+        if (hospitalAdminOptional.isPresent() && hospitalAdminOptional.get().getPassword().equals(password)) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Login successful",
+                    "adminId", hospitalAdminOptional.get().getHospitalAdminId(),
+                    "redirect", "/hospitalAdmin/dashboard"
+            ));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Email not found (Optional is empty)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "success", false,
+                    "message", "Invalid email or password"
+            ));
         }
     }
 }

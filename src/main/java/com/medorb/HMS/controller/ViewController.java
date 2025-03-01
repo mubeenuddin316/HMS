@@ -1,6 +1,8 @@
 package com.medorb.HMS.controller;
 
+import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.SuperAdmin;
+import com.medorb.HMS.service.HospitalAdminService;
 import com.medorb.HMS.service.SuperAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class ViewController {
 
     private final SuperAdminService superAdminService;
+    private final HospitalAdminService hospitalAdminService;
 
     @Autowired
-    public ViewController(SuperAdminService superAdminService) {
+    public ViewController(SuperAdminService superAdminService, HospitalAdminService hospitalAdminService) {
         this.superAdminService = superAdminService;
+        this.hospitalAdminService = hospitalAdminService;
     }
 
     @GetMapping("/")
@@ -26,27 +30,30 @@ public class ViewController {
         return "index";  // Resolves to index.html
     }
 
-    @GetMapping("/superAdmin/dashboard")
-    public String showSuperAdminDashboard(Model model) {
-        SuperAdmin superAdmin = new SuperAdmin();
-        superAdmin.setSuperAdminId(1);
-        superAdmin.setAdminName("Jane Doe");
-        superAdmin.setEmail("jane.doe@example.com");
-
-        model.addAttribute("superAdmin", superAdmin);
-        return "super-admin-dashboard"; // Resolves to super-admin-dashboard.html
-    }
-
-    // New method to handle Thymeleaf login form submission
+    // ✅ Fix: Super Admin Login (Uses Real Data from DB)
     @PostMapping("/login")
-    public String loginSuperAdminThymeleaf(@RequestParam String email, @RequestParam String password, Model model) {
+    public String loginSuperAdmin(@RequestParam String email, @RequestParam String password, Model model) {
         Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
 
         if (superAdminOptional.isPresent() && superAdminOptional.get().getPassword().equals(password)) {
-            model.addAttribute("superAdmin", superAdminOptional.get());
-            return "redirect:/superAdmin/dashboard"; // Redirect to Thymeleaf view
+            model.addAttribute("superAdmin", superAdminOptional.get());  // ✅ Pass real Super Admin
+            return "super-admin-dashboard"; // ✅ No redirect, direct Thymeleaf rendering
         } else {
             model.addAttribute("error", "Invalid email or password");
+            return "index"; // Stay on login page with error message
+        }
+    }
+
+    // ✅ Fix: Hospital Admin Login (Uses Real Data from DB)
+    @PostMapping("/hospitalAdmin/login")
+    public String loginHospitalAdmin(@RequestParam String email, @RequestParam String password, Model model) {
+        Optional<HospitalAdmin> hospitalAdminOptional = hospitalAdminService.getHospitalAdminByEmail(email);
+
+        if (hospitalAdminOptional.isPresent() && hospitalAdminOptional.get().getPassword().equals(password)) {
+            model.addAttribute("hospitalAdmin", hospitalAdminOptional.get());  // ✅ Pass real Hospital Admin
+            return "hospital-admin-dashboard"; // ✅ No redirect, direct Thymeleaf rendering
+        } else {
+            model.addAttribute("hospitalAdminError", "Invalid email or password");
             return "index"; // Stay on login page with error message
         }
     }
