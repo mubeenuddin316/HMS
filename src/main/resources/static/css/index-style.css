@@ -89,9 +89,16 @@ body {
 
 
 .form-container input[type="text"],
-.form-container input[type="email"],
 .form-container input[type="password"] {
     padding: 10px;
+    margin: 5px;
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.form-container input[type="email"] {
+	padding: 10px;
     margin: 5px;
     width: 80%;
     border-radius: 5px;
