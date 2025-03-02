@@ -56,4 +56,6 @@ public class DoctorServiceImpl implements DoctorService { // Implements DoctorSe
     public List<Doctor> getDoctorsByHospitalId(Integer hospitalId) { // Implement getDoctorsByHospitalId method
         return doctorRepository.findByHospital_HospitalId(hospitalId); // Use custom method (add to repo)
     }
+
+	
 }

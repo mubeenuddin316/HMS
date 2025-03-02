@@ -4,12 +4,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super Admin Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard-style.css}">
+    <!--  <link rel="stylesheet" th:href="@{/css/dashboard-style.css}"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px; /* Adjust for fixed navbar if used */
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #eee;
+            width: 250px; /* Adjust sidebar width as needed */
+        }
+        .sidebar-nav {
+            list-style: none;
+            padding-left: 0;
+        }
+        .sidebar-nav-item {
+            margin-bottom: 10px;
+        }
+        .sidebar-nav-link {
+            display: block;
+            padding: 8px 16px;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .sidebar-nav-link:hover {
+            background-color: #e9ecef;
+        }
+        .content-area {
+            margin-left: 250px; /* Match sidebar width */
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Super Admin Dashboard</h1>
-    <p th:text="'Logged in as: ' + ${superAdmin.adminName}"></p>
-    <p th:text="'Email: ' + ${superAdmin.email}"></p>
-    <p><a href="/">Logout</a></p>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MedOrb HMS - Super Admin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a> </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a> </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <ul class="sidebar-nav">
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link" href="#" th:href="@{/super-admin-dashboard}">Dashboard</a>
+            </li>
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link" href="#" th:href="@{/hospitals}">Hospital Management</a>
+            </li>
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link" href="#" th:href="@{/hospital-admins}">Hospital Admin Management</a>
+            </li>
+            <li class="sidebar-nav-item">
+                <a class="sidebar-nav-link" href="#" th:href="@{/super-admins}">Super Admin Management</a>
+            </li>
+            </ul>
+    </div>
+
+    <main class="content-area">
+        <div class="container">
+            <h1>Super Admin Dashboard</h1>
+
+            <section id="overview-section">
+                <h2>System Overview</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Hospitals</h5>
+                                <p class="card-text" th:text="${hospitalCount}">[Hospital Count]</p> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Doctors</h5>
+                                <p class="card-text" th:text="${doctorCount}">[Doctor Count]</p> </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Patients</h5>
+                                <p class="card-text" th:text="${patientCount}">[Patient Count]</p> </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="hospital-management-section">
+                <h2>Hospital Management</h2>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>Hospitals</h3>
+                    <a th:href="@{/hospitals/new}" class="btn btn-primary">Add New Hospital</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Hospital Name</th>
+                                <th>City</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="hospital : ${hospitals}"> <td th:text="${hospital.hospitalName}">[Hospital Name]</td>
+                                <td th:text="${hospital.city}">[City]</td>
+                                <td>
+                                    <a th:href="@{/hospitals/{id}/details(id=${hospital.id})}" class="btn btn-sm btn-info">View Details</a>
+                                    <a th:href="@{/hospitals/{id}/edit(id=${hospital.id})}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a th:href="@{/hospitals/{id}/delete(id=${hospital.id})}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this hospital?')">Delete</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${hospitals == null or hospitals.isEmpty()}">
+                                <td colspan="3">No hospitals registered yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="hospital-admin-management-section">
+                <h2>Hospital Admin Management</h2>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>Hospital Admins</h3>
+                    <a th:href="@{/hospital-admins/new}" class="btn btn-primary">Add New Hospital Admin</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Admin Name</th>
+                                <th>Email</th>
+                                <th>Hospital</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="hospitalAdmin : ${hospitalAdmins}"> <td th:text="${hospitalAdmin.name}">[Admin Name]</td>
+                                <td th:text="${hospitalAdmin.email}">[Email]</td>
+                                <td th:text="${hospitalAdmin.hospital?.hospitalName}">[Hospital Name]</td> <td>
+                                    <a th:href="@{/hospital-admins/{id}/edit(id=${hospitalAdmin.id})}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a th:href="@{/hospital-admins/{id}/disable(id=${hospitalAdmin.id})}" class="btn btn-sm btn-secondary">Disable</a> </td>
+                            </tr>
+                            <tr th:if="${hospitalAdmins == null or hospitalAdmins.isEmpty()}">
+                                <td colspan="4">No hospital admins registered yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="super-admin-management-section">
+                <h2>Super Admin Management</h2>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>Super Admins</h3>
+                    <a th:href="@{/super-admins/new}" class="btn btn-primary">Add New Super Admin</a> </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="superAdmin : ${superAdmins}"> <td th:text="${superAdmin.name}">[Super Admin Name]</td>
+                                <td th:text="${superAdmin.email}">[Email]</td>
+                                <td>
+                                    <a th:href="@{/super-admins/{id}/edit(id=${superAdmin.id})}" class="btn btn-sm btn-warning">Edit</a>
+                                    </td>
+                            </tr>
+                            <tr th:if="${superAdmins == null or superAdmins.isEmpty()}">
+                                <td colspan="3">No other super admins registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

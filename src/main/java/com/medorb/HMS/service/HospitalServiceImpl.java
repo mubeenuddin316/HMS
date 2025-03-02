@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service // Mark as a service component
+@Service 
 public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
@@ -53,4 +53,6 @@ public class HospitalServiceImpl implements HospitalService {
     public void deleteHospital(Integer hospitalId) {
         hospitalRepository.deleteById(hospitalId);
     }
+
+
 }

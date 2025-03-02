@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity; // Import ResponseEntity
 import org.springframework.web.bind.annotation.*; // Import Controller annotations
 
 import java.util.List; // Import List
+import java.util.Map;
 import java.util.Optional; // Import Optional
 
 @RestController // Marks this class as a REST Controller
@@ -78,22 +79,32 @@ public class DoctorController {
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
     
-    @GetMapping("/login")
-    public ResponseEntity<Doctor> loginDoctor(
-            @RequestParam("email") String email,
-            @RequestParam("password") String password) {
+    @PostMapping("/login")
+    public ResponseEntity<?> loginDoctor(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        if (email == null || password == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Email and password are required"
+            ));
+        }
 
         Optional<Doctor> doctorOptional = doctorService.getDoctorByEmail(email);
 
-        if (doctorOptional.isPresent()) {
-            Doctor doctor = doctorOptional.get();
-            if (doctor.getPassword().equals(password)) {
-                return new ResponseEntity<>(doctor, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+        if (doctorOptional.isPresent() && doctorOptional.get().getPassword().equals(password)) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Login successful",
+                    "doctorId", doctorOptional.get().getDoctorId(),
+                    "redirect", "/doctor/dashboard"
+            ));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "success", false,
+                    "message", "Invalid email or password"
+            ));
         }
     }
 }

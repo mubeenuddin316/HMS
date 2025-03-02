@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard-style.css}">
+</head>
+<body>
+    <h1>Welcome to Patient Dashboard</h1>
+    <p th:text="'Logged in as: ' + ${patient.name}"></p>
+    <p th:text="'Email: ' + ${patient.email}"></p>
+    <p><a href="/">Logout</a></p>
+</body>
+</html>

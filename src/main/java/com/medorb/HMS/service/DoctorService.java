@@ -12,4 +12,5 @@ public interface DoctorService {
     void deleteDoctor(Integer doctorId);
     Optional<Doctor> getDoctorByEmail(String email); // Add find by email
     List<Doctor> getDoctorsByHospitalId(Integer hospitalId); // Get doctors for a hospital
+	// long getDoctorCount();
 }

@@ -1,6 +1,7 @@
 package com.medorb.HMS.controller;
 
 import java.util.List; // Import List
+import java.util.Map;
 import java.util.Optional; // Import Optional
 
 import org.springframework.beans.factory.annotation.Autowired; // Import Autowired
@@ -82,26 +83,52 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    @PostMapping("/login") // Use PostMapping for form submission
-    public String loginPatient(
-            @RequestParam("email") String email,
-            @RequestParam("password") String password,
-            Model model) {
+ // ✅ API Endpoint for Patient Login
+    @PostMapping("/login")
+    public ResponseEntity<?> loginPatient(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        if (email == null || password == null) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Email and password are required"
+            ));
+        }
 
         Optional<Patient> patientOptional = patientService.getPatientByEmail(email);
 
-        if (patientOptional.isPresent()) {
-            Patient patient = patientOptional.get();
-            if (patient.getPassword().equals(password)) {
-                model.addAttribute("loggedInPatient", patient);
-                return "patient-dashboard"; // Success: Redirect to dashboard
-            } else {
-                model.addAttribute("loginError", "Invalid password."); // Add error message to model
-                return "index"; // Failure: Redirect back to index with error
-            }
+        if (patientOptional.isPresent() && patientOptional.get().getPassword().equals(password)) {
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "Login successful",
+                    "patientId", patientOptional.get().getPatientId(),
+                    "redirect", "/patient/dashboard"
+            ));
         } else {
-            model.addAttribute("loginError", "Email not found."); // Add error message to model
-            return "index"; // Failure: Redirect back to index with error
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "success", false,
+                    "message", "Invalid email or password"
+            ));
         }
     }
+    
+    @PostMapping("/register")
+    public ResponseEntity<?> registerPatient(@RequestBody Patient patient) {
+        Optional<Patient> existingPatient = patientService.getPatientByEmail(patient.getEmail());
+
+        if (existingPatient.isPresent()) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "message", "Email already exists. Try logging in."
+            ));
+        }
+
+        Patient savedPatient = patientService.createPatient(patient);
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Registration successful! Please login."
+        ));
+    }
+
 }

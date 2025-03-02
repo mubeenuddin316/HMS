@@ -10,5 +10,8 @@ public interface HospitalService {
     Hospital createHospital(Hospital hospital);
     Hospital updateHospital(Integer hospitalId, Hospital hospital);
     void deleteHospital(Integer hospitalId);
+    
+    
+	//long getHospitalCount();
  
 }

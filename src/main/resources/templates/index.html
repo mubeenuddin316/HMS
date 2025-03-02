@@ -51,26 +51,31 @@
         </div>
 
 
-            <!-- Doctor Login Form -->
-            <div id="doctor-form" class="form-container" style="display: none;">
-                <h3>Doctor Login</h3>
-                <form th:action="@{/doctorLogin}" method="post">
-                    <input type="text" name="username" placeholder="Enter Username" required><br>
-                    <input type="password" name="password" placeholder="Enter Password" required><br>
-                    <input type="submit" value="Login">
-                </form>
-            </div>
-
-            <!-- Patient Login Form -->
-            <div id="patient-form" class="form-container" style="display: none;">
-                <h3>Patient Login</h3>
-                <form th:action="@{/patientLogin}" method="post">
-                    <input type="text" name="username" placeholder="Enter Username" required><br>
-                    <input type="password" name="password" placeholder="Enter Password" required><br>
-                    <input type="submit" value="Login">
-                </form>
-            </div>
+           <!-- Doctor Login Form -->
+        <div id="doctor-form" class="form-container" style="display: none;">
+            <h3>Doctor Login</h3>
+            <form th:action="@{/doctor/login}" method="post">
+                <input type="email" name="email" placeholder="Enter Email" required><br>
+                <input type="password" name="password" placeholder="Enter Password" required><br>
+                <input type="submit" value="Login">
+            </form>
+            <p th:if="${doctorError}" th:text="${doctorError}" style="color: red;"></p> 
         </div>
+
+         <!-- Patient Login Form -->
+        <div id="patient-form" class="form-container" style="display: none;">
+            <h3>Patient Login</h3>
+            <form th:action="@{/patient/login}" method="post">
+                <input type="email" name="email" placeholder="Enter Email" required><br>
+                <input type="password" name="password" placeholder="Enter Password" required><br>
+                <input type="submit" value="Login">
+            </form>
+            <p th:if="${patientError}" th:text="${patientError}" style="color: red;"></p>
+            <!-- ✅ Add Register Link -->
+            <p>Don't have an account? <a th:href="@{/patient/register}">Register Here</a></p>
+        </div>
+
+    </div>
     </div>
 
     <script>
