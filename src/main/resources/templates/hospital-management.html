@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Hospital Management</title>
-        <link rel="stylesheet" th:href="@{/css/hospital-management.css}" />
-    
+    <!-- Link the new CSS file -->
+    <link rel="stylesheet" th:href="@{/css/hospital-management.css}" />
 </head>
 <body>
     <h1>Hospital Management</h1>
 
     <!-- Table of existing hospitals -->
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>ID</th>
@@ -26,28 +26,32 @@
                 <td th:text="${h.name}">Name</td>
                 <td th:text="${h.city}">City</td>
                 <td th:text="${h.phoneNumber}">Phone</td>
-                <td>
-                    <!-- Edit link -->
+                <td class="actions">
                     <a th:href="@{/superAdmin/hospitals/edit/{id}(id=${h.hospitalId})}">Edit</a>
-                    <!-- Delete link -->
                     <a th:href="@{/superAdmin/hospitals/delete/{id}(id=${h.hospitalId})}">Delete</a>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <!-- Form to create a new hospital -->
-    <h2>Create New Hospital</h2>
-    <form th:action="@{/superAdmin/hospitals}" th:object="${newHospital}" method="post">
-        <label>Name:</label>
-        <input type="text" th:field="*{name}" required/><br/>
-        <label>City:</label>
-        <input type="text" th:field="*{city}"/><br/>
-        <label>Phone:</label>
-        <input type="text" th:field="*{phoneNumber}"/><br/>
-        <label>Email:</label>
-        <input type="email" th:field="*{email}"/><br/>
-        <button type="submit">Create</button>
-    </form>
+    <!-- Create New Hospital Form -->
+    <div class="form-container">
+        <h2>Create New Hospital</h2>
+        <form th:action="@{/superAdmin/hospitals}" th:object="${newHospital}" method="post">
+            <label>Name:</label>
+            <input type="text" th:field="*{name}" required />
+
+            <label>City:</label>
+            <input type="text" th:field="*{city}" />
+
+            <label>Phone:</label>
+            <input type="text" th:field="*{phoneNumber}" />
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" />
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
 </body>
 </html>
