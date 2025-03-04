@@ -1,12 +1,19 @@
 package com.medorb.HMS.controller;
 
+import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.service.SuperAdminService;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class SuperAdminViewController {
@@ -45,4 +52,26 @@ public class SuperAdminViewController {
         // 4. Return the Thymeleaf template
         return "super-admin-dashboard";
     }
+    
+    @GetMapping("/superAdmin/hospitals")
+    public String showHospitalManagementPage(Model model) {
+        List<Hospital> hospitalList = superAdminService.getAllHospitals();
+        model.addAttribute("hospitals", hospitalList);
+        model.addAttribute("newHospital", new Hospital()); // For a create form
+        return "hospital-management"; // A new .html file
+    }
+    
+    @PostMapping("/superAdmin/hospitals")
+    public String createHospital(@ModelAttribute Hospital newHospital) {
+        superAdminService.createHospitalBySuperAdmin(newHospital);
+        // After creation, redirect back to the list
+        return "redirect:/superAdmin/hospitals";
+    }
+    
+    @GetMapping("/superAdmin/hospitals/delete/{id}")
+    public String deleteHospital(@PathVariable("id") Integer hospitalId) {
+        superAdminService.deleteHospitalBySuperAdmin(hospitalId);
+        return "redirect:/superAdmin/hospitals";
+    }
+
 }

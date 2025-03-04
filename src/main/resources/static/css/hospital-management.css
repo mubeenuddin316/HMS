@@ -1,0 +1,118 @@
+@charset "UTF-8";
+/* hospital-management.css */
+
+/* Overall Page Styling */
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    font-family: "Open Sans", Arial, sans-serif;
+    color: #333;
+}
+
+/* Page Title */
+h1 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #007bff;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+table thead {
+    background-color: #f2f2f2;
+}
+
+table th, table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+table th {
+    font-weight: 600;
+    color: #555;
+}
+
+table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+/* Action Links */
+.actions a {
+    margin-right: 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.actions a:hover {
+    text-decoration: underline;
+}
+
+/* Form Container */
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+}
+
+.form-container h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #007bff;
+}
+
+.form-container label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Submit Button */
+.form-container button[type="submit"] {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.form-container button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Additional Utility */
+.label-inline {
+    display: inline-block;
+    width: 80px;
+    font-weight: 600;
+    color: #444;
+}
