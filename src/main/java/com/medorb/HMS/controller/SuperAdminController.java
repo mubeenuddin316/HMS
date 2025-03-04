@@ -24,7 +24,7 @@ import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.service.SuperAdminService;
 
 @RestController
-@RequestMapping("/api/superAdmins") // You can adjust the API endpoint path
+@RequestMapping("/api/superAdmin") // You can adjust the API endpoint path
 public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
@@ -133,14 +133,14 @@ public class SuperAdminController {
     // --- Super Admin's API Endpoints for Managing Hospital Admins ---
 
     // 12. GET /api/superAdmins/hospitalAdmins - Get all Hospital Admins (Super Admin View)
-    @GetMapping("/hospitalAdmins")
+    @GetMapping("/hospitalAdmin")
     public ResponseEntity<List<HospitalAdmin>> getAllHospitalAdminsBySuperAdmin() {
         List<HospitalAdmin> hospitalAdmins = superAdminService.getAllHospitalAdmins();
         return new ResponseEntity<>(hospitalAdmins, HttpStatus.OK);
     }
 
     // 13. GET /api/superAdmins/hospitalAdmins/{hospitalAdminId} - Get Hospital Admin by ID (Super Admin View)
-    @GetMapping("/hospitalAdmins/{hospitalAdminId}")
+    @GetMapping("/hospitalAdmin/{hospitalAdminId}")
     public ResponseEntity<HospitalAdmin> getHospitalAdminBySuperAdminId(@PathVariable Integer hospitalAdminId) {
         Optional<HospitalAdmin> hospitalAdmin = superAdminService.getHospitalAdminById(hospitalAdminId);
         return hospitalAdmin.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
@@ -148,7 +148,7 @@ public class SuperAdminController {
     }
 
     // 14. POST /api/superAdmins/hospitalAdmins - Create a new Hospital Admin (by Super Admin)
-    @PostMapping("/hospitalAdmins")
+    @PostMapping("/hospitalAdmin")
     public ResponseEntity<HospitalAdmin> createHospitalAdminBySuperAdmin(@RequestBody HospitalAdmin hospitalAdmin) {
         // **SECURITY NOTE: Handle passwords securely! Hash before saving in service layer.**
         HospitalAdmin createdHospitalAdmin = superAdminService.createHospitalAdminBySuperAdmin(hospitalAdmin);
@@ -156,7 +156,7 @@ public class SuperAdminController {
     }
 
     // 15. PUT /api/superAdmins/hospitalAdmins/{hospitalAdminId} - Update Hospital Admin (by Super Admin)
-    @PutMapping("/hospitalAdmins/{hospitalAdminId}")
+    @PutMapping("/hospitalAdmin/{hospitalAdminId}")
     public ResponseEntity<HospitalAdmin> updateHospitalAdminBySuperAdmin(@PathVariable Integer hospitalAdminId, @RequestBody HospitalAdmin hospitalAdmin) {
         // **SECURITY NOTE: Handle password updates securely! Hash in service layer.**
         HospitalAdmin updatedHospitalAdmin = superAdminService.updateHospitalAdminBySuperAdmin(hospitalAdminId, hospitalAdmin);
@@ -168,56 +168,11 @@ public class SuperAdminController {
     }
 
     // 16. DELETE /api/superAdmins/hospitalAdmins/{hospitalAdminId} - Delete Hospital Admin (by Super Admin)
-    @DeleteMapping("/hospitalAdmins/{hospitalAdminId}")
+    @DeleteMapping("/hospitalAdmin/{hospitalAdminId}")
     public ResponseEntity<Void> deleteHospitalAdminBySuperAdmin(@PathVariable Integer hospitalAdminId) {
         superAdminService.deleteHospitalAdminBySuperAdmin(hospitalAdminId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
-//    @PostMapping("/login")
-//    public ResponseEntity<?> loginSuperAdmin(@RequestBody Map<String, String> credentials) {
-//        String email = credentials.get("email");
-//        String password = credentials.get("password");
-//
-//        if (email == null || password == null) {
-//            return ResponseEntity.badRequest()
-//                    .body(Map.of(
-//                            "success", false,
-//                            "message", "Email and password are required"
-//                    ));
-//        }
-//
-//        Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
-//
-//        if (superAdminOptional.isPresent()) {
-//            SuperAdmin superAdmin = superAdminOptional.get();
-//            // For production, compare hashed passwords, not plain text!
-//            if (superAdmin.getPassword().equals(password)) {
-//                // Login success
-//            	return ResponseEntity.ok(Map.of(
-//            		    "success", true,
-//            		    "message", "Login successful",
-//            		    "adminId", superAdmin.getSuperAdminId(),
-//            		    "redirect", "/superAdmin/dashboard"
-//            		));
-//
-//            } else {
-//                // Wrong password
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                        .body(Map.of(
-//                                "success", false,
-//                                "message", "Invalid password"
-//                        ));
-//            }
-//        } else {
-//            // Email not found
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-//                    .body(Map.of(
-//                            "success", false,
-//                            "message", "Email not found"
-//                    ));
-//        }
-//    }
     
     @PostMapping("/login")
     public ResponseEntity<?> loginSuperAdmin(@RequestBody Map<String, String> credentials) {
@@ -248,6 +203,24 @@ public class SuperAdminController {
         }
     }
 
+ // ✅ GET /api/superAdmin/dashboardData - Fetch Super Admin Dashboard Data
+    @GetMapping("/dashboardData")
+    public Map<String, Long> getDashboardData() {
+        long totalHospitals = superAdminService.getTotalHospitals();
+        long totalPatients = superAdminService.getTotalPatients();
+        long totalDoctors = superAdminService.getTotalDoctors();
+        long occupiedBeds = superAdminService.getOccupiedBeds();
+        long totalBeds = superAdminService.getTotalBeds();
+        long freeBeds = totalBeds - occupiedBeds;
 
+        return Map.of(
+            "totalHospitals", totalHospitals,
+            "totalPatients", totalPatients,
+            "totalDoctors", totalDoctors,
+            "occupiedBeds", occupiedBeds,
+            "freeBeds", freeBeds
+        );
 
+    }
+    
 }

@@ -27,4 +27,14 @@ public interface SuperAdminService {
     HospitalAdmin createHospitalAdminBySuperAdmin(HospitalAdmin hospitalAdmin); // Super Admin can create hospital admins
     HospitalAdmin updateHospitalAdminBySuperAdmin(Integer hospitalAdminId, HospitalAdmin hospitalAdmin); // Super Admin can update any hospital admin
     void deleteHospitalAdminBySuperAdmin(Integer hospitalAdminId); // Super Admin can delete any hospital admin
+    
+    // --- 🆕 New Dashboard Data Fetch Methods ---
+    long getTotalHospitals();
+    long getTotalPatients();
+    long getTotalDoctors();
+    long getOccupiedBeds();
+    long getTotalBeds();
+    
+    long getTodaysAppointmentsCount();
+
 }

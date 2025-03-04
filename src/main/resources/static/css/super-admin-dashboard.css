@@ -1,0 +1,135 @@
+@charset "UTF-8";
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #f5f5f5;
+}
+
+/* Header */
+.header {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.header-buttons .btn {
+    background-color: white;
+    color: black;
+    padding: 8px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.logout {
+    background-color: red;
+    color: white;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 70px;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar-btn {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 5px;
+}
+
+.sidebar-btn:hover {
+    background-color: #007bff;
+}
+
+/* Main Dashboard Content */
+.dashboard-content {
+    margin-left: 270px;
+    margin-top: 80px;
+    padding: 20px;
+    width: calc(100% - 270px);
+}
+
+/* Statistics Cards */
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.stat-card {
+    flex: 1;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h2 {
+    font-size: 24px;
+    color: #007bff;
+}
+
+/* Search & Notifications */
+.utility-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.search-bar {
+    width: 60%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.notifications {
+    background-color: #ffcc00;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+/* Dynamic Content Section */
+.dynamic-content {
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}

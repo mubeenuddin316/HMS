@@ -9,6 +9,9 @@ import com.medorb.HMS.service.HospitalAdminService;
 import com.medorb.HMS.service.HospitalService;
 import com.medorb.HMS.service.PatientService;
 import com.medorb.HMS.service.SuperAdminService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,17 +43,26 @@ public class ViewController {
         return "index";  // Resolves to index.html
     }
 
-    // ✅ Fix: Super Admin Login (Uses Real Data from DB)
+    // ✅ Super Admin Login with REDIRECT approach (Option A)
     @PostMapping("/login")
-    public String loginSuperAdmin(@RequestParam String email, @RequestParam String password, Model model) {
+    public String loginSuperAdmin(@RequestParam String email,
+                                  @RequestParam String password,
+                                  HttpServletRequest request,
+                                  Model model) {
+
         Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
 
-        if (superAdminOptional.isPresent() && superAdminOptional.get().getPassword().equals(password)) {
-            model.addAttribute("superAdmin", superAdminOptional.get());  // ✅ Pass real Super Admin
-            return "super-admin-dashboard"; // ✅ No redirect, direct Thymeleaf rendering
+        if (superAdminOptional.isPresent() &&
+            superAdminOptional.get().getPassword().equals(password)) {
+
+            // Store the SuperAdmin object in HTTP session so it survives the redirect
+            request.getSession().setAttribute("loggedInSuperAdmin", superAdminOptional.get());
+
+            // Redirect to GET /superAdmin/dashboard
+            return "redirect:/superAdmin/dashboard";
         } else {
             model.addAttribute("error", "Invalid email or password");
-            return "index"; // Stay on login page with error message
+            return "index"; // Stay on login page with error
         }
     }
 

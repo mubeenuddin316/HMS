@@ -17,5 +17,8 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByHospitalId(Integer hospitalId); // Get appointments for a hospital
     
     List<Appointment> getAppointmentsByDate(LocalDate date);
+    
+    long countTodaysAppointments();
+
 
 }

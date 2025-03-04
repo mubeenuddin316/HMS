@@ -73,4 +73,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
         return appointmentRepository.findByAppointmentDatetimeBetween(startOfDay, endOfDay);
     }
+    
+    @Override
+    public long countTodaysAppointments() {
+        // Get today's start and end
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        LocalDateTime endOfDay = LocalDate.now().atTime(LocalTime.MAX);
+
+        // Use your existing repository method:
+        List<Appointment> todays = appointmentRepository.findByAppointmentDatetimeBetween(startOfDay, endOfDay);
+        return todays.size();
+    }
+
 }
