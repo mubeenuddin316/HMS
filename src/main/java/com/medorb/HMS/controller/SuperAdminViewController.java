@@ -73,5 +73,28 @@ public class SuperAdminViewController {
         superAdminService.deleteHospitalBySuperAdmin(hospitalId);
         return "redirect:/superAdmin/hospitals";
     }
+    
+    @GetMapping("/superAdmin/hospitals/edit/{id}")
+    public String showEditHospitalForm(@PathVariable("id") Integer hospitalId, Model model) {
+        // 1) Fetch existing hospital from DB
+        Hospital hospital = superAdminService.getHospitalById(hospitalId)
+                                             .orElse(null); // or throw an exception
+
+        // 2) Put it in the model to populate form
+        model.addAttribute("hospital", hospital);
+
+        // 3) Return a new "hospital-edit.html" page for editing
+        return "hospital-edit"; 
+    }
+
+    // For saving the edited hospital
+    @PostMapping("/superAdmin/hospitals/edit")
+    public String editHospital(@ModelAttribute Hospital hospital) {
+        // 1) Call service method to update
+        superAdminService.updateHospitalBySuperAdmin(hospital.getHospitalId(), hospital);
+
+        // 2) Redirect back to the hospital list
+        return "redirect:/superAdmin/hospitals";
+    }
 
 }

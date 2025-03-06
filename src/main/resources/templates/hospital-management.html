@@ -28,7 +28,9 @@
                 <td th:text="${h.phoneNumber}">Phone</td>
                 <td class="actions">
                     <a th:href="@{/superAdmin/hospitals/edit/{id}(id=${h.hospitalId})}">Edit</a>
-                    <a th:href="@{/superAdmin/hospitals/delete/{id}(id=${h.hospitalId})}">Delete</a>
+                    <a th:href="@{/superAdmin/hospitals/delete/{id}(id=${h.hospitalId})}"
+                    onclick="return confirmHospitalDelete('[[${h.name}]]');">
+                    >Delete</a>
                 </td>
             </tr>
         </tbody>
@@ -53,5 +55,11 @@
             <button type="submit">Create</button>
         </form>
     </div>
+    <script>
+        function confirmHospitalDelete(hospitalName) {
+            return confirm("Are you sure you want to delete hospital:\n" + hospitalName + "?");
+        }
+    </script>
+
 </body>
 </html>
