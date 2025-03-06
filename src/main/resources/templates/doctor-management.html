@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Doctor Management</title>
+    <link rel="stylesheet" th:href="@{/css/doctor-management.css}"/>
+</head>
+<body>
+    <h1>Doctor Management</h1>
+
+    <!-- Table of existing doctors -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Hospital ID</th>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="d : ${doctors}">
+                <td th:text="${d.doctorId}">ID</td>
+                <td th:text="${d.hospital.hospitalId}">HospitalID</td>
+                <td th:text="${d.name}">Name</td>
+                <td th:text="${d.specialization}">Specialization</td>
+                <td th:text="${d.email}">Email</td>
+                <td>
+                    <!-- Edit Link (optional) -->
+                    <a th:href="@{/superAdmin/doctors/edit/{id}(id=${d.doctorId})}">Edit</a>
+                    <!-- Delete Link -->
+                    <a th:href="@{/superAdmin/doctors/delete/{id}(id=${d.doctorId})}"
+                       onclick="return confirm('Are you sure you want to delete this doctor?');">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Form to create a new doctor -->
+    <div class="form-container">
+        <h2>Create New Doctor</h2>
+        <form th:action="@{/superAdmin/doctors}" th:object="${newDoctor}" method="post">
+            <!-- If you want to select hospital from a dropdown, see next section -->
+            <label>Hospital ID:</label>
+            <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+
+            <label>Name:</label>
+            <input type="text" th:field="*{name}" required/><br/>
+
+            <label>Specialization:</label>
+            <input type="text" th:field="*{specialization}"/><br/>
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required/><br/>
+
+            <label>Password:</label>
+            <input type="password" th:field="*{password}" required/><br/>
+
+            <button type="submit">Add</button>
+        </form>
+    </div>
+</body>
+</html>

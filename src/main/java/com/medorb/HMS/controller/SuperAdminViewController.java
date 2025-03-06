@@ -1,7 +1,9 @@
 package com.medorb.HMS.controller;
 
+import com.medorb.HMS.model.Doctor;
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.SuperAdmin;
+import com.medorb.HMS.service.DoctorService;
 import com.medorb.HMS.service.SuperAdminService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,10 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SuperAdminViewController {
 
     private final SuperAdminService superAdminService;
+    private final DoctorService doctorService;
 
     @Autowired
-    public SuperAdminViewController(SuperAdminService superAdminService) {
+    public SuperAdminViewController(SuperAdminService superAdminService, DoctorService doctorService) {
         this.superAdminService = superAdminService;
+        this.doctorService = doctorService;
+        
     }
 
     @GetMapping("/superAdmin/dashboard")
@@ -96,5 +101,55 @@ public class SuperAdminViewController {
         // 2) Redirect back to the hospital list
         return "redirect:/superAdmin/hospitals";
     }
+    
+    @GetMapping("/superAdmin/doctors")
+    public String showDoctorManagementPage(Model model) {
+        // 1) Fetch all doctors
+        List<Doctor> doctorList = doctorService.getAllDoctors();
+
+        // 2) Add them to the model
+        model.addAttribute("doctors", doctorList);
+
+        // 3) Provide a blank Doctor object for the create form
+        model.addAttribute("newDoctor", new Doctor());
+
+        // 4) Return the Thymeleaf page
+        return "doctor-management";
+    }
+    
+    @PostMapping("/superAdmin/doctors")
+    public String createDoctor(@ModelAttribute Doctor newDoctor) {
+        // If user typed hospitalId manually, you must fetch the actual Hospital entity:
+        // Hospital h = hospitalService.getHospitalById(newDoctor.getHospital().getHospitalId()).orElse(null);
+        // newDoctor.setHospital(h);
+
+        doctorService.createDoctor(newDoctor);
+        return "redirect:/superAdmin/doctors"; 
+    }
+
+    
+    @GetMapping("/superAdmin/doctors/delete/{id}")
+    public String deleteDoctor(@PathVariable("id") Integer doctorId) {
+        doctorService.deleteDoctor(doctorId);
+        return "redirect:/superAdmin/doctors";
+    }
+    
+    @GetMapping("/superAdmin/doctors/edit/{id}")
+    public String showEditDoctorForm(@PathVariable("id") Integer doctorId, Model model) {
+        Doctor doctor = doctorService.getDoctorById(doctorId).orElse(null);
+        model.addAttribute("doctor", doctor);
+        return "doctor-edit"; 
+    }
+
+
+    
+    @PostMapping("/superAdmin/doctors/edit")
+    public String updateDoctor(@ModelAttribute Doctor doctor) {
+        doctorService.updateDoctor(doctor.getDoctorId(), doctor);
+        return "redirect:/superAdmin/doctors";
+    }
+
+
+
 
 }
