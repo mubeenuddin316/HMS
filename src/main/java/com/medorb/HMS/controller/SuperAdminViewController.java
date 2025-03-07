@@ -2,8 +2,10 @@ package com.medorb.HMS.controller;
 
 import com.medorb.HMS.model.Doctor;
 import com.medorb.HMS.model.Hospital;
+import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.service.DoctorService;
+import com.medorb.HMS.service.HospitalAdminService;
 import com.medorb.HMS.service.SuperAdminService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -22,11 +24,13 @@ public class SuperAdminViewController {
 
     private final SuperAdminService superAdminService;
     private final DoctorService doctorService;
+    private final HospitalAdminService hospitalAdminService;
 
     @Autowired
-    public SuperAdminViewController(SuperAdminService superAdminService, DoctorService doctorService) {
+    public SuperAdminViewController(SuperAdminService superAdminService, DoctorService doctorService, HospitalAdminService hospitalAdminService) {
         this.superAdminService = superAdminService;
         this.doctorService = doctorService;
+        this.hospitalAdminService = hospitalAdminService;
         
     }
 
@@ -148,8 +152,57 @@ public class SuperAdminViewController {
         doctorService.updateDoctor(doctor.getDoctorId(), doctor);
         return "redirect:/superAdmin/doctors";
     }
+    
+    @GetMapping("/superAdmin/hospitalAdmins")
+    public String showHospitalAdminManagementPage(Model model) {
+        // 1) Fetch all hospital admins
+        List<HospitalAdmin> adminList = hospitalAdminService.getAllHospitalAdmins();
 
+        // 2) Add them to the model
+        model.addAttribute("hospitalAdmins", adminList);
 
+        // 3) Provide a blank HospitalAdmin object for the create form
+        model.addAttribute("newHospitalAdmin", new HospitalAdmin());
 
+        // Return the Thymeleaf page
+        return "hospital-admin-management"; // We'll create hospital-admin-management.html
+    }
 
+    // CREATE a new HospitalAdmin
+    @PostMapping("/superAdmin/hospitalAdmins")
+    public String createHospitalAdmin(@ModelAttribute HospitalAdmin newAdmin) {
+        // We assume newAdmin has a valid hospital object or ID
+        hospitalAdminService.createHospitalAdmin(newAdmin);
+        return "redirect:/superAdmin/hospitalAdmins";
+    }
+
+    // DELETE a HospitalAdmin
+    @GetMapping("/superAdmin/hospitalAdmins/delete/{id}")
+    public String deleteHospitalAdmin(@PathVariable("id") Integer adminId) {
+        hospitalAdminService.deleteHospitalAdmin(adminId);
+        return "redirect:/superAdmin/hospitalAdmins";
+    }
+
+    // EDIT HospitalAdmin (show form)
+    @GetMapping("/superAdmin/hospitalAdmins/edit/{id}")
+    public String showEditHospitalAdminForm(@PathVariable("id") Integer adminId, Model model) {
+        // Fetch existing admin
+        HospitalAdmin admin = hospitalAdminService.getHospitalAdminById(adminId).orElse(null);
+        model.addAttribute("hospitalAdmin", admin);
+
+        // Return a new "hospital-admin-edit.html" page
+        return "hospital-admin-edit";
+    }
+
+    // UPDATE HospitalAdmin
+    @PostMapping("/superAdmin/hospitalAdmins/edit")
+    public String updateHospitalAdmin(@ModelAttribute HospitalAdmin admin) {
+        hospitalAdminService.updateHospitalAdmin(admin.getHospitalAdminId(), admin);
+        return "redirect:/superAdmin/hospitalAdmins";
+    }
 }
+
+
+
+
+

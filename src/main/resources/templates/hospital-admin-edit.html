@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Hospital Admin</title>
+</head>
+<body>
+    <h1>Edit Hospital Admin</h1>
+    <form th:action="@{/superAdmin/hospitalAdmins/edit}"
+          th:object="${hospitalAdmin}"
+          method="post">
+        <input type="hidden" th:field="*{hospitalAdminId}" />
+
+        <label>Admin Name:</label>
+        <input type="text" th:field="*{adminName}" required/><br/>
+
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" required/><br/>
+
+        <label>Password:</label>
+        <input type="password" th:field="*{password}" required/><br/>
+
+        <label>Phone Number:</label>
+        <input type="text" th:field="*{phoneNumber}"/><br/>
+
+        <label>Hospital ID:</label>
+        <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Hospital Admin Management</title>
+    <link rel="stylesheet" th:href="@{/css/hospital-management.css}"/>
+    <!-- ^ reuse hospital-management.css or create a new one (hospital-admin-management.css) -->
+</head>
+<body>
+    <h1>Hospital Admin Management</h1>
+
+    <!-- Table of existing hospital admins -->
+    <table>
+        <thead>
+            <tr>
+                <th>Admin ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Hospital ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="ha : ${hospitalAdmins}">
+                <td th:text="${ha.hospitalAdminId}">ID</td>
+                <td th:text="${ha.adminName}">Name</td>
+                <td th:text="${ha.email}">Email</td>
+                <td th:text="${ha.phoneNumber}">Phone</td>
+                <td th:text="${ha.hospital.hospitalId}">HospitalID</td>
+                <td>
+                    <a th:href="@{/superAdmin/hospitalAdmins/edit/{id}(id=${ha.hospitalAdminId})}">Edit</a>
+                    <a th:href="@{/superAdmin/hospitalAdmins/delete/{id}(id=${ha.hospitalAdminId})}"
+                       onclick="return confirm('Are you sure you want to delete this admin?');">
+                       Delete
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Form to create a new hospital admin -->
+    <div class="form-container">
+        <h2>Create New Hospital Admin</h2>
+        <form th:action="@{/superAdmin/hospitalAdmins}"
+              th:object="${newHospitalAdmin}"
+              method="post">
+
+            <label>Admin Name:</label>
+            <input type="text" th:field="*{adminName}" required/><br/>
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required/><br/>
+
+            <label>Password:</label>
+            <input type="password" th:field="*{password}" required/><br/>
+
+            <label>Phone Number:</label>
+            <input type="text" th:field="*{phoneNumber}"/><br/>
+
+            <!-- If you want to pick hospital from a dropdown, do it similarly to how we do for doctors/hospitals -->
+            <label>Hospital ID:</label>
+            <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+</html>
