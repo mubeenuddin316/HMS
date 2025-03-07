@@ -21,8 +21,13 @@
         <label>Hospital ID:</label>
         <input type="number" th:field="*{hospital.hospitalId}" readonly/><br/>
         
-        <label>Appointment ID:</label>
-        <input type="number" th:field="*{appointment.appointmentId}" readonly/><br/>
+        <label>Appointment:</label>
+        <select th:field="*{appointment.appointmentId}">
+            <option th:each="a : ${appointments}"
+                 th:value="${a.appointmentId}"
+                 th:text="${a.appointmentId}">
+            </option>
+        </select>
 
         <label>Queue Status:</label>
         <input type="text" th:field="*{queueStatus}" /><br/>

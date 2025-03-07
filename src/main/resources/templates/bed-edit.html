@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Bed</title>
+</head>
+<body>
+    <h1>Edit Bed</h1>
+    <form th:action="@{/superAdmin/beds/edit}" th:object="${bed}" method="post">
+        <input type="hidden" th:field="*{bedId}" />
+
+        <label>Hospital ID:</label>
+        <input type="number" th:field="*{hospital.hospitalId}" required /><br/>
+
+        <label>Bed Number:</label>
+        <input type="text" th:field="*{bedNumber}" required /><br/>
+
+        <label>Ward:</label>
+        <input type="text" th:field="*{ward}" /><br/>
+
+        <label>Room Number:</label>
+        <input type="text" th:field="*{roomNumber}" /><br/>
+
+        <label>Bed Type:</label>
+        <input type="text" th:field="*{bedType}" /><br/>
+
+        <label>Is Occupied:</label>
+        <input type="checkbox" th:field="*{occupied}" /><br/>
+
+        <label>Bed Status:</label>
+        <input type="text" th:field="*{bedStatus}" /><br/>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

@@ -1,12 +1,14 @@
 package com.medorb.HMS.controller;
 
 import com.medorb.HMS.model.Appointment;
+import com.medorb.HMS.model.Bed;
 import com.medorb.HMS.model.Doctor;
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.OpdQueue;
 import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.service.AppointmentService;
+import com.medorb.HMS.service.BedService;
 import com.medorb.HMS.service.DoctorService;
 import com.medorb.HMS.service.HospitalAdminService;
 import com.medorb.HMS.service.OpdQueueService;
@@ -31,14 +33,23 @@ public class SuperAdminViewController {
     private final HospitalAdminService hospitalAdminService;
     private final OpdQueueService opdQueueService;
     private final AppointmentService appointmentService;
+    private final BedService bedService;
 
     @Autowired
-    public SuperAdminViewController(SuperAdminService superAdminService, DoctorService doctorService, HospitalAdminService hospitalAdminService, OpdQueueService opdQueueService, AppointmentService appointmentService) {
-        this.superAdminService = superAdminService;
+    public SuperAdminViewController(SuperAdminService superAdminService,
+    		                        DoctorService doctorService, 
+    		                        HospitalAdminService hospitalAdminService, 
+    		                        OpdQueueService opdQueueService, 
+    		                        AppointmentService appointmentService, 
+    		                        BedService bedService) {
+        
+    	
+    	this.superAdminService = superAdminService;
         this.doctorService = doctorService;
         this.hospitalAdminService = hospitalAdminService;
         this.opdQueueService = opdQueueService;
         this.appointmentService = appointmentService;
+        this.bedService = bedService;
     }
 
     @GetMapping("/superAdmin/dashboard")
@@ -249,6 +260,46 @@ public class SuperAdminViewController {
     public String updateOpdQueue(@ModelAttribute OpdQueue opdQueue) {
         opdQueueService.updateOpdQueueEntry(opdQueue.getOpdQueueId(), opdQueue);
         return "redirect:/superAdmin/opdQueues";
+    }
+    
+    @GetMapping("/superAdmin/beds")
+    public String showBedManagementPage(Model model) {
+        // 1) Fetch all beds
+        List<Bed> beds = bedService.getAllBeds();
+
+        // 2) Add them to the model
+        model.addAttribute("beds", beds);
+
+        // 3) Provide a blank Bed object for the create form
+        model.addAttribute("newBed", new Bed());
+
+        return "bed-management"; // We'll create bed-management.html
+    }
+
+    @PostMapping("/superAdmin/beds")
+    public String createBed(@ModelAttribute Bed newBed) {
+        bedService.createBed(newBed);
+        // No /HMS prefix needed here, as Spring automatically prepends the context path
+        return "redirect:/superAdmin/beds";
+    }
+
+    @GetMapping("/superAdmin/beds/delete/{id}")
+    public String deleteBed(@PathVariable("id") Integer bedId) {
+        bedService.deleteBed(bedId);
+        return "redirect:/superAdmin/beds";
+    }
+
+    @GetMapping("/superAdmin/beds/edit/{id}")
+    public String showEditBedForm(@PathVariable("id") Integer bedId, Model model) {
+        Bed existingBed = bedService.getBedById(bedId).orElse(null);
+        model.addAttribute("bed", existingBed);
+        return "bed-edit"; // We'll create bed-edit.html
+    }
+
+    @PostMapping("/superAdmin/beds/edit")
+    public String updateBed(@ModelAttribute Bed bed) {
+        bedService.updateBed(bed.getBedId(), bed);
+        return "redirect:/superAdmin/beds";
     }
 }
 

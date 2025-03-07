@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Hospital Beds Overview</title>
+    <link rel="stylesheet" th:href="@{/css/bed-management.css}" />
+</head>
+<body>
+    <h1>Hospital Beds Overview</h1>
+
+    <!-- Table of existing beds -->
+    <table>
+        <thead>
+            <tr>
+                <th>Bed ID</th>
+                <th>Hospital ID</th>
+                <th>Bed Number</th>
+                <th>Ward</th>
+                <th>Room Number</th>
+                <th>Bed Type</th>
+                <th>Is Occupied</th>
+                <th>Bed Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="b : ${beds}">
+                <td th:text="${b.bedId}">ID</td>
+                <td th:text="${b.hospital.hospitalId}">HospitalID</td>
+                <td th:text="${b.bedNumber}">BedNumber</td>
+                <td th:text="${b.ward}">Ward</td>
+                <td th:text="${b.roomNumber}">RoomNumber</td>
+                <td th:text="${b.bedType}">BedType</td>
+                <td th:text="${b.occupied}">IsOccupied</td>
+                <td th:text="${b.bedStatus}">BedStatus</td>
+                <td>
+                    <a th:href="@{/superAdmin/beds/edit/{id}(id=${b.bedId})}">Edit</a>
+                    <a th:href="@{/superAdmin/beds/delete/{id}(id=${b.bedId})}"
+                       onclick="return confirm('Are you sure you want to delete this bed?');">
+                       Delete
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Form to create a new bed -->
+    <div class="form-container">
+        <h2>Create New Bed</h2>
+        <form th:action="@{/superAdmin/beds}" th:object="${newBed}" method="post">
+            <label>Hospital ID:</label>
+            <input type="number" th:field="*{hospital.hospitalId}" required /><br/>
+
+            <label>Bed Number:</label>
+            <input type="text" th:field="*{bedNumber}" required /><br/>
+
+            <label>Ward:</label>
+            <input type="text" th:field="*{ward}" /><br/>
+
+            <label>Room Number:</label>
+            <input type="text" th:field="*{roomNumber}" /><br/>
+
+            <label>Bed Type:</label>
+            <input type="text" th:field="*{bedType}" /><br/>
+
+            <label>Is Occupied:</label>
+            <input type="checkbox" th:field="*{occupied}" /><br/>
+
+            <label>Bed Status:</label>
+            <input type="text" th:field="*{bedStatus}" /><br/>
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+</html>
