@@ -11,7 +11,7 @@ import org.springframework.core.env.Environment;
 public class HospitalManagementSystemApplication {
 
     public static void main(String[] args) {
-        
+        System.out.println("Application is Starting.....");
         //Run the application and store result in ctx
         ConfigurableApplicationContext ctx = SpringApplication.run(HospitalManagementSystemApplication.class, args);
 		// 2) Grab the environment to find server port and context path
