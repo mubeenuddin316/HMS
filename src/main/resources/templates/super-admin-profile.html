@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Your Profile</title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}" />
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Back to Dashboard Button -->
+        <a th:href="@{/superAdmin/dashboard}" class="back-to-dashboard">
+            ← Back to Dashboard
+        </a>
+
+        <h1>Your Profile</h1>
+
+        <form th:action="@{/superAdmin/profile}"
+              th:object="${superAdmin}"
+              method="post">
+
+            <!-- Hidden ID if needed -->
+            <input type="hidden" th:field="*{superAdminId}" />
+
+            <label>Name:</label>
+            <input type="text" th:field="*{adminName}" required/>
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required/>
+
+            <label>Password:</label>
+            <input type="password" th:field="*{password}" required/>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

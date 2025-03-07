@@ -301,6 +301,47 @@ public class SuperAdminViewController {
         bedService.updateBed(bed.getBedId(), bed);
         return "redirect:/superAdmin/beds";
     }
+    
+    @GetMapping("/superAdmin/profile")
+    public String showSuperAdminProfile(HttpServletRequest request, Model model) {
+        // Retrieve the loggedInSuperAdmin from session (assuming you stored it on login)
+        SuperAdmin sessionAdmin = (SuperAdmin) request.getSession().getAttribute("loggedInSuperAdmin");
+        if (sessionAdmin == null) {
+            // Not logged in or session expired
+            return "redirect:/"; // or some error page
+        }
+
+        // Fetch the latest data from DB (in case it changed)
+        SuperAdmin superAdminFromDb = superAdminService.getSuperAdminById(sessionAdmin.getSuperAdminId())
+                                                       .orElse(sessionAdmin);
+
+        // Put it in the model for display
+        model.addAttribute("superAdmin", superAdminFromDb);
+        return "super-admin-profile"; // We'll create super-admin-profile.html
+    }
+
+    // 2) Update the Profile
+    @PostMapping("/superAdmin/profile")
+    public String updateSuperAdminProfile(@ModelAttribute SuperAdmin updatedAdmin,
+                                          HttpServletRequest request) {
+        // Validate session
+        SuperAdmin sessionAdmin = (SuperAdmin) request.getSession().getAttribute("loggedInSuperAdmin");
+        if (sessionAdmin == null) {
+            return "redirect:/"; // or error
+        }
+
+        // Only allow updates to the same ID
+        Integer superAdminId = sessionAdmin.getSuperAdminId();
+
+        // Update in DB
+        superAdminService.updateSuperAdmin(superAdminId, updatedAdmin);
+
+        // Update session with new data if needed
+        request.getSession().setAttribute("loggedInSuperAdmin", updatedAdmin);
+
+        // Redirect back to the profile page or dashboard
+        return "redirect:/superAdmin/dashboard";
+    }
 }
 
 
