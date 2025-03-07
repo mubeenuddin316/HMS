@@ -1,11 +1,15 @@
 package com.medorb.HMS.controller;
 
+import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Doctor;
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
+import com.medorb.HMS.model.OpdQueue;
 import com.medorb.HMS.model.SuperAdmin;
+import com.medorb.HMS.service.AppointmentService;
 import com.medorb.HMS.service.DoctorService;
 import com.medorb.HMS.service.HospitalAdminService;
+import com.medorb.HMS.service.OpdQueueService;
 import com.medorb.HMS.service.SuperAdminService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -25,13 +29,16 @@ public class SuperAdminViewController {
     private final SuperAdminService superAdminService;
     private final DoctorService doctorService;
     private final HospitalAdminService hospitalAdminService;
+    private final OpdQueueService opdQueueService;
+    private final AppointmentService appointmentService;
 
     @Autowired
-    public SuperAdminViewController(SuperAdminService superAdminService, DoctorService doctorService, HospitalAdminService hospitalAdminService) {
+    public SuperAdminViewController(SuperAdminService superAdminService, DoctorService doctorService, HospitalAdminService hospitalAdminService, OpdQueueService opdQueueService, AppointmentService appointmentService) {
         this.superAdminService = superAdminService;
         this.doctorService = doctorService;
         this.hospitalAdminService = hospitalAdminService;
-        
+        this.opdQueueService = opdQueueService;
+        this.appointmentService = appointmentService;
     }
 
     @GetMapping("/superAdmin/dashboard")
@@ -199,6 +206,49 @@ public class SuperAdminViewController {
     public String updateHospitalAdmin(@ModelAttribute HospitalAdmin admin) {
         hospitalAdminService.updateHospitalAdmin(admin.getHospitalAdminId(), admin);
         return "redirect:/superAdmin/hospitalAdmins";
+    }
+    
+    @GetMapping("/superAdmin/opdQueues")
+    public String showOpdQueueManagementPage(Model model) {
+        List<OpdQueue> queueList = opdQueueService.getAllOpdQueueEntries();
+        model.addAttribute("opdQueueList", queueList);
+
+        model.addAttribute("newOpdQueue", new OpdQueue());
+
+        // 🆕 fetch existing appointments
+        List<Appointment> appointments = appointmentService.getAllAppointments();
+        model.addAttribute("appointments", appointments);
+
+        return "opd-queue-management";
+    }
+
+
+    // CREATE a new OPD queue entry
+    @PostMapping("/superAdmin/opdQueues")
+    public String createOpdQueue(@ModelAttribute OpdQueue newOpdQueue) {
+        opdQueueService.createOpdQueueEntry(newOpdQueue);
+        return "redirect:/superAdmin/opdQueues";
+    }
+
+    // DELETE an OPD queue entry
+    @GetMapping("/superAdmin/opdQueues/delete/{id}")
+    public String deleteOpdQueue(@PathVariable("id") Integer queueId) {
+        opdQueueService.deleteOpdQueueEntry(queueId);
+        return "redirect:/superAdmin/opdQueues";
+    }
+
+    // (Optional) EDIT or update OPD queue entry
+    @GetMapping("/superAdmin/opdQueues/edit/{id}")
+    public String showEditOpdQueueForm(@PathVariable("id") Integer queueId, Model model) {
+        OpdQueue queueEntry = opdQueueService.getOpdQueueEntryById(queueId).orElse(null);
+        model.addAttribute("opdQueue", queueEntry);
+        return "opd-queue-edit";
+    }
+
+    @PostMapping("/superAdmin/opdQueues/edit")
+    public String updateOpdQueue(@ModelAttribute OpdQueue opdQueue) {
+        opdQueueService.updateOpdQueueEntry(opdQueue.getOpdQueueId(), opdQueue);
+        return "redirect:/superAdmin/opdQueues";
     }
 }
 

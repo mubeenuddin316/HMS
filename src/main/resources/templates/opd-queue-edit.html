@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit OPD Queue</title>
+</head>
+<body>
+    <h1>Edit OPD Queue</h1>
+    <form th:action="@{/superAdmin/opdQueues/edit}"
+          th:object="${opdQueue}"
+          method="post">
+
+        <input type="hidden" th:field="*{opdQueueId}" />
+
+        <label>Patient ID:</label>
+        <input type="number" th:field="*{patient.patientId}" readonly/><br/>
+
+        <label>Doctor ID:</label>
+        <input type="number" th:field="*{doctor.doctorId}" readonly/><br/>
+
+        <label>Hospital ID:</label>
+        <input type="number" th:field="*{hospital.hospitalId}" readonly/><br/>
+        
+        <label>Appointment ID:</label>
+        <input type="number" th:field="*{appointment.appointmentId}" readonly/><br/>
+
+        <label>Queue Status:</label>
+        <input type="text" th:field="*{queueStatus}" /><br/>
+
+        <label>Token Number:</label>
+        <input type="number" th:field="*{tokenNumber}" /><br/>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>OPD Queue Management</title>
+    <link rel="stylesheet" th:href="@{/css/opd-queue-management.css}" />
+</head>
+<body>
+    <h1>OPD Queue Management</h1>
+
+    <!-- Table of existing OPD Queue entries -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient ID</th>
+                <th>Doctor ID</th>
+                <th>Hospital ID</th>
+                <th>Registration Time</th>
+                <th>Queue Status</th>
+                <th>Token Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="q : ${opdQueueList}">
+                <td th:text="${q.opdQueueId}">ID</td>
+                <td th:text="${q.patient.patientId}">PatientID</td>
+                <td th:text="${q.doctor.doctorId}">DoctorID</td>
+                <td th:text="${q.hospital.hospitalId}">HospitalID</td>
+                <td th:text="${q.registrationTime}">RegTime</td>
+                <td th:text="${q.queueStatus}">Status</td>
+                <td th:text="${q.tokenNumber}">Token</td>
+                <td>
+                    <a th:href="@{/superAdmin/opdQueues/edit/{id}(id=${q.opdQueueId})}">Edit</a>
+                    <a th:href="@{/superAdmin/opdQueues/delete/{id}(id=${q.opdQueueId})}"
+                       onclick="return confirm('Are you sure you want to delete this queue entry?');">
+                       Delete
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Form to create a new OPD Queue entry -->
+    <div class="form-container">
+        <h2>Create New OPD Queue Entry</h2>
+        <form th:action="@{/superAdmin/opdQueues}" th:object="${newOpdQueue}" method="post">
+
+            <label>Patient ID:</label>
+            <input type="number" th:field="*{patient.patientId}" required/><br/>
+
+            <label>Doctor ID:</label>
+            <input type="number" th:field="*{doctor.doctorId}" required/><br/>
+
+            <label>Hospital ID:</label>
+            <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+
+            <label>Appointment:</label>
+            <select th:field="*{appointment.appointmentId}">
+                <option th:each="a : ${appointments}"
+                     th:value="${a.appointmentId}"
+                     th:text="${a.appointmentId}">
+                </option>
+            </select>
+
+
+            <label>Queue Status:</label>
+            <input type="text" th:field="*{queueStatus}" /><br/>
+
+            <label>Token Number:</label>
+            <input type="number" th:field="*{tokenNumber}" /><br/>
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+</html>
