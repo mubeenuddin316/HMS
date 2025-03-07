@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>System Settings</title>
+    <link rel="stylesheet" th:href="@{/css/system-settings.css}" />
+</head>
+<body>
+    <div class="settings-container">
+        <a th:href="@{/superAdmin/dashboard}" class="back-link">
+            ← Back to Dashboard
+        </a>
+
+        <h1>System Settings</h1>
+
+        <form th:action="@{/superAdmin/settings}"
+              th:object="${systemSettings}"
+              method="post"
+              class="settings-form">
+
+            <input type="hidden" th:field="*{settingsId}" />
+
+            <label>System Name:</label>
+            <input type="text" th:field="*{systemName}" />
+
+            <label>Contact Email:</label>
+            <input type="email" th:field="*{contactEmail}" />
+
+            <label>Maintenance Mode:</label>
+            <input type="checkbox" th:field="*{maintenanceMode}" />
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -19,8 +19,7 @@
             Welcome, <span th:text="${superAdmin.adminName}">Super Admin</span>
         </div>
         <div class="header-buttons">
-            <a href="/" class="btn">Home</a>
-            <a href="/logout" class="btn logout">Logout</a>
+            <a th:href="@{/logout}" class="btn logout">Logout</a>
         </div>
     </header>
 
@@ -57,9 +56,13 @@
         </button>
         
 
-        <button class="sidebar-btn">Inventory Management</button>
-        <button class="sidebar-btn">Reports & Analytics</button>
-        <button class="sidebar-btn">System Settings</button>
+        <button class="sidebar-btn" style="color: red;">Inventory Management</button>
+        <button class="sidebar-btn" style="color: blue;">Reports & Analytics</button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/superAdmin/settings'">
+            System Settings
+        </button>
+
     </aside>
 
     <!-- Main Dashboard Content -->

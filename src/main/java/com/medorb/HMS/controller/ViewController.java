@@ -128,6 +128,14 @@ public class ViewController {
         
         return "index"; // Redirect to login page after registration
     }
+    
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        // Invalidate the session
+        request.getSession().invalidate();
+        // Redirect to home page or login page
+        return "redirect:/";
+    }
 
 
 }
