@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Super Admin Management</title>
+    <link rel="stylesheet" th:href="@{/css/super-admin-management.css}" />
+</head>
+<body>
+    <h1>Super Admin Management</h1>
+
+    <!-- Table of existing super admins -->
+    <table>
+        <thead>
+            <tr>
+                <th>SuperAdmin ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th> <!-- In real apps, you wouldn't display the password! -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="sa : ${superAdmins}">
+                <td th:text="${sa.superAdminId}">ID</td>
+                <td th:text="${sa.adminName}">Name</td>
+                <td th:text="${sa.email}">Email</td>
+                <td th:text="${sa.password}">Password</td> 
+                <td>
+                    <a th:href="@{/superAdmin/superAdmins/edit/{id}(id=${sa.superAdminId})}">Edit</a>
+                    <a th:href="@{/superAdmin/superAdmins/delete/{id}(id=${sa.superAdminId})}"
+                       onclick="return confirm('Are you sure you want to delete this Super Admin?');">
+                       Delete
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Form to create a new super admin -->
+    <div class="form-container">
+        <h2>Create New Super Admin</h2>
+        <form th:action="@{/superAdmin/superAdmins}" th:object="${newSuperAdmin}" method="post">
+
+            <label>Admin Name:</label>
+            <input type="text" th:field="*{adminName}" required/><br/>
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required/><br/>
+
+            <label>Password:</label>
+            <input type="password" th:field="*{password}" required/><br/>
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+</html>

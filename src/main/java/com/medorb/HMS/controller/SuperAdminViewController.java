@@ -342,6 +342,48 @@ public class SuperAdminViewController {
         // Redirect back to the profile page or dashboard
         return "redirect:/superAdmin/dashboard";
     }
+    
+    @GetMapping("/superAdmin/superAdmins")
+    public String showSuperAdminManagementPage(Model model) {
+        // 1) Fetch all super admins
+        List<SuperAdmin> superAdmins = superAdminService.getAllSuperAdmins();
+        // 2) Add them to the model
+        model.addAttribute("superAdmins", superAdmins);
+        // 3) Provide a blank SuperAdmin object for the create form
+        model.addAttribute("newSuperAdmin", new SuperAdmin());
+        // Return the Thymeleaf page
+        return "super-admin-management";
+    }
+
+    // CREATE a new SuperAdmin
+    @PostMapping("/superAdmin/superAdmins")
+    public String createSuperAdmin(@ModelAttribute SuperAdmin newAdmin) {
+        superAdminService.createSuperAdmin(newAdmin);
+        return "redirect:/superAdmin/superAdmins";
+    }
+
+    // DELETE a SuperAdmin
+    @GetMapping("/superAdmin/superAdmins/delete/{id}")
+    public String deleteSuperAdmin(@PathVariable("id") Integer superAdminId) {
+        superAdminService.deleteSuperAdmin(superAdminId);
+        return "redirect:/superAdmin/superAdmins";
+    }
+
+    // EDIT SuperAdmin (show form)
+    @GetMapping("/superAdmin/superAdmins/edit/{id}")
+    public String showEditSuperAdminForm(@PathVariable("id") Integer superAdminId, Model model) {
+        SuperAdmin admin = superAdminService.getSuperAdminById(superAdminId).orElse(null);
+        model.addAttribute("superAdmin", admin);
+        // Return a new "super-admin-edit.html" page
+        return "super-admin-edit";
+    }
+
+    // UPDATE SuperAdmin
+    @PostMapping("/superAdmin/superAdmins/edit")
+    public String updateSuperAdmin(@ModelAttribute SuperAdmin admin) {
+        superAdminService.updateSuperAdmin(admin.getSuperAdminId(), admin);
+        return "redirect:/superAdmin/superAdmins";
+    }
 }
 
 
