@@ -28,6 +28,5 @@ public class HospitalManagementSystemApplication {
         System.out.println("http://localhost:" + port + contextPath + "/");
         System.out.println("----------------------------------------------------------");
     }
-
-    
+ 
 }
