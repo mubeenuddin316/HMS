@@ -106,38 +106,45 @@
 
         <!-- Dynamic Content Section -->
         <div class="dynamic-content">
-            <h2>Live Hospital Reports</h2>
-            <canvas id="hospitalChart"></canvas>
-        </div>
-
-    </main>
+        <h2>Appointments per Hospital</h2>
+        <canvas id="hospitalAppointmentsChart"></canvas>
+    </div>
 
     <script>
-        // Example Data for Hospital Chart
-        document.addEventListener("DOMContentLoaded", function() {
-            var ctx = document.getElementById('hospitalChart').getContext('2d');
-            var hospitalChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Hospital A', 'Hospital B', 'Hospital C', 'Hospital D'],
-                    datasets: [{
-                        label: 'Beds Occupied',
-                        data: [35, 50, 25, 40],
-                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                    }, {
-                        label: 'Beds Available',
-                        data: [15, 30, 45, 20],
-                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { beginAtZero: true }
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('hospitalAppointmentsChart').getContext('2d');
+
+        // 1) Fetch real data from your new endpoint
+        fetch('/api/superAdmin/dashboard/hospitalsAppointmentCount')
+            .then(response => response.json())
+            .then(data => {
+                // data is an array of { hospitalName: "...", appointmentCount: number }
+
+                // 2) Build arrays for Chart.js
+                const labels = data.map(item => item.hospitalName);
+                const counts = data.map(item => item.appointmentCount);
+
+                // 3) Create Chart.js bar chart
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Appointment Count',
+                            data: counts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
                     }
-                }
-            });
-        });
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    });
     </script>
 
 </body>

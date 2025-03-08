@@ -83,7 +83,7 @@ public class AppointmentController {
     
     @GetMapping("/date/{date}")
     public ResponseEntity<List<Appointment>> getAppointmentsByDate(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         List<Appointment> appointments = appointmentService.getAppointmentsByDate(date);
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }

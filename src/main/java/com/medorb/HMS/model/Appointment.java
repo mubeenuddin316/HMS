@@ -1,4 +1,4 @@
-package com.medorb.HMS.model;
+ package com.medorb.HMS.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -140,4 +140,6 @@ public class Appointment {
                ", notes='" + notes + '\'' +
                '}';
     }
+	
+	
 }

@@ -18,9 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.medorb.HMS.dto.HospitalAppointmentCountDTO;
+
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.SuperAdmin;
+import com.medorb.HMS.repository.AppointmentRepository;
+import com.medorb.HMS.repository.HospitalRepository;
 import com.medorb.HMS.service.SuperAdminService;
 
 @RestController
@@ -28,10 +32,12 @@ import com.medorb.HMS.service.SuperAdminService;
 public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
+    private final AppointmentRepository appointmentRepository;
 
     @Autowired
-    public SuperAdminController(SuperAdminService superAdminService) {
+    public SuperAdminController(SuperAdminService superAdminService, AppointmentRepository appointmentRepository) {
         this.superAdminService = superAdminService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     // --- Super Admin CRUD Operations ---
@@ -221,6 +227,11 @@ public class SuperAdminController {
             "freeBeds", freeBeds
         );
 
+    }
+    
+    @GetMapping("/dashboard/hospitalsAppointmentCount")
+    public List<HospitalAppointmentCountDTO> getHospitalsAppointmentCount() {
+        return appointmentRepository.findHospitalAppointmentCounts();
     }
     
 }
