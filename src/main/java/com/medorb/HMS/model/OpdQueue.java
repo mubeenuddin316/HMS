@@ -6,36 +6,37 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "opd_queue")
 public class OpdQueue {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "queue_id") // **Match DB Column Name: queue_id**
+    @Column(name = "queue_id")
     private Integer opdQueueId;
-    
- // **If you DO want to include appointment_id, add this (if it's in your DB and you want to map it):**
-    @ManyToOne // Or @OneToOne depending on relationship
-    @JoinColumn(name = "appointment_id") // **If you want to map appointment_id**
-    private Appointment appointment; // Add relationship to Appointment if needed
-    
-    @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false) // **Match DB Column Name: patient_id**
+
+    // If you want to link to an appointment
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @ManyToOne
-    @JoinColumn(name = "hospital_id", nullable = false) // **Match DB Column Name: hospital_id**
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", nullable = false)
     private Hospital hospital;
 
-    // **If you DO want to include doctor_id, add this (if it's in your DB but not shown in image):**
-    @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false) // **If you add doctor_id to DB**
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    @Column(name = "queue_entry_time", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP") // **Match DB Column Name: queue_entry_time**
+    @Column(name = "queue_entry_time", nullable = false, updatable = false, 
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime registrationTime;
 
-    @Column(name = "queue_status") // **Match DB Column Name: queue_status**
-    private String queueStatus; // Keep as String in Java, we'll handle Enum values in code
+    @Column(name = "queue_status")
+    private String queueStatus;
 
-    @Column(name = "queue_number") // **Match DB Column Name: queue_number**
+    @Column(name = "queue_number")
     private Integer tokenNumber;
 
 

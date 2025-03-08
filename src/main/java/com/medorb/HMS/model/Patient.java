@@ -6,6 +6,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "patients")
 public class Patient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "patient_id")
@@ -13,24 +14,17 @@ public class Patient {
 
     @Column(nullable = false)
     private String name;
-    
-    @Column
-    private LocalDate dob; // Use LocalDate for DATE type
-    
-    @Column    
-    private String gender; // Consider using an Enum for Gender in a real app
-    
-    @Column
+
+    private LocalDate dob; 
+    private String gender; 
     private String contactNumber;
 
     @Column(unique = true, nullable = false)
     private String email;
-    
-    
+
     @Column(nullable = false)
     private String password;
-    
-    @Column
+
     private String address;
     
 

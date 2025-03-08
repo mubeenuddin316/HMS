@@ -5,28 +5,32 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "doctors")
 public class Doctor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "doctor_id")
     private Integer doctorId;
 
-    @ManyToOne
+    // Many doctors -> One hospital
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
     private Hospital hospital;
 
     @Column(nullable = false)
     private String name;
+
     private String specialization;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
-    private String password; // Storing plain password - for undergrad project ONLY
+    private String password; // Plain text for demo; in real app, hash it
 
     private String profileImagePath;
-    @Lob // For TEXT or larger string data
-    private String doctorSchedule; // You might consider a better way to store schedule in real app
+
+    @Lob
+    private String doctorSchedule;
     
     public Doctor() {
     }

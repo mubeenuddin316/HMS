@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "beds")
 public class Bed {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bed_id")
@@ -12,10 +13,10 @@ public class Bed {
 
     @Column(name = "bed_number", nullable = false, unique = true)
     private String bedNumber;
-    
+
     @Column(name = "ward")
     private String ward;
-    
+
     @Column(name = "room_number")
     private String roomNumber;
 
@@ -23,14 +24,15 @@ public class Bed {
     private String bedType; // e.g., "Standard", "Deluxe", "ICU Bed"
 
     @Column(name = "is_occupied")
-    private boolean isOccupied; // Boolean to track bed occupancy
+    private boolean isOccupied;
 
     @Column(name = "bed_status")
     private String bedStatus; // e.g., "Available", "Occupied", "Under Maintenance"
 
-    @ManyToOne
+    // Many beds -> One hospital
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
-    private Hospital hospital; // Many Beds belong to One Hospital
+    private Hospital hospital;
 
     public Bed() {
         // Default constructor

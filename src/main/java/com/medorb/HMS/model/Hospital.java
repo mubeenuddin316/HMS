@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "hospitals")
 public class Hospital {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hospital_id")
@@ -17,6 +18,14 @@ public class Hospital {
     private String city;
     private String phoneNumber;
     private String email;
+
+    // If you want a bidirectional relationship (e.g. hospital -> doctors, hospital -> beds),
+    // you can define it. Not strictly required if you only query from the child side.
+    //
+    // @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    // private List<Doctor> doctors;
+    //
+    // etc.
 
 	public Hospital() {
     }

@@ -6,35 +6,37 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "appointments")
 public class Appointment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id")
     private Integer appointmentId;
 
-    @ManyToOne
+    // Many appointments -> One patient
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @ManyToOne
+    // Many appointments -> One doctor
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    @ManyToOne
+    // Many appointments -> One hospital
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
     private Hospital hospital;
-    
+
     @Column(name = "appointment_datetime", nullable = false)
     private LocalDateTime appointmentDatetime; // Use LocalDateTime for DATETIME type
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AppointmentStatus status = AppointmentStatus.SCHEDULED; // Default value
-    @Lob
-    private String notes;
+    private AppointmentStatus status = AppointmentStatus.SCHEDULED; // Default
 
-    public Appointment() {
-    }
-    
+    @Lob
+    private String notes; // For optional large text
+
     public enum AppointmentStatus {
         SCHEDULED,
         RESCHEDULED,
@@ -42,6 +44,9 @@ public class Appointment {
         COMPLETED
     }
 
+    
+    public Appointment() {
+    }
     
 
     public Integer getAppointmentId() {

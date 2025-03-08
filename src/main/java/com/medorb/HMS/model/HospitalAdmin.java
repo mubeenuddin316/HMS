@@ -3,28 +3,29 @@ package com.medorb.HMS.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "hospital_admins") // You can adjust table name if needed
+@Table(name = "hospital_admins")
 public class HospitalAdmin {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "hospital_admin_id") // Adjust column name if needed
+    @Column(name = "hospital_admin_id")
     private Integer hospitalAdminId;
 
-    @Column(name = "admin_name", nullable = false) // Adjust column name if needed
+    @Column(name = "admin_name", nullable = false)
     private String adminName;
 
-    @Column(name = "email", nullable = false, unique = true) // Adjust column name if needed
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false) // **NEW: Password column**
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone_number") // Adjust column name if needed
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    // Relationship with Hospital (Many-to-One: Many admins can belong to one hospital)
-    @ManyToOne
-    @JoinColumn(name = "hospital_id", nullable = false) // Foreign key to hospital table
+    // Many admins -> One hospital
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", nullable = false)
     private Hospital hospital;
 
     public HospitalAdmin() {

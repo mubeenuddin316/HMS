@@ -6,20 +6,23 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "patient_reports")
 public class PatientReport {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "report_id")
     private Integer reportId;
 
-    @ManyToOne
+    // Many reports -> One patient
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-    @ManyToOne
+    // Many reports -> One doctor
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 
-    private LocalDate reportDate; // LocalDate for DATE type
+    private LocalDate reportDate;
     private String reportType;
     private String reportFilePath;
 
