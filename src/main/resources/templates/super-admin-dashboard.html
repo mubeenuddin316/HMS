@@ -26,35 +26,42 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
         <button class="sidebar-btn"
-            onclick="window.location.href='/HMS/superAdmin/profile'">
+                onclick="window.location.href='/HMS/superAdmin/profile'">
             Your Profile
         </button>
         <button class="sidebar-btn"
-            onclick="window.location.href='/HMS/superAdmin/superAdmins'">
+                onclick="window.location.href='/HMS/superAdmin/superAdmins'">
             Super Admin Management
         </button>
         
         <button class="sidebar-btn" 
-            onclick="window.location.href='/HMS/superAdmin/hospitals'">
+                onclick="window.location.href='/HMS/superAdmin/hospitals'">
             Hospital Management
         </button>
         <button class="sidebar-btn"
-            onclick="window.location.href='/HMS/superAdmin/doctors'">
+                onclick="window.location.href='/HMS/superAdmin/doctors'">
             Doctor Management
         </button>
         <button class="sidebar-btn"
-            onclick="window.location.href='/HMS/superAdmin/hospitalAdmins'">
+                onclick="window.location.href='/HMS/superAdmin/hospitalAdmins'">
             Hospital Admin Management
         </button>
         <button class="sidebar-btn"
-            onclick="window.location.href='/HMS/superAdmin/opdQueues'">
+                onclick="window.location.href='/HMS/superAdmin/opdQueues'">
             OPD Queue Management
         </button>
         <button class="sidebar-btn"
-            onclick="window.location.href='/HMS/superAdmin/beds'">
+                onclick="window.location.href='/HMS/superAdmin/beds'">
             Hospital Beds Overview
         </button>
-        
+        <button class="sidebar-btn"
+                onclick="window.location.href='/HMS/superAdmin/appointments'">
+            Appointments Overview
+        </button>
+        <button class="sidebar-btn"
+                onclick="window.location.href='/HMS/superAdmin/patients'">
+            Patients Overview
+        </button>
 
         <button class="sidebar-btn" style="color: red;">Inventory Management</button>
         <button class="sidebar-btn" style="color: blue;">Reports & Analytics</button>
@@ -109,43 +116,38 @@
         <h2>Appointments per Hospital</h2>
         <canvas id="hospitalAppointmentsChart"></canvas>
     </div>
-
+    
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const ctx = document.getElementById('hospitalAppointmentsChart').getContext('2d');
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('hospitalAppointmentsChart').getContext('2d');
 
-        // 1) Fetch real data from your new endpoint
-        fetch('/api/superAdmin/dashboard/hospitalsAppointmentCount')
-            .then(response => response.json())
-            .then(data => {
-                // data is an array of { hospitalName: "...", appointmentCount: number }
+            fetch('/HMS/api/superAdmin/dashboard/hospitalsAppointmentCount')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => item.hospitalName);
+                    const counts = data.map(item => item.appointmentCount);
 
-                // 2) Build arrays for Chart.js
-                const labels = data.map(item => item.hospitalName);
-                const counts = data.map(item => item.appointmentCount);
-
-                // 3) Create Chart.js bar chart
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Appointment Count',
-                            data: counts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true }
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Appointment Count',
+                                data: counts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
                         }
-                    }
-                });
-            })
-            .catch(error => console.error('Error fetching chart data:', error));
-    });
-    </script>
-
+                    });
+                })
+                .catch(error => console.error('Error fetching chart data:', error));
+        });
+        </script>
+    
 </body>
 </html>

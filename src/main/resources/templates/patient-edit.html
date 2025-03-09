@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Patient</title>
+</head>
+<body>
+    <h1>Edit Patient</h1>
+    <form th:action="@{/superAdmin/patients/edit}"
+          th:object="${patient}"
+          method="post">
+
+        <!-- Keep the ID hidden -->
+        <input type="hidden" th:field="*{patientId}" />
+
+        <label>Name:</label>
+        <input type="text" th:field="*{name}" required/><br/>
+
+        <label>DOB:</label>
+        <input type="date" th:field="*{dob}" /><br/>
+
+        <label>Gender:</label>
+        <input type="text" th:field="*{gender}" /><br/>
+
+        <label>Contact:</label>
+        <input type="text" th:field="*{contactNumber}" /><br/>
+
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" required/><br/>
+
+        <label>Password:</label>
+        <input type="password" th:field="*{password}" required/><br/>
+
+        <label>Address:</label>
+        <textarea th:field="*{address}"></textarea><br/>
+
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

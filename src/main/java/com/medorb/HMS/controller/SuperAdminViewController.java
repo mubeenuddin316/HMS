@@ -6,12 +6,14 @@ import com.medorb.HMS.model.Doctor;
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.OpdQueue;
+import com.medorb.HMS.model.Patient;
 import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.service.AppointmentService;
 import com.medorb.HMS.service.BedService;
 import com.medorb.HMS.service.DoctorService;
 import com.medorb.HMS.service.HospitalAdminService;
 import com.medorb.HMS.service.OpdQueueService;
+import com.medorb.HMS.service.PatientService;
 import com.medorb.HMS.service.SuperAdminService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -34,6 +36,7 @@ public class SuperAdminViewController {
     private final OpdQueueService opdQueueService;
     private final AppointmentService appointmentService;
     private final BedService bedService;
+    private final PatientService patientService;
 
     @Autowired
     public SuperAdminViewController(SuperAdminService superAdminService,
@@ -41,7 +44,8 @@ public class SuperAdminViewController {
     		                        HospitalAdminService hospitalAdminService, 
     		                        OpdQueueService opdQueueService, 
     		                        AppointmentService appointmentService, 
-    		                        BedService bedService) {
+    		                        BedService bedService,
+    		                        PatientService patientService) {
         
     	
     	this.superAdminService = superAdminService;
@@ -50,6 +54,7 @@ public class SuperAdminViewController {
         this.opdQueueService = opdQueueService;
         this.appointmentService = appointmentService;
         this.bedService = bedService;
+        this.patientService = patientService;
     }
 
     @GetMapping("/superAdmin/dashboard")
@@ -79,6 +84,10 @@ public class SuperAdminViewController {
         // 4. Return the Thymeleaf template
         return "super-admin-dashboard";
     }
+    
+    // ==========================
+    // Hospital Management
+    // ==========================
     
     @GetMapping("/superAdmin/hospitals")
     public String showHospitalManagementPage(Model model) {
@@ -123,6 +132,10 @@ public class SuperAdminViewController {
         // 2) Redirect back to the hospital list
         return "redirect:/superAdmin/hospitals";
     }
+    
+    // ==========================
+    // Doctors Management
+    // ==========================
     
     @GetMapping("/superAdmin/doctors")
     public String showDoctorManagementPage(Model model) {
@@ -186,6 +199,10 @@ public class SuperAdminViewController {
         return "hospital-admin-management"; // We'll create hospital-admin-management.html
     }
 
+    // ==========================
+    // HospitalAdmin Management
+    // ==========================
+    
     // CREATE a new HospitalAdmin
     @PostMapping("/superAdmin/hospitalAdmins")
     public String createHospitalAdmin(@ModelAttribute HospitalAdmin newAdmin) {
@@ -218,6 +235,11 @@ public class SuperAdminViewController {
         hospitalAdminService.updateHospitalAdmin(admin.getHospitalAdminId(), admin);
         return "redirect:/superAdmin/hospitalAdmins";
     }
+    
+    // ==========================
+    // OpdQue Management
+    // ==========================
+    
     
     @GetMapping("/superAdmin/opdQueues")
     public String showOpdQueueManagementPage(Model model) {
@@ -262,6 +284,10 @@ public class SuperAdminViewController {
         return "redirect:/superAdmin/opdQueues";
     }
     
+    // ==========================
+    // Bed Management
+    // ==========================
+    
     @GetMapping("/superAdmin/beds")
     public String showBedManagementPage(Model model) {
         // 1) Fetch all beds
@@ -301,6 +327,10 @@ public class SuperAdminViewController {
         bedService.updateBed(bed.getBedId(), bed);
         return "redirect:/superAdmin/beds";
     }
+    
+    // ==========================
+    // SuperAdmin Profile Update
+    // ==========================
     
     @GetMapping("/superAdmin/profile")
     public String showSuperAdminProfile(HttpServletRequest request, Model model) {
@@ -343,6 +373,10 @@ public class SuperAdminViewController {
         return "redirect:/superAdmin/dashboard";
     }
     
+    // ==========================
+    // SuperAdmin Management
+    // ==========================
+    
     @GetMapping("/superAdmin/superAdmins")
     public String showSuperAdminManagementPage(Model model) {
         // 1) Fetch all super admins
@@ -384,6 +418,99 @@ public class SuperAdminViewController {
         superAdminService.updateSuperAdmin(admin.getSuperAdminId(), admin);
         return "redirect:/superAdmin/superAdmins";
     }
+    
+    // ==========================
+    // Appointments OVERVIEW
+    // ==========================
+    // 1) GET /superAdmin/appointments - Show all appointments
+    @GetMapping("/superAdmin/appointments")
+    public String showAppointmentsOverview(Model model) {
+        List<Appointment> appointments = appointmentService.getAllAppointments();
+        model.addAttribute("appointments", appointments);
+
+        // Provide a blank Appointment object for the create form
+        model.addAttribute("newAppointment", new Appointment());
+
+        return "appointments-overview"; // We'll create appointments-overview.html
+    }
+
+    // 2) POST /superAdmin/appointments - Create a new appointment
+    @PostMapping("/superAdmin/appointments")
+    public String createAppointment(@ModelAttribute Appointment newAppointment) {
+        appointmentService.createAppointment(newAppointment);
+        return "redirect:/superAdmin/appointments";
+    }
+
+    // 3) GET /superAdmin/appointments/edit/{id} - Show edit form
+    @GetMapping("/superAdmin/appointments/edit/{id}")
+    public String showEditAppointmentForm(@PathVariable("id") Integer id, Model model) {
+        Appointment existing = appointmentService.getAppointmentById(id).orElse(null);
+        model.addAttribute("appointment", existing);
+        return "appointment-edit"; // We'll create appointment-edit.html
+    }
+
+    // 4) POST /superAdmin/appointments/edit - Update an existing appointment
+    @PostMapping("/superAdmin/appointments/edit")
+    public String updateAppointment(@ModelAttribute Appointment updatedAppointment) {
+        if (updatedAppointment.getAppointmentId() != null) {
+            appointmentService.updateAppointment(updatedAppointment.getAppointmentId(), updatedAppointment);
+        }
+        return "redirect:/superAdmin/appointments";
+    }
+
+    // 5) GET /superAdmin/appointments/delete/{id} - Delete an appointment
+    @GetMapping("/superAdmin/appointments/delete/{id}")
+    public String deleteAppointment(@PathVariable("id") Integer id) {
+        appointmentService.deleteAppointment(id);
+        return "redirect:/superAdmin/appointments";
+    }
+    
+    // ==========================
+    // PATIENTS OVERVIEW
+    // ==========================
+
+    // 1) GET /superAdmin/patients - Show all patients
+    @GetMapping("/superAdmin/patients")
+    public String showPatientsOverview(Model model) {
+        List<Patient> patients = patientService.getAllPatients();
+        model.addAttribute("patients", patients);
+
+        // Provide a blank Patient object for the create form
+        model.addAttribute("newPatient", new Patient());
+        return "patients-overview"; // We'll create patients-overview.html
+    }
+
+    // 2) POST /superAdmin/patients - Create a new patient
+    @PostMapping("/superAdmin/patients")
+    public String createPatient(@ModelAttribute Patient newPatient) {
+        patientService.createPatient(newPatient);
+        return "redirect:/superAdmin/patients";
+    }
+
+    // 3) GET /superAdmin/patients/edit/{id} - Show edit form
+    @GetMapping("/superAdmin/patients/edit/{id}")
+    public String showEditPatientForm(@PathVariable("id") Integer id, Model model) {
+        Patient existing = patientService.getPatientById(id).orElse(null);
+        model.addAttribute("patient", existing);
+        return "patient-edit"; // We'll create patient-edit.html
+    }
+
+    // 4) POST /superAdmin/patients/edit - Update an existing patient
+    @PostMapping("/superAdmin/patients/edit")
+    public String updatePatient(@ModelAttribute Patient updatedPatient) {
+        if (updatedPatient.getPatientId() != null) {
+            patientService.updatePatient(updatedPatient.getPatientId(), updatedPatient);
+        }
+        return "redirect:/superAdmin/patients";
+    }
+
+    // 5) GET /superAdmin/patients/delete/{id} - Delete a patient
+    @GetMapping("/superAdmin/patients/delete/{id}")
+    public String deletePatient(@PathVariable("id") Integer id) {
+        patientService.deletePatient(id);
+        return "redirect:/superAdmin/patients";
+    }
+    
 }
 
 
