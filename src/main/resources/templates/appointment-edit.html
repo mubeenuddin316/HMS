@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Edit Appointment</title>
+    <link rel="stylesheet" th:href="@{/css/edits.css}" />
 </head>
 <body>
-    <a th:href="@{/superAdmin/appointments}" class="back-link">
-        ← Back to Appointments
-    </a>
-    <h1>Edit Appointment</h1>
-    <form th:action="@{/superAdmin/appointments/edit}" 
+    <div>
+        <a th:href="@{/superAdmin/appointments}" class="back-link">
+            ← Back to Appointments
+        </a>
+    </div>
+    <div><h1>Edit Appointment</h1></div>
+    <div> <form th:action="@{/superAdmin/appointments/edit}" 
           th:object="${appointment}"
           method="post">
 
@@ -40,6 +43,6 @@
         <textarea th:field="*{notes}"></textarea><br/>
 
         <button type="submit">Save</button>
-    </form>
+    </form> </div>
 </body>
 </html>

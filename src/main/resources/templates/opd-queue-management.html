@@ -17,6 +17,7 @@
             <tr>
                 <th>ID</th>
                 <th>Patient ID</th>
+                <!-- <th>Appointment ID</th> -->
                 <th>Doctor ID</th>
                 <th>Hospital ID</th>
                 <th>Registration Time</th>
@@ -29,6 +30,7 @@
             <tr th:each="q : ${opdQueueList}">
                 <td th:text="${q.opdQueueId}">ID</td>
                 <td th:text="${q.patient.patientId}">PatientID</td>
+                <!--  <td th:text="${q.appointment.appointmentId}">AppointmentID</td> -->
                 <td th:text="${q.doctor.doctorId}">DoctorID</td>
                 <td th:text="${q.hospital.hospitalId}">HospitalID</td>
                 <td th:text="${q.registrationTime}">RegTime</td>
