@@ -21,6 +21,7 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
+    
 }
 
 .logo-container {
@@ -39,7 +40,7 @@ body {
     padding: 8px 15px;
     text-decoration: none;
     border-radius: 5px;
-    margin-right: 10px;
+    margin-right: 50px;
 }
 
 .logout {

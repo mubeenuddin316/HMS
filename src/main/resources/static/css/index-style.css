@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     color: Blue;
     background-color: Orange;
-    margin: 0;
+    margin: 5px;
     padding: 0;
     height: 100vh;
     display: flex;
@@ -119,7 +119,7 @@ body {
     font-size: 14px;
     font-weight: bold;
     color: black;
-    margin: 0 10px;
+    margin: 0 30px;
     border-radius: 20px;
     border: 1px solid #ddd;
     cursor: pointer;

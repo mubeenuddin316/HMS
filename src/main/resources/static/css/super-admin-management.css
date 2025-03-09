@@ -10,6 +10,18 @@ body {
     color: #333;
 }
 
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
 /* Page Title */
 h1 {
     margin-bottom: 20px;
@@ -83,6 +95,7 @@ table tbody tr:hover {
 }
 
 .form-container input[type="text"],
+.form-container input[type="password"],
 .form-container input[type="email"] {
     width: 100%;
     padding: 8px;

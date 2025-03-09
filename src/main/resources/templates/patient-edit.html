@@ -5,6 +5,9 @@
     <title>Edit Patient</title>
 </head>
 <body>
+    <a th:href="@{/superAdmin/patients}" class="back-link">
+        ← Back to Patients
+    </a>
     <h1>Edit Patient</h1>
     <form th:action="@{/superAdmin/patients/edit}"
           th:object="${patient}"

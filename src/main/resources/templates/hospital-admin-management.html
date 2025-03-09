@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Hospital Admin Management</title>
-    <link rel="stylesheet" th:href="@{/css/hospital-management.css}"/>
-    <!-- ^ reuse hospital-management.css or create a new one (hospital-admin-management.css) -->
+    <link rel="stylesheet" th:href="@{/css/hospital-admin-management.css}"/>
 </head>
 <body>
+    <a th:href="@{/superAdmin/dashboard}" class="back-link">
+        ← Back to Dashboard
+    </a>
     <h1>Hospital Admin Management</h1>
 
     <!-- Table of existing hospital admins -->

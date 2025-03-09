@@ -5,6 +5,9 @@
     <title>Edit Bed</title>
 </head>
 <body>
+    <a th:href="@{/superAdmin/beds}" class="back-link">
+        ← Back to Beds
+    </a>
     <h1>Edit Bed</h1>
     <form th:action="@{/superAdmin/beds/edit}" th:object="${bed}" method="post">
         <input type="hidden" th:field="*{bedId}" />

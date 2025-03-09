@@ -7,6 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/hospital-management.css}" />
 </head>
 <body>
+    <a th:href="@{/superAdmin/dashboard}" class="back-link">
+        ← Back to Dashboard
+    </a>
     <h1>Hospital Management</h1>
 
     <!-- Table of existing hospitals -->
@@ -15,8 +18,10 @@
             <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Address</th>
                 <th>City</th>
                 <th>Phone</th>
+                <th>Email</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -24,8 +29,10 @@
             <tr th:each="h : ${hospitals}">
                 <td th:text="${h.hospitalId}">ID</td>
                 <td th:text="${h.name}">Name</td>
+                <td th:text="${h.address}">Address</td>
                 <td th:text="${h.city}">City</td>
                 <td th:text="${h.phoneNumber}">Phone</td>
+                <td th:text="${h.email}">Email</td>
                 <td class="actions">
                     <a th:href="@{/superAdmin/hospitals/edit/{id}(id=${h.hospitalId})}">Edit</a>
                     <a th:href="@{/superAdmin/hospitals/delete/{id}(id=${h.hospitalId})}"
@@ -42,6 +49,9 @@
         <form th:action="@{/superAdmin/hospitals}" th:object="${newHospital}" method="post">
             <label>Name:</label>
             <input type="text" th:field="*{name}" required />
+            
+            <label>Address:</label>
+            <input type="text" th:field="*{address}" />
 
             <label>City:</label>
             <input type="text" th:field="*{city}" />

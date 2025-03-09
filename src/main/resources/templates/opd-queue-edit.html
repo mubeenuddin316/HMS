@@ -5,6 +5,9 @@
     <title>Edit OPD Queue</title>
 </head>
 <body>
+    <a th:href="@{/superAdmin/opdQueues}" class="back-link">
+        ← Back to OpdQueue
+    </a>
     <h1>Edit OPD Queue</h1>
     <form th:action="@{/superAdmin/opdQueues/edit}"
           th:object="${opdQueue}"
