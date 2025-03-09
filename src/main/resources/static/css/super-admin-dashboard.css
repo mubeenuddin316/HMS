@@ -5,7 +5,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    background-color: #f5f5f5;
+    background-color: rgb(236, 237, 184);
 }
 
 /* Header */
@@ -132,5 +132,12 @@ body {
     padding: 20px;
     margin-top: 20px;
     border-radius: 10px;
+    background-color:  rgb(250, 254, 200);
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.dynamic-content canvas{
+	background-color: rgb(236, 237, 184);
+	
 }
