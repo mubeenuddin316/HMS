@@ -1,0 +1,260 @@
+@charset "UTF-8";
+/* 
+   manage-appointments-hsp.css
+   - Pastel gradient background for entire page
+   - Table container with row striping
+   - Create form container
+   - Edit form container (centered)
+*/
+
+/* Gradient background for entire page */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(
+        116.21deg,
+        rgba(216, 210, 252, 0.352) 1.56%,
+        rgba(151, 71, 255, 0.374) 43.54%,
+        rgba(56, 13, 227, 0.55) 91.44%
+    );
+}
+
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  width: 139px;
+  height: 28px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 15px;
+  position: relative; /* Add this line */
+  top: 30px; /* Move 30px down */
+  left: 50px; /* Move 50px right */
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: "\00AB"; /* Left guillemet « */
+  margin-right: 5px;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+/* Container for the manage-appointments-hsp page */
+.appointments-page-container {
+    padding: 20px;
+}
+
+/* Table container with pastel background & border */
+.table-container {
+  background: rgba(185, 178, 226, 0.64); 
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+  padding: 8px 0;
+  max-width: 1800px;
+  margin: 20px auto; /* center horizontally */
+  box-sizing: border-box;
+}
+
+/* The appointments table */
+.appointments-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Table header */
+.appointments-table thead th {
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  padding-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Table cells */
+.appointments-table td, .appointments-table th {
+  padding: 16px 24px;
+  vertical-align: middle;
+  border: none;
+}
+
+/* Row height ~72px */
+.appointments-table tbody tr {
+  height: 72px;
+}
+
+/* Pastel row striping */
+.appointments-table tbody tr:nth-child(odd) {
+  background: #B0AAD4; /* pastel purple */
+}
+.appointments-table tbody tr:nth-child(even) {
+  background: #EDF4FC; /* pastel bluish */
+}
+
+/* Hover effect (optional) */
+.appointments-table tbody tr:hover {
+  opacity: 0.95;
+}
+
+/* Link styles for "Edit"/"Delete" */
+.appointments-table a {
+  color: #7721a5;
+  text-decoration: none;
+  margin-right: 10px;
+  transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.appointments-table a:hover {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Create form container for manage-appointments-hsp page */
+.create-form-container {
+  margin: 20px auto; /* center horizontally */
+  max-width: 500px;
+  background: rgba(185, 178, 226, 0.64);
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+  padding: 20px;
+}
+.create-form-container h2 {
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+.create-form-container label {
+  display: block;
+  margin: 10px 0 4px;
+  color: #333;
+  font-weight: 500;
+}
+.create-form-container input,
+.create-form-container select {
+  margin-bottom: 12px;
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.create-form-container button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #7721a5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.create-form-container button:hover {
+  background-color: #5a1484;
+}
+
+/* For edit-appointment-hsp.html: center the form both ways */
+.edit-appointment-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* full screen height for vertical center */
+    box-sizing: border-box;
+}
+
+.edit-appointment-form {
+    background: rgba(185, 178, 226, 0.64);
+    border: 1px solid #3F779B;
+    border-radius: 12px;
+    padding: 20px;
+    width: 400px; /* fixed width for the form */
+    text-align: center;
+}
+
+.edit-appointment-form h1 {
+    margin-bottom: 16px;
+    color: #333;
+}
+.edit-appointment-form label {
+    display: block;
+    text-align: left;
+    margin: 12px 0 4px;
+    color: #333;
+    font-weight: 500;
+}
+.edit-appointment-form input,
+.edit-appointment-form select {
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.edit-appointment-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #7721a5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+}
+.edit-appointment-form button:hover {
+    background-color: #5a1484;
+}
+
+/* If you want color-coded status pills (SCHEDULED, CANCELLED, etc.) */
+.appointment-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+}
+.appointment-status-badge.SCHEDULED {
+  background-color: #8E72F1; /* purple */
+}
+.appointment-status-badge.PENDING {
+  background-color: #2D9BF0; /* blue */
+}
+.appointment-status-badge.CANCELLED {
+  background-color: #EB5757; /* red */
+}
+.appointment-status-badge.RESCHEDULED {
+  background-color: #F0912B; /* orange */
+}
+.appointment-status-badge.COMPLETED {
+  background-color: #27AE60; /* green */
+}

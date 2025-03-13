@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Bed</title>
+    <link rel="stylesheet" th:href="@{/css/manage-beds-hsp.css}" />
+</head>
+<body>
+<a th:href="@{/hospitalAdmin/patients}" class="button"><span>Back</span></a>
+<div class="edit-bed-container">
+    <div class="edit-bed-form">
+        <h1>Edit Bed</h1>
+
+        <form th:action="@{/hospitalAdmin/beds/edit}" th:object="${bed}" method="post">
+            <!-- Keep the ID hidden so we know which bed to update -->
+            <input type="hidden" th:field="*{bedId}" />
+
+            <label>Bed Number:</label>
+            <input type="text" th:field="*{bedNumber}" required/>
+
+            <label>Ward:</label>
+            <input type="text" th:field="*{ward}" />
+
+            <label>Room Number:</label>
+            <input type="text" th:field="*{roomNumber}" />
+
+            <label>Bed Type:</label>
+            <input type="text" th:field="*{bedType}" />
+
+            <label>Occupied?</label>
+            <input type="checkbox" th:field="*{occupied}" />
+
+            <label>Status:</label>
+            <input type="text" th:field="*{bedStatus}" />
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

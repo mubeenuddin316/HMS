@@ -1,0 +1,189 @@
+@charset "UTF-8";
+/* 
+   CSS for Manage Doctors page
+   - Table with pastel purple/blue row striping
+   - Create form in a pastel container
+*/
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh; /* ensure gradient covers full screen height */
+    background: linear-gradient(
+        116.21deg, 
+        rgba(216, 210, 252, 0.352) 1.56%, 
+        rgba(151, 71, 255, 0.374) 43.54%, 
+        rgba(56, 13, 227, 0.55) 91.44%
+    );
+}
+
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  width: 139px;
+  height: 28px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 15px;
+  position: relative; /* Add this line */
+  top: 30px; /* Move 30px down */
+  left: 50px; /* Move 50px right */
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: "\00AB"; /* Left guillemet « */
+  margin-right: 5px;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+body h1 {
+  padding-left:50px;
+  color: purple; /* The color of your text */
+  text-shadow:
+    -1px -1px 0 black,
+    1px -1px 0 black,
+    -1px 1px 0 black,
+    1px 1px 0 black;
+}
+
+/* Container around the table for pastel background & border */
+.table-container {
+  background: rgba(185, 178, 226, 0.64); /* same pastel purple style */
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+
+  /* minimal vertical padding; no horizontal if you want the table flush */
+  padding: 8px 0;
+  max-width: 1800px;
+  margin: 20px auto; /* center horizontally, add top/bottom margin */
+  box-sizing: border-box;
+}
+
+/* The table itself */
+.manage-doctors-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0; /* no horizontal cell gap, we'll do row striping */
+}
+
+/* Table header */
+.manage-doctors-table thead th {
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  padding-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Table cells */
+.manage-doctors-table td, .manage-doctors-table th {
+  padding: 16px 24px; /* Figma-like cell spacing */
+  vertical-align: middle;
+  border: none; /* no default lines */
+}
+
+/* Row height ~72px for that modern look */
+.manage-doctors-table tbody tr {
+  height: 72px;
+}
+
+/* Pastel row striping */
+.manage-doctors-table tbody tr:nth-child(odd) {
+  background: #B0AAD4; /* pastel purple */
+}
+.manage-doctors-table tbody tr:nth-child(even) {
+  background: #EDF4FC; /* pastel bluish */
+}
+
+/* Optional row hover effect */
+.manage-doctors-table tbody tr:hover {
+  opacity: 0.95; /* subtle highlight */
+}
+
+/* Link styles for "Edit"/"Delete" or other actions */
+.manage-doctors-table a {
+  color: #7721a5;
+  text-decoration: none;
+  margin-right: 10px;
+  transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.manage-doctors-table a:hover {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* Container for the create-doctor form */
+.create-form-container {
+  margin: 20px auto; /* center horizontally */
+  max-width: 500px;  /* limit width */
+  background: rgba(185, 178, 226, 0.64);
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+/* Form heading */
+.create-form-container h2 {
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* Label styling */
+.create-form-container label {
+  display: block;
+  margin: 10px 0 4px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Input styling */
+.create-form-container input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* Submit button styling */
+.create-form-container button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #7721a5; 
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.create-form-container button:hover {
+  background-color: #5a1484;
+}

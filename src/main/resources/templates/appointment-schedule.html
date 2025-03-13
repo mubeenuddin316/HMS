@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule Appointment</title>
+    <link rel="stylesheet" th:href="@{/css/appointment-schedule.css}" />
+</head>
+<body>
+
+<div class="schedule-container">
+    <div class="schedule-form">
+        <h1>Schedule Appointment</h1>
+
+        <form th:action="@{/hospitalAdmin/appointments/schedule}" 
+              th:object="${appointmentToSchedule}"
+              method="post">
+            
+            <!-- Hidden field to keep the ID -->
+            <input type="hidden" th:field="*{appointmentId}" />
+            
+            <label>Current Date/Time:</label>
+            <p>
+              <span th:text="${#temporals.format(appointmentToSchedule.appointmentDatetime, 'yyyy-MM-dd HH:mm')}">
+                2023-10-01 09:00
+              </span>
+            </p>
+
+            <label>New Date/Time:</label>
+            <input type="datetime-local" th:field="*{appointmentDatetime}" required/>
+
+            <!-- Doctor Selection -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}">
+                <option th:each="doc : ${allDoctors}"
+                        th:value="${doc.doctorId}"
+                        th:text="${doc.name}"
+                        th:selected="${doc.doctorId} == *{doctor.doctorId}">
+                    <!-- e.g. Dr. John Smith -->
+                </option>
+            </select>
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -18,5 +18,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> { // In
     // JpaRepository already provides basic CRUD operations like:
     // save(), findById(), findAll(), deleteById(), existsById(), etc.
     // We don't need to declare them again here.
+    
+    long countByHospital_HospitalId(Integer hospitalId);
+
 
 }

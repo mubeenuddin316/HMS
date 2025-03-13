@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Manage Appointments</title>
+    <!-- Link the CSS -->
+    <link rel="stylesheet" th:href="@{/css/manage-appointments-hsp.css}" />
+</head>
+<body>
+<a th:href="@{/hospitalAdmin/dashboard}" class="button"><span>Back</span></a>
+<div class="appointments-page-container">
+    <h1>Manage Appointments</h1>
+
+    <!-- Table Container (pastel stripes) -->
+    <div class="table-container">
+        <table class="appointments-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date/Time</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="app : ${appointmentList}">
+                    <td th:text="${app.appointmentId}">1</td>
+
+                    <!-- Patient Name -->
+                    <td th:text="${app.patient != null ? app.patient.name : 'N/A'}">Patient</td>
+
+                    <!-- Doctor Name -->
+                    <td th:text="${app.doctor != null ? app.doctor.name : 'N/A'}">Doctor</td>
+
+                    <td th:text="${#temporals.format(app.appointmentDatetime, 'yyyy-MM-dd HH:mm')}">2025-03-20 10:30</td>
+
+                    <!-- If you want a status pill, see snippet below or do plain text -->
+                    <td>
+                      <span class="appointment-status-badge"
+                            th:classappend="' ' + ${app.status}">
+                        <span th:text="${app.status}"></span>
+                      </span>
+                    </td>
+
+                    <td th:text="${app.notes}">Some notes</td>
+
+                    <td>
+                        <a th:href="@{/hospitalAdmin/appointments/edit/{id}(id=${app.appointmentId})}">Edit</a>
+                        <a th:href="@{/hospitalAdmin/appointments/delete/{id}(id=${app.appointmentId})}"
+                           onclick="return confirm('Are you sure you want to delete this appointment?');">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Create New Appointment Form -->
+    <div class="create-form-container">
+        <h2>Create New Appointment</h2>
+        <form th:action="@{/hospitalAdmin/appointments}" th:object="${newAppointment}" method="post">
+
+            <!-- Patient dropdown -->
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}">
+                <option th:each="p : ${patientList}"
+                        th:value="${p.patientId}"
+                        th:text="${p.name}">
+                </option>
+            </select>
+
+            <!-- Doctor dropdown -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}">
+                <option th:each="d : ${doctorList}"
+                        th:value="${d.doctorId}"
+                        th:text="${d.name}">
+                </option>
+            </select>
+
+            <label>Date/Time:</label>
+            <input type="datetime-local" th:field="*{appointmentDatetime}" />
+
+            <label>Status:</label>
+            <select th:field="*{status}">
+               <option value="PENDING">PENDING</option>
+               <option value="SCHEDULED">SCHEDULED</option>
+               <option value="CANCELED">CANCELED</option>
+               <option value="RESCHEDULED">RESCHEDULED</option>
+            </select>
+
+            <label>Notes:</label>
+            <input type="text" th:field="*{notes}" />
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit Appointment</title>
+    <link rel="stylesheet" th:href="@{/css/manage-appointments-hsp.css}" />
+</head>
+<body>
+<a th:href="@{/hospitalAdmin/dashboard}" class="button"><span>Back</span></a>
+<div class="edit-appointment-container">
+    <div class="edit-appointment-form">
+        <h1>Edit Appointment</h1>
+
+        <form th:action="@{/hospitalAdmin/appointments/edit}" th:object="${appointment}" method="post">
+            <!-- Hidden ID -->
+            <input type="hidden" th:field="*{appointmentId}" />
+
+            <!-- Patient dropdown -->
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}">
+                <option th:each="p : ${patientList}"
+                        th:value="${p.patientId}"
+                        th:text="${p.name}"
+                        th:selected="${p.patientId} == *{patient.patientId}">
+                </option>
+            </select>
+
+            <!-- Doctor dropdown -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}">
+                <option th:each="d : ${doctorList}"
+                        th:value="${d.doctorId}"
+                        th:text="${d.name}"
+                        th:selected="${d.doctorId} == *{doctor.doctorId}">
+                </option>
+            </select>
+
+            <label>Date/Time:</label>
+            <input type="datetime-local" th:field="*{appointmentDatetime}" />
+
+            <label>Status:</label>
+            <select th:field="*{status}">
+               <option value="PENDING">PENDING</option>
+               <option value="SCHEDULED">SCHEDULED</option>
+               <option value="CANCELED">CANCELED</option>
+               <option value="RESCHEDULED">RESCHEDULED</option>
+            </select>
+
+            <label>Notes:</label>
+            <input type="text" th:field="*{notes}" />
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

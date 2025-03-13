@@ -68,19 +68,29 @@ public class ViewController {
 
     // ✅ Fix: Hospital Admin Login (Uses Real Data from DB)
     @PostMapping("/hospitalAdmin/login")
-    public String loginHospitalAdmin(@RequestParam String email, @RequestParam String password, Model model) {
+    public String loginHospitalAdmin(
+            @RequestParam String email,
+            @RequestParam String password,
+            HttpServletRequest request,
+            Model model
+    ) {
         Optional<HospitalAdmin> hospitalAdminOptional = hospitalAdminService.getHospitalAdminByEmail(email);
 
         if (hospitalAdminOptional.isPresent() && hospitalAdminOptional.get().getPassword().equals(password)) {
-            model.addAttribute("hospitalAdmin", hospitalAdminOptional.get());  // ✅ Pass real Hospital Admin
-            return "hospital-admin-dashboard"; // ✅ No redirect, direct Thymeleaf rendering
+            HospitalAdmin admin = hospitalAdminOptional.get();
+            // Store in session
+            request.getSession().setAttribute("loggedInHospitalAdmin", admin);
+
+            // Redirect to the new route so we can load real data
+            return "redirect:/hospitalAdmin/dashboard";
         } else {
             model.addAttribute("hospitalAdminError", "Invalid email or password");
-            return "index"; // Stay on login page with error message
+            return "index"; // Stay on login page with error
         }
     }
+
     
- // ✅ Doctor Login
+    // ✅ Doctor Login
     @PostMapping("/doctor/login")
     public String loginDoctor(@RequestParam String email, @RequestParam String password, Model model) {
         Optional<Doctor> doctorOptional = doctorService.getDoctorByEmail(email);

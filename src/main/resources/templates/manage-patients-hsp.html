@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Manage Patients</title>
+    <link rel="stylesheet" th:href="@{/css/manage-patients-hsp.css}" />
+</head>
+<body>
+
+<!-- Back button to the hospital admin dashboard -->
+<a th:href="@{/hospitalAdmin/dashboard}" class="button"><span>Back</span></a>
+
+<div class="patients-page-container">
+    <h1>Manage Patients</h1>
+
+    <!-- Table container -->
+    <div class="table-container">
+        <table class="patients-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>DOB</th>
+                    <th>Gender</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pat : ${patientList}">
+                    <td th:text="${pat.patientId}">1</td>
+                    <td th:text="${pat.name}">John Doe</td>
+                    <td th:text="${pat.dob}">1990-01-01</td>
+                    <td th:text="${pat.gender}">Male</td>
+                    <td th:text="${pat.contactNumber}">1234567890</td>
+                    <td th:text="${pat.email}">john@example.com</td>
+                    <td th:text="${pat.password}">pass123</td>
+                    <td th:text="${pat.address}">Some Address</td>
+                    <td>
+                        <!-- No delete link, only Edit -->
+                        <a th:href="@{/hospitalAdmin/patients/edit/{id}(id=${pat.patientId})}">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Create New Patient Form -->
+    <div class="create-form-container">
+        <h2>Create New Patient</h2>
+        <form th:action="@{/hospitalAdmin/patients}" th:object="${newPatient}" method="post">
+            <label>Name:</label>
+            <input type="text" th:field="*{name}" required/>
+
+            <label>DOB (yyyy-mm-dd):</label>
+            <input type="date" th:field="*{dob}" />
+
+            <label>Gender:</label>
+            <input type="text" th:field="*{gender}" />
+
+            <label>Contact:</label>
+            <input type="text" th:field="*{contactNumber}" />
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required/>
+
+            <label>Password:</label>
+            <input type="text" th:field="*{password}" required/>
+
+            <label>Address:</label>
+            <input type="text" th:field="*{address}" />
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

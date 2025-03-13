@@ -1,0 +1,273 @@
+@charset "UTF-8";
+
+/* 
+   manage-beds-hsp.css
+   - Pastel gradient background for entire page
+   - Table container with pastel stripes
+   - Create form container
+   - Edit form container (centered)
+*/
+
+/* Gradient background for entire page */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(
+        116.21deg,
+        rgba(216, 210, 252, 0.352) 1.56%,
+        rgba(151, 71, 255, 0.374) 43.54%,
+        rgba(56, 13, 227, 0.55) 91.44%
+    );
+}
+
+/* The custom .button style with "Back" arrow effect */
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  width: 139px;
+  height: 28px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 15px;
+  position: relative; 
+  top: 30px;  /* adjust vertical offset */
+  left: 50px; /* adjust horizontal offset */
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+.button span:after {
+  content: "\00AB"; /* Left guillemet « */
+  margin-right: 5px;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+.button:hover span {
+  padding-right: 25px;
+}
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+.beds-page-container {
+    padding: 20px;
+}
+
+/* Pastel container around the table */
+.table-container {
+  background: rgba(185, 178, 226, 0.64); 
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+  padding: 8px 0;
+  max-width: 1800px;
+  margin: 20px auto; /* center horizontally */
+  box-sizing: border-box;
+}
+
+/* The table itself */
+.beds-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Table header */
+.beds-table thead th {
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  padding-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Table cells */
+.beds-table td, .beds-table th {
+  padding: 16px 24px;
+  vertical-align: middle;
+  border: none;
+}
+
+/* Row height ~72px */
+.beds-table tbody tr {
+  height: 72px;
+}
+
+/* Pastel row striping */
+.beds-table tbody tr:nth-child(odd) {
+  background: #B0AAD4;
+}
+.beds-table tbody tr:nth-child(even) {
+  background: #EDF4FC;
+}
+
+/* Hover effect (optional) */
+.beds-table tbody tr:hover {
+  opacity: 0.95;
+}
+
+/* Link styles for "Edit"/"Delete" */
+.beds-table a {
+  color: #7721a5;
+  text-decoration: none;
+  margin-right: 10px;
+  transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.beds-table a:hover {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+
+/* Occupied Pill */
+.occupied-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+}
+.occupied-badge.true {
+  background-color: #EB5757; /* red if occupied == true */
+}
+.occupied-badge.false {
+  background-color: #27AE60; /* green if occupied == false */
+}
+
+/* Base bed status pill style */
+.bed-status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+}
+
+/* Example statuses - adjust as needed */
+.bed-status-badge.AVAILABLE {
+  background-color: #27AE60; /* green */
+}
+.bed-status-badge.OCCUPIED {
+  background-color: #EB5757; /* red */
+}
+.bed-status-badge.UNDER_MAINTENANCE {
+  background-color: #F0912B;
+}
+/* Create form container in manage-beds-hsp.html */
+.create-form-container {
+  margin: 20px auto; /* center horizontally */
+  max-width: 500px;
+  background: rgba(185, 178, 226, 0.64);
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+  padding: 20px;
+}
+.create-form-container h2 {
+  text-align: center;
+  margin-bottom: 16px;
+  color: #333;
+}
+.create-form-container label {
+  display: block;
+  margin: 10px 0 4px;
+  color: #333;
+  font-weight: 500;
+}
+.create-form-container input[type="text"],
+.create-form-container input[type="checkbox"] {
+  margin-bottom: 12px;
+}
+.create-form-container input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.create-form-container button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #7721a5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.create-form-container button:hover {
+  background-color: #5a1484;
+}
+
+/* For edit-bed-hsp.html: center the form both ways */
+.edit-bed-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* full screen */
+    box-sizing: border-box;
+}
+
+.edit-bed-form {
+    background: rgba(185, 178, 226, 0.64);
+    border: 1px solid #3F779B;
+    border-radius: 12px;
+    padding: 20px;
+    width: 400px; /* fixed width for the form */
+    text-align: center;
+}
+
+.edit-bed-form h1 {
+    margin-bottom: 16px;
+    color: #333;
+}
+.edit-bed-form label {
+    display: block;
+    text-align: left;
+    margin: 12px 0 4px;
+    color: #333;
+    font-weight: 500;
+}
+.edit-bed-form input[type="text"],
+.edit-bed-form input[type="checkbox"] {
+    margin-bottom: 12px;
+}
+.edit-bed-form input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.edit-bed-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #7721a5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+}
+.edit-bed-form button:hover {
+    background-color: #5a1484;
+}

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Manage OPD Queue</title>
+    <!-- Link the CSS -->
+    <link rel="stylesheet" th:href="@{/css/manage-opdqueue-hsp.css}" />
+</head>
+<body>
+<a th:href="@{/hospitalAdmin/dashboard}" class="button"><span>Back</span></a>
+<div class="opdqueue-page-container">
+    <h1>Manage OPD Queue</h1>
+
+    <!-- Table Container (pastel stripes) -->
+    <div class="table-container">
+        <table class="opdqueue-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Registration Time</th>
+                    <th>Status</th>
+                    <th>Token #</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="q : ${queueList}">
+                    <td th:text="${q.opdQueueId}">1</td>
+
+                    <!-- Patient Name (if you have q.patient) -->
+                    <td th:text="${q.patient != null ? q.patient.name : 'N/A'}">Patient</td>
+
+                    <!-- Doctor Name (if you have q.doctor) -->
+                    <td th:text="${q.doctor != null ? q.doctor.name : 'N/A'}">Doctor</td>
+
+                    <td th:text="${#temporals.format(q.registrationTime, 'yyyy-MM-dd HH:mm')}">2025-03-20 10:30</td>
+
+                    <!-- If you want a pill for status, do something like: -->
+                    <td>
+                      <span class="queue-status-badge"
+                            th:classappend="' ' + ${q.queueStatus}">
+                        <span th:text="${q.queueStatus}"></span>
+                      </span>
+                    </td>
+
+                    <td th:text="${q.tokenNumber}">101</td>
+
+                    <td>
+                        <a th:href="@{/hospitalAdmin/opdQueue/edit/{id}(id=${q.opdQueueId})}">Edit</a>
+                        <a th:href="@{/hospitalAdmin/opdQueue/delete/{id}(id=${q.opdQueueId})}"
+                           onclick="return confirm('Are you sure you want to delete this queue entry?');">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Create New Queue Form -->
+<div class="create-form-container">
+    <h2>Create New Queue Entry</h2>
+    <form th:action="@{/hospitalAdmin/opdQueue}" th:object="${newQueue}" method="post">
+
+        <!-- Patient dropdown -->
+        <label>Patient:</label>
+        <select th:field="*{patient.patientId}">
+            <option th:each="pat : ${patientList}"
+                    th:value="${pat.patientId}"
+                    th:text="${pat.name}">
+            </option>
+        </select>
+
+        <!-- Doctor dropdown -->
+        <label>Doctor:</label>
+        <select th:field="*{doctor.doctorId}">
+            <option th:each="doc : ${doctorList}"
+                    th:value="${doc.doctorId}"
+                    th:text="${doc.name}">
+            </option>
+        </select>
+
+        <label>Registration Time:</label>
+        <input type="datetime-local" th:field="*{registrationTime}" />
+
+        <label>Status:</label>
+        <input type="text" th:field="*{queueStatus}" />
+
+        <label>Token #:</label>
+        <input type="number" th:field="*{tokenNumber}" />
+
+        <button type="submit">Create</button>
+    </form>
+</div>
+
+</div>
+
+</body>
+</html>

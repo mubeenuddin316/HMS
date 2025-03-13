@@ -1,0 +1,121 @@
+@charset "UTF-8";
+
+/* 
+   hospital-admin-profile-hsp.css
+   - Pastel gradient background
+   - Centered form container
+   - Fancy "Back" button with arrow
+*/
+
+/* Pastel gradient background for entire page */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(
+        116.21deg,
+        rgba(216, 210, 252, 0.352) 1.56%,
+        rgba(151, 71, 255, 0.374) 43.54%,
+        rgba(56, 13, 227, 0.55) 91.44%
+    );
+}
+
+/* The custom .button style with "Back" arrow effect */
+.button {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 5px;
+  width: 139px;
+  height: 28px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 15px;
+  position: relative;
+  top: 30px;
+  left: 50px;
+}
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+.button span:after {
+  content: "\00AB"; /* Left guillemet « */
+  margin-right: 5px;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+.button:hover span {
+  padding-right: 25px;
+}
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+/* Center the form container vertically & horizontally */
+.admin-profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* The pastel box for the profile form */
+.admin-profile-form {
+    background: rgba(185, 178, 226, 0.64);
+    border: 1px solid #3F779B;
+    border-radius: 12px;
+    padding: 20px;
+    width: 400px;
+    text-align: center;
+}
+
+.admin-profile-form h1 {
+    margin-bottom: 16px;
+    color: #333;
+}
+
+.admin-profile-form label {
+    display: block;
+    text-align: left;
+    margin: 12px 0 4px;
+    color: #333;
+    font-weight: 500;
+}
+
+.admin-profile-form input {
+    margin-bottom: 12px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.admin-profile-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #7721a5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+}
+.admin-profile-form button:hover {
+    background-color: #5a1484;
+}

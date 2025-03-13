@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit OPD Queue</title>
+    <link rel="stylesheet" th:href="@{/css/manage-opdqueue-hsp.css}" />
+</head>
+<body>
+<a th:href="@{/hospitalAdmin/patients}" class="button"><span>Back</span></a>
+<div class="edit-queue-container">
+    <div class="edit-queue-form">
+        <h1>Edit OPD Queue</h1>
+
+        <form th:action="@{/hospitalAdmin/opdQueue/edit}" th:object="${opdQueue}" method="post">
+            <!-- Hidden ID -->
+            <input type="hidden" th:field="*{opdQueueId}" />
+
+            <!-- Patient dropdown -->
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}">
+                <option th:each="p : ${patientList}"
+                    th:value="${p.patientId}"
+                    th:text="${p.name}"
+                    th:selected="${p.patientId} == *{patient.patientId}">
+                </option>
+            </select>
+            <!-- Doctor dropdown -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}">
+                <option th:each="d : ${doctorList}"
+                    th:value="${d.doctorId}"
+                    th:text="${d.name}"
+                    th:selected="${d.doctorId} == *{doctor.doctorId}">
+                </option>
+            </select>
+
+
+            <label>Registration Time:</label>
+            <input type="datetime-local" th:field="*{registrationTime}" />
+
+            <label>Status:</label>
+            <input type="text" th:field="*{queueStatus}" />
+
+            <label>Token #:</label>
+            <input type="number" th:field="*{tokenNumber}" />
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

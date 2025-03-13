@@ -23,4 +23,8 @@ public interface BedRepository extends JpaRepository<Bed, Integer> {
 
     // ✅ Add this method to count total beds
     long count();
+    
+    long countByHospital_HospitalId(Integer hospitalId);
+    long countByHospital_HospitalIdAndIsOccupiedTrue(Integer hospitalId);
+
 }

@@ -29,5 +29,22 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
             "FROM Appointment a " +
             "GROUP BY a.hospital.name")
      List<HospitalAppointmentCountDTO> findHospitalAppointmentCounts();
+    
+    // Count how many appointments in a certain status for a given hospital
+    long countByHospital_HospitalIdAndStatus(Integer hospitalId, Appointment.AppointmentStatus status);
+
+    // For retrieving last 30 appointments (descending by date/time) with certain statuses
+    @Query("""
+           SELECT a 
+             FROM Appointment a
+            WHERE a.hospital.hospitalId = :hospitalId
+              AND a.status IN :statuses
+         ORDER BY a.appointmentDatetime DESC
+           """)
+    List<Appointment> findRecentAppointmentsByStatuses(
+            @Param("hospitalId") Integer hospitalId,
+            @Param("statuses") List<Appointment.AppointmentStatus> statuses,
+            org.springframework.data.domain.Pageable pageable
+    );
 
 }

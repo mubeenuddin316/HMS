@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Doctors</title>
+    <link rel="stylesheet" th:href="@{/css/manage-doctors.css}" />
+</head>
+<body>
+<a th:href="@{/hospitalAdmin/dashboard}" class="button"><span>Back</span></a>
+
+<h1>Manage Doctors</h1>
+
+<!-- Table Container -->
+<div class="table-container">
+    <table class="manage-doctors-table">
+        <thead>
+            <tr>
+                <th>Doctor ID</th>
+                <th>Name</th>
+                <th>Specialization</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="doc : ${doctors}">
+                <td th:text="${doc.doctorId}">ID</td>
+                <td th:text="${doc.name}">Name</td>
+                <td th:text="${doc.specialization}">Spec</td>
+                <td th:text="${doc.email}">Email</td>
+                <td th:text="${doc.password}">Pass</td>
+                <td>
+                    <a th:href="@{/hospitalAdmin/doctors/edit/{id}(id=${doc.doctorId})}">Edit</a>
+                    <a th:href="@{/hospitalAdmin/doctors/delete/{id}(id=${doc.doctorId})}"
+                       onclick="return confirm('Are you sure you want to delete this doctor?');">
+                       Delete
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Create New Doctor Form -->
+<div class="create-form-container">
+    <h2>Create New Doctor</h2>
+    <form th:action="@{/hospitalAdmin/doctors}" th:object="${newDoctor}" method="post">
+        <label>Name:</label>
+        <input type="text" th:field="*{name}" required/>
+
+        <label>Specialization:</label>
+        <input type="text" th:field="*{specialization}" />
+
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" required/>
+
+        <label>Password:</label>
+        <input type="text" th:field="*{password}" required/>
+
+        <label>Profile Image Path:</label>
+        <input type="text" th:field="*{profileImagePath}" />
+
+        <button type="submit">Create</button>
+    </form>
+</div>
+
+</body>
+</html>

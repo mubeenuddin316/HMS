@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Hospital Admin Profile</title>
+    <link rel="stylesheet" th:href="@{/css/hospital-admin-profile-hsp.css}" />
+</head>
+<body>
+
+<!-- Back button to the hospital admin dashboard -->
+<a th:href="@{/hospitalAdmin/dashboard}" class="button"><span>Back</span></a>
+
+<div class="admin-profile-container">
+    <div class="admin-profile-form">
+        <h1>Hospital Admin Profile</h1>
+
+        <form th:action="@{/hospitalAdmin/profile}"
+              th:object="${adminProfile}"
+              method="post">
+
+            <!-- Hidden ID (if needed) -->
+            <input type="hidden" th:field="*{hospitalAdminId}" />
+
+            <label>Name:</label>
+            <input type="text" th:field="*{adminName}" required/>
+
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required/>
+
+            <label>Password:</label>
+            <input type="text" th:field="*{password}" required/>
+
+            <label>Phone Number:</label>
+            <input type="text" th:field="*{phoneNumber}" />
+
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

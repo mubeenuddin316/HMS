@@ -1,0 +1,356 @@
+@charset "UTF-8";
+
+/* 
+   Overall Theme: 
+   - Light pastel background (#f0f4fa or similar)
+   - Pastel-colored cards
+   - Table with color-coded "status" pills 
+   - Minimal side margin ~ 20px 
+*/
+
+/* Reset/Basic */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f0f4fa; /* Pastel background from screenshot */
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(220.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    color: #fff;
+    padding: 10px 20px;
+    position: fixed; /* Keep it fixed on top */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000; /* Ensure it stays above other elements */
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+.header-buttons .btn {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+}
+.logout {
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 60px; /* below header */
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    background: linear-gradient(45.82deg, #6D60AA 13.7%, #2C2644 101.63%);
+    padding-top: 20px;
+    border-top-right-radius: 50px; /* Increase to 100, 120, etc. for a bigger curve */
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.sidebar-btn {
+    display: block;
+    width: 100%;
+    background: none;
+    color: #fff;
+    border: none;
+    text-align: left;
+    padding: 15px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.sidebar-btn:hover {
+    background-color: #fff;
+    color: black;
+    font-weight: 600;
+}
+
+/* Main Content */
+.dashboard-content {
+    margin-left: 220px; /* space for sidebar */
+    padding: 20px;
+    padding-top: 80px; /* push down below the fixed header */
+    min-height: 100vh; /* ensure full screen */
+    background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%, rgba(56, 13, 227, 0.55) 91.44%);
+    box-shadow: 0px 4px 15px rgba(216, 210, 252, 0.64);
+}
+
+/* Intro Section */
+.intro-section {
+    margin-bottom: 20px;
+}
+.intro-section h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 8px;
+}
+.intro-section p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Stats Rows */
+.stats-row {
+    display: flex;
+    flex-wrap: wrap; /* in case the screen is small, wrap */
+    gap: 100px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Stat Cards - base */
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 24px;
+    isolation: isolate;
+    width: 400px;
+    height: 152px;
+    background: linear-gradient(102.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    border-radius: 12px;
+}
+
+.stat-card:hover{
+	background: radial-gradient(circle, #6D60AA -60.7%, #2C2644 101.63%);
+}
+.stat-card h2 {
+    margin-bottom: 5px;
+    font-size: 34px;
+    font-weight: 600;
+    color: white;
+}
+.stat-card p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    color: white;
+}
+
+
+/* small-card vs big-card from second screenshot */
+.small-card {
+    width: 250px;
+    color: #fff; /* text is white in big pastel boxes from screenshot */
+    font-weight: 600;
+    text-align: left;
+    position: relative;
+    padding: 20px 25px;
+    
+}
+.big-card {
+    width: 250px;
+    color: #fff; /* text is white in big pastel boxes from screenshot */
+    font-weight: 600;
+    text-align: left;
+    position: relative;
+    padding: 20px 25px;
+    
+}
+
+/* 
+   For big cards, we want them pastel and text white, 
+   so let's define background color classes:
+*/
+.scheduled-card {
+    background: linear-gradient(102.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    border-radius: 12px;
+}
+.pending-card {
+    background: linear-gradient(102.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    border-radius: 12px;
+}
+.cancelled-card {
+    background: linear-gradient(102.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    border-radius: 12px;
+}
+
+/* If you want the text inside these big cards to be white, 
+   pick deeper colors or change text color as needed. 
+   Here we demonstrate color-coded text. 
+*/
+
+/* A neutral card for smaller ones (doctors/beds) */
+.neutral-card {
+    background-color: #fff;
+    color: #333;
+}
+
+/* Utility Bar */
+.utility-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.search-bar {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.notifications {
+    cursor: pointer;
+}
+
+/* Appointments Section */
+.appointments-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex-start;
+    background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%);
+    box-shadow: 0px 4px 15px rgba(216, 210, 252, 0.64);
+    
+}
+.appointments-section h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: #0000FF;
+    padding-left: 20px;
+}
+
+/* Container that replicates the Figma box around the table */
+.table-container {
+   /* Figma background & border */
+  background: rgba(185, 178, 226, 0.64);
+  border: 1px solid #3F779B;
+  border-radius: 12px;
+  position: center;
+
+  /* Reduce or remove horizontal padding to remove left/right space. 
+     Keep minimal top/bottom if you like. */
+  padding: 8px 0; /* 8px top/bottom, 0 left/right */
+
+  /* If you want to keep the container centered, keep margin: 0 auto; 
+     or remove it if you want it flush with the parent container. */
+  max-width: 1800px;
+  margin: 0 auto; 
+  box-sizing: border-box;
+  
+}
+
+/* The actual table inside the container */
+.appointments-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0; /* no gaps between cells horizontally, 
+                        we’ll handle row background with nth-child */
+}
+
+/* Table Header */
+.appointments-table thead th {
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  padding-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Table Cells */
+.appointments-table td, .appointments-table th {
+  padding: 16px 24px; /* from Figma “table cell” style */
+  vertical-align: middle;
+  border: none; /* remove any default lines */
+}
+
+/* Row height: Figma shows ~72px tall rows */
+.appointments-table tbody tr {
+  height: 72px;
+}
+
+/* Pastel row striping to mimic the purple/blue from Figma:
+   odd row = pastel purple (#B0AAD4)
+   even row = pastel bluish (#EDF4FC) 
+   Adjust if you want different colors from the screenshot.
+*/
+.appointments-table tbody tr:nth-child(odd) {
+  background: #B0AAD4;
+  transition: font-weight 0.5s ease, text-decoration 1s ease;
+}
+.appointments-table tbody tr:nth-child(even) {
+  background: #EDF4FC;
+  transition: font-weight 0.5s ease, text-decoration 1s ease;
+}
+
+
+.appointments-table tbody tr:hover {
+  font-weight: 600;
+}
+/* Optionally, remove row hover highlight from old code
+   or define a custom hover if you want:
+*/
+.appointments-table tbody tr:hover {
+  opacity: 0.95; /* subtle hover effect */
+}
+
+/* Status pill (same as your code) */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+}
+
+/* Color-coded statuses (unchanged) */
+.status-badge.SCHEDULED {
+  background-color: #8E72F1; /* purple */
+}
+.status-badge.PENDING {
+  background-color: #2D9BF0; /* blue */
+}
+.status-badge.CANCELLED {
+  background-color: #EB5757; /* red */
+}
+.status-badge.RESCHEDULED {
+  background-color: #F0912B; /* orange */
+}
+.status-badge.COMPLETED {
+  background-color: #27AE60; /* green */
+}
+
+/* Action links: schedule/cancel (unchanged) */
+.schedule-link {
+  color: #7721a5;
+  text-decoration: none;
+  margin-right: 10px;
+  transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.schedule-link:hover {
+  text-decoration: underline;
+  font-weight: 600;
+}
+.cancel-link {
+  color: #EB5757;
+  text-decoration: none;
+  transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.cancel-link:hover {
+  text-decoration: underline;
+  font-weight: 600;
+}
+

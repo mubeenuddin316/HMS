@@ -41,7 +41,8 @@ public class Appointment {
         SCHEDULED,
         RESCHEDULED,
         CANCELLED,
-        COMPLETED
+        COMPLETED,
+        PENDING
     }
 
     

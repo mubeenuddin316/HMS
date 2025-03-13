@@ -25,9 +25,15 @@ body {
 
 .left-section-container {
     width: 50%;
-    display: flex-start;
+    display: flex;
     align-items: center;
-    justify-content: center;
+    
+}
+
+.left-section-container h2 {
+	color: white;
+	font-weight: 600;
+    shadow: black 2px;
 }
 
 
