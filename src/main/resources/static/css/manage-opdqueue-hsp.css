@@ -270,15 +270,15 @@ body {
   color: #fff;
   display: inline-block;
 }
-.queue-status-badge.Waiting {
+.queue-status-badge.WAITING {
   background-color: #2D9BF0; /* e.g. blue for 'Waiting' */
 }
-.queue-status-badge.BeingServed {
+.queue-status-badge.BEINGSERVED {
   background-color: #F0912B; /* orange */
 }
-.queue-status-badge.Completed {
+.queue-status-badge.COMPLETED {
   background-color: #27AE60; /* green */
 }
-.queue-status-badge.Cancelled {
+.queue-status-badge.CANCELLED {
   background-color: #EB5757; /* red */
 }

@@ -3,6 +3,7 @@ package com.medorb.HMS.controller;
 
 import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Appointment.AppointmentStatus;
+import com.medorb.HMS.model.OpdQueue.QueueStatus;
 import com.medorb.HMS.model.Bed;
 import com.medorb.HMS.model.Doctor; // ADD: import Doctor
 import com.medorb.HMS.model.HospitalAdmin;
@@ -563,7 +564,7 @@ public class HospitalAdminViewController {
 
         // Set a default status if needed
         if (newQueue.getQueueStatus() == null) {
-            newQueue.setQueueStatus("Waiting");
+            newQueue.setQueueStatus(QueueStatus.WAITING);
         }
 
         opdQueueRepository.save(newQueue);

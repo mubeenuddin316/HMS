@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor OPD Queue</title>
+    <link rel="stylesheet" th:href="@{/css/doctor-dashboard.css}" />
+</head>
+<body>
+
+    <!-- Fixed Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
+            <span>MedOrb Group</span>
+        </div>
+        <div class="welcome-message">
+            Welcome, <span th:text="${doctor != null ? doctor.name : 'Doctor'}">Doctor</span>
+        </div>
+        <div class="header-buttons">
+            <a th:href="@{/logout}" class="btn logout">Logout</a>
+        </div>
+    </header>
+
+    <!-- Curved Sidebar -->
+    <aside class="sidebar">
+        <button class="sidebar-btn">My Profile</button>
+        <button class="sidebar-btn">Appointments</button>
+        <button class="sidebar-btn">Patients</button>
+        <!-- Highlight OPD Queue in the sidebar -->
+        <button class="sidebar-btn" style="background-color: rgba(255,255,255,0.3); font-weight: 600;">
+            OPD Queue
+        </button>
+        <button class="sidebar-btn">Reports</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+
+        <!-- Back to Dashboard link -->
+        <p>
+            <a th:href="@{/doctor/dashboard}"
+               style="color: #fff; background-color: #007bff; padding: 8px 12px; border-radius: 4px; text-decoration: none;">
+               ← Back to Dashboard
+            </a>
+        </p>
+
+        <h1 style="margin-bottom: 20px; color: #333;">OPD Queue</h1>
+
+        <div class="appointments-section">
+            <h2>Queue Entries</h2>
+            <div class="table-container">
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Token #</th>
+                            <th>Queue Status</th>
+                            <th>Registration Time</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Use the attribute name from your controller: "opdQueueEntries" -->
+                        <tr th:each="q : ${opdQueueEntries}">
+                            <!-- If you store the patient's name, show it or "N/A" -->
+                            <td th:text="${q.patient != null ? q.patient.name : 'N/A'}">N/A</td>
+
+                            <!-- Token number -->
+                            <td th:text="${q.tokenNumber}">0</td>
+
+                            <!-- Enum-based queueStatus -->
+                            <td th:text="${q.queueStatus}">WAITING</td>
+
+                            <!-- Format registrationTime if desired -->
+                            <td th:text="${#temporals.format(q.registrationTime, 'yyyy-MM-dd HH:mm')}">2025-03-25 10:30</td>
+
+                            <td>
+                                <!-- Mark as "BeingServed" -->
+                                <a th:href="@{/doctor/opdQueue/inProgress/{id}(id=${q.opdQueueId})}">
+                                    Being Served
+                                </a>
+                                |
+                                <!-- Mark as "Completed" -->
+                                <a th:href="@{/doctor/opdQueue/complete/{id}(id=${q.opdQueueId})}"
+                                   onclick="return confirm('Mark this queue entry as completed?');">
+                                   Complete
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> <!-- end .table-container -->
+        </div> <!-- end .appointments-section -->
+
+    </main>
+</body>
+</html>

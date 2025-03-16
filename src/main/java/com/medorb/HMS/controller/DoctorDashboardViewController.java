@@ -3,8 +3,11 @@ package com.medorb.HMS.controller;
 import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Appointment.AppointmentStatus;
 import com.medorb.HMS.model.Doctor;
+import com.medorb.HMS.model.OpdQueue;
+import com.medorb.HMS.model.OpdQueue.QueueStatus;
 import com.medorb.HMS.model.Patient;
 import com.medorb.HMS.repository.AppointmentRepository;
+import com.medorb.HMS.repository.OpdQueueRepository;
 import com.medorb.HMS.repository.PatientRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,13 +31,16 @@ public class DoctorDashboardViewController {
     
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
+    private final OpdQueueRepository opdQueueRepository;
     
     @Autowired
     public DoctorDashboardViewController (AppointmentRepository appointmentRepository,
-    		                              PatientRepository patientRepository
+    		                              PatientRepository patientRepository,
+    		                              OpdQueueRepository opdQueueRepository
     ) {
     	this.appointmentRepository = appointmentRepository;
     	this.patientRepository = patientRepository;
+    	this.opdQueueRepository = opdQueueRepository;
     	
     }
 	
@@ -264,5 +270,119 @@ public class DoctorDashboardViewController {
         // 4) Redirect back to /doctor/appointments
         return "redirect:/doctor/appointments";
     }
+    
+ // 1) GET /doctor/patients - show all patients + a create form
+    @GetMapping("/doctor/patients")
+    public String showAllPatients(HttpServletRequest request, Model model) {
+        // Check if doctor is logged in
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/"; // Not logged in
+        }
+
+        // Fetch all patients
+        List<Patient> allPatients = patientRepository.findAll();
+
+        // Provide a new Patient object for the create form
+        Patient newPatient = new Patient();
+
+        // Put them in the model
+        model.addAttribute("doctor", loggedInDoctor);
+        model.addAttribute("allPatients", allPatients);
+        model.addAttribute("newPatient", newPatient);
+
+        return "doctor-patients"; // Thymeleaf template
+    }
+
+    // 2) POST /doctor/patients - create a new patient
+    @PostMapping("/doctor/patients")
+    public String createPatient(@ModelAttribute("newPatient") Patient formPatient,
+                                HttpServletRequest request) {
+        // Check if doctor is logged in
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/";
+        }
+
+        // You could do validation or re-check for duplicates if you want
+
+        // Save the new patient
+        patientRepository.save(formPatient);
+
+        // Redirect back to the patients list
+        return "redirect:/doctor/patients";
+    }
+    
+ // 1) GET /doctor/opdQueue - List all queue entries for the logged-in doctor
+    @GetMapping("/doctor/opdQueue")
+    public String showDoctorOpdQueue(HttpServletRequest request, Model model) {
+        // Check if doctor is logged in
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/"; // Not logged in
+        }
+        Integer doctorId = loggedInDoctor.getDoctorId();
+
+        // Fetch queue entries for this doctor (you can define a method in OpdQueueRepository)
+        // e.g. findByDoctor_DoctorIdOrderByRegistrationTimeAsc, or do a .stream() sort
+        List<OpdQueue> queueEntries = opdQueueRepository.findByDoctor_DoctorId(doctorId);
+
+        // Sort by tokenNumber or registrationTime ascending if you want:
+        queueEntries = queueEntries.stream()
+            .sorted((a, b) -> {
+                // Example: sort by tokenNumber ascending, if not null
+                if (a.getTokenNumber() != null && b.getTokenNumber() != null) {
+                    return a.getTokenNumber().compareTo(b.getTokenNumber());
+                }
+                // fallback: compare by registrationTime
+                return a.getRegistrationTime().compareTo(b.getRegistrationTime());
+            })
+            .toList();
+
+        model.addAttribute("doctor", loggedInDoctor);
+        model.addAttribute("opdQueueEntries", queueEntries);
+
+        return "doctor-opdqueue"; // The thymeleaf template we'll create
+    }
+
+    // 2) Mark queue entry as "In Progress" (example)
+    @GetMapping("/doctor/opdQueue/inProgress/{queueId}")
+    public String markInProgress(@PathVariable Integer queueId,
+                                 HttpServletRequest request) {
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/";
+        }
+        Optional<OpdQueue> optQueue = opdQueueRepository.findById(queueId);
+        if (optQueue.isPresent()) {
+            OpdQueue dbQueue = optQueue.get();
+            // Ensure it belongs to this doctor
+            if (dbQueue.getDoctor().getDoctorId().equals(loggedInDoctor.getDoctorId())) {
+                dbQueue.setQueueStatus(QueueStatus.BEINGSERVED); // or "BeingServed"
+                opdQueueRepository.save(dbQueue);
+            }
+        }
+        return "redirect:/doctor/opdQueue";
+    }
+
+    // 3) Mark queue entry as "Completed"
+    @GetMapping("/doctor/opdQueue/complete/{queueId}")
+    public String markCompleted(@PathVariable Integer queueId,
+                                HttpServletRequest request) {
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/";
+        }
+        Optional<OpdQueue> optQueue = opdQueueRepository.findById(queueId);
+        if (optQueue.isPresent()) {
+            OpdQueue dbQueue = optQueue.get();
+            if (dbQueue.getDoctor().getDoctorId().equals(loggedInDoctor.getDoctorId())) {
+                dbQueue.setQueueStatus(QueueStatus.COMPLETED);
+                opdQueueRepository.save(dbQueue);
+            }
+        }
+        return "redirect:/doctor/opdQueue";
+    }
+
 
 }

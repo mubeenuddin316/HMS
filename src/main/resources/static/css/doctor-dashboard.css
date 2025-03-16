@@ -251,6 +251,7 @@ body {
 }
 
 /* Pastel form fields for the create appointment form */
+.appointments-section form input,
 .appointments-section form input[type="datetime-local"],
 .appointments-section form select,
 .appointments-section form textarea {
@@ -270,6 +271,7 @@ body {
     outline: none; /* We handle focus styles below */
 }
 
+.appointments-section form input:focus,
 .appointments-section form input[type="datetime-local"]:focus,
 .appointments-section form select:focus,
 .appointments-section form textarea:focus {

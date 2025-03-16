@@ -32,13 +32,20 @@ public class OpdQueue {
     @Column(name = "queue_entry_time", nullable = false, updatable = false, 
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime registrationTime;
-
-    @Column(name = "queue_status")
-    private String queueStatus;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "queue_status", nullable = false)
+    private QueueStatus queueStatus = QueueStatus.WAITING;;
 
     @Column(name = "queue_number")
     private Integer tokenNumber;
-
+    
+    public enum QueueStatus {
+        BEINGSERVED,
+        CANCELLED,
+        WAITING,
+        COMPLETED
+    }
 
     public OpdQueue() {
         // Default constructor
@@ -113,11 +120,11 @@ public class OpdQueue {
 		this.registrationTime = registrationTime;
 	}
 
-	public String getQueueStatus() {
+	public QueueStatus getQueueStatus() {
 		return queueStatus;
 	}
 
-	public void setQueueStatus(String queueStatus) {
+	public void setQueueStatus(QueueStatus queueStatus) {
 		this.queueStatus = queueStatus;
 	}
 
