@@ -92,15 +92,23 @@ public class ViewController {
     
     // ✅ Doctor Login
     @PostMapping("/doctor/login")
-    public String loginDoctor(@RequestParam String email, @RequestParam String password, Model model) {
+    public String loginDoctor(@RequestParam String email,
+                              @RequestParam String password,
+                              HttpServletRequest request,
+                              Model model) {
         Optional<Doctor> doctorOptional = doctorService.getDoctorByEmail(email);
 
         if (doctorOptional.isPresent() && doctorOptional.get().getPassword().equals(password)) {
-            model.addAttribute("doctor", doctorOptional.get());
-            return "doctor-dashboard";
+            Doctor doctor = doctorOptional.get();
+            // 1) Put the doctor in session
+            request.getSession().setAttribute("loggedInDoctor", doctor);
+
+            // 2) Redirect to /doctor/dashboard so that code which fetches appointments is called
+            return "redirect:/doctor/dashboard";
+
         } else {
             model.addAttribute("doctorError", "Invalid email or password");
-            return "index";
+            return "index"; // back to login page
         }
     }
 

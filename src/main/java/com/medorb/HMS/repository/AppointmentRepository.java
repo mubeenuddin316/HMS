@@ -2,6 +2,7 @@ package com.medorb.HMS.repository;
 
 import com.medorb.HMS.dto.HospitalAppointmentCountDTO;
 import com.medorb.HMS.model.Appointment;
+import com.medorb.HMS.model.Appointment.AppointmentStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,5 +47,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
             @Param("statuses") List<Appointment.AppointmentStatus> statuses,
             org.springframework.data.domain.Pageable pageable
     );
+    
+    long countByDoctor_DoctorIdAndStatus(Integer doctorId, AppointmentStatus status);
+    
+    List<Appointment> findByDoctor_DoctorIdAndAppointmentDatetimeBetween(Integer doctorId, LocalDateTime start, LocalDateTime end);
+
 
 }

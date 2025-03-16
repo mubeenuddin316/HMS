@@ -2,14 +2,130 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doctor Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard-style.css}">
+    <!-- Link to the new CSS that mimics hospital-admin style -->
+    <link rel="stylesheet" th:href="@{/css/doctor-dashboard.css}" />
 </head>
 <body>
-    <h1>Welcome to Doctor Dashboard</h1>
-    <p th:text="'Logged in as: ' + ${doctor.name}"></p>
-    <p th:text="'Specialization: ' + ${doctor.specialization}"></p>
-    <p><a href="/">Logout</a></p>
+
+    <!-- Fixed Header with gradient -->
+    <header class="header">
+        <div class="logo-container">
+            <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
+            <span>MedOrb Group</span>
+        </div>
+        <div class="welcome-message">
+            <!-- Show the doctor's name if available, else "Doctor" -->
+            Welcome, <span th:text="${doctor != null ? doctor.name : 'Doctor'}">Doctor Name</span>
+        </div>
+        <div class="header-buttons">
+            <!-- Logout button if needed -->
+            <a th:href="@{/logout}" class="btn logout">Logout</a>
+        </div>
+    </header>
+
+    <!-- Curved Sidebar with the same gradient as hospital-admin -->
+    <aside class="sidebar">
+        <button class="sidebar-btn">My Profile</button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/doctor/appointments'">
+            Appointments
+        </button>
+        <button class="sidebar-btn">Patients</button>
+        <button class="sidebar-btn">Reports</button>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dashboard-content">
+        
+        <!-- Intro Section (Optional) -->
+        <div class="intro-section">
+            <h1>Welcome, Doctor</h1>
+            <p>Start day with managing new appointments</p>
+        </div>
+
+        <!-- Stats Row (similar to hospital-admin) -->
+        <div class="stats-row">
+            <!-- 
+              Each card can have the same big pastel style 
+              Or you can keep them smaller. We'll do big cards for a consistent look
+            -->
+            <div class="stat-card">
+                <h2 th:text="${totalAppointments}">0</h2>
+                <p>Total Appointments</p>
+            </div>
+            <div class="stat-card">
+                <h2 th:text="${scheduledCount}">0</h2>
+                <p>Scheduled</p>
+            </div>
+            <div class="stat-card">
+                <h2 th:text="${pendingCount}">0</h2>
+                <p>Pending</p>
+            </div>
+            <div class="stat-card">
+                <h2 th:text="${cancelledCount}">0</h2>
+                <p>Cancelled</p>
+            </div>
+            <div class="stat-card">
+                <h2 th:text="${completedCount}">0</h2>
+                <p>Completed</p>
+            </div>
+        </div>
+
+        <!-- Utility bar for search / notifications (optional) -->
+        <div class="utility-bar">
+            <input type="text" placeholder="Search..." class="search-bar">
+            <div class="notifications">
+                <span>🔔 Notifications</span>
+            </div>
+        </div>
+
+        <!-- Appointments Section (like "hospital-admin") -->
+        <div class="appointments-section">
+            <h2>Upcoming Appointments</h2>
+
+            <!-- Container for the pastel table -->
+            <div class="table-container">
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- upcomingAppointments from your controller -->
+                        <tr th:each="app : ${upcomingAppointments}">
+                            <td th:text="${app.patient != null ? app.patient.name : 'N/A'}">N/A</td>
+                            <td th:text="${#temporals.format(app.appointmentDatetime, 'yyyy-MM-dd')}">2025-03-25</td>
+                            <td th:text="${#temporals.format(app.appointmentDatetime, 'HH:mm')}">10:30</td>
+                            <!-- Status with color-coded pill -->
+                            <td>
+                                <span class="status-badge" th:classappend="' ' + ${app.status}">
+                                    <span th:text="${app.status}">Scheduled</span>
+                                </span>
+                            </td>
+
+                            <td>
+                                <a th:href="@{/doctor/appointments/reschedule/{id}(id=${app.appointmentId})}">
+                                    Reschedule
+                                </a>
+                                |
+                                <a th:href="@{/doctor/appointments/cancel/{id}(id=${app.appointmentId})}"
+                                   onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                   Cancel
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> <!-- end table-container -->
+        </div> <!-- end appointments-section -->
+
+    </main>
+
 </body>
 </html>

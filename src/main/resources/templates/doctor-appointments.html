@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Appointments</title>
+    <!-- Reuse the same pastel gradient style as doctor-dashboard.css -->
+    <link rel="stylesheet" th:href="@{/css/doctor-dashboard.css}" />
+</head>
+<body>
+
+    <!-- Fixed Header with gradient (like your dashboard) -->
+    <header class="header">
+        <div class="logo-container">
+            <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
+            <span>MedOrb Group</span>
+        </div>
+        <div class="welcome-message">
+            Welcome, <span th:text="${doctor != null ? doctor.name : 'Doctor'}">Doctor</span>
+        </div>
+        <div class="header-buttons">
+            <a th:href="@{/logout}" class="btn logout">Logout</a>
+        </div>
+    </header>
+
+    <!-- Curved Sidebar with same gradient -->
+    <aside class="sidebar">
+        <!-- Highlight the “Appointments” item if you want, or just keep normal -->
+        <button class="sidebar-btn">My Profile</button>
+        <button class="sidebar-btn" style="background-color: rgba(255,255,255,0.3); font-weight: 600;">
+            Appointments
+        </button>
+        <button class="sidebar-btn">Patients</button>
+        <button class="sidebar-btn">Reports</button>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="dashboard-content">
+
+        <!-- Back button to go to doctor/dashboard if you want -->
+        <p>
+            <a th:href="@{/doctor/dashboard}"
+               style="color: #fff; background-color: #007bff; padding: 8px 12px; border-radius: 4px; text-decoration: none;">
+               ← Back to Dashboard
+            </a>
+        </p>
+
+        <h1 style="margin-bottom: 20px; color: #333;">All Appointments</h1>
+
+        <!-- Table container area, similar to your other pastel tables -->
+        <div class="appointments-section">
+            <h2>Appointment List</h2>
+            <div class="table-container">
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- doctorAppointments from the controller -->
+                        <tr th:each="app : ${doctorAppointments}">
+                            <td th:text="${app.patient != null ? app.patient.name : 'N/A'}">N/A</td>
+                            <td th:text="${#temporals.format(app.appointmentDatetime, 'yyyy-MM-dd')}">2025-03-25</td>
+                            <td th:text="${#temporals.format(app.appointmentDatetime, 'HH:mm')}">10:30</td>
+                            <!-- Status with color-coded pill -->
+                            <td>
+                                <span class="status-badge" th:classappend="' ' + ${app.status}">
+                                    <span th:text="${app.status}">Scheduled</span>
+                                </span>
+                            </td>
+
+                            <td>
+                                <!-- 
+                                  If you have reschedule/cancel logic: 
+                                  - GET /doctor/appointments/reschedule/{id}
+                                  - GET /doctor/appointments/cancel/{id}
+                                -->
+                                <a th:href="@{/doctor/appointments/reschedule/{id}(id=${app.appointmentId})}">Reschedule</a>
+                                |
+                                <a th:href="@{/doctor/appointments/cancel/{id}(id=${app.appointmentId})}"
+                                   onclick="return confirm('Are you sure to cancel this appointment?');">
+                                   Cancel
+                                </a>
+                                |
+                                <!-- Mark as Completed -->
+                                <a th:href="@{/doctor/appointments/complete/{id}(id=${app.appointmentId})}"
+                                   onclick="return confirm('Mark this appointment as completed?');">
+                                   Complete
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> <!-- end table-container -->
+        </div> <!-- end appointments-section -->
+        
+        <!-- Create New Appointment Form at the bottom -->
+        <div class="appointments-section" style="margin-top: 30px;">
+            <h2>Create New Appointment</h2>
+            <div class="table-container" style="padding: 20px;">
+                <form th:action="@{/doctor/appointments}"
+                      th:object="${newAppointment}"
+                      method="post"
+                      style="display: flex; flex-direction: column; gap: 15px;">
+
+                    <!-- Select a Patient -->
+                    <label>Patient:</label>
+                    <select th:field="*{patient.patientId}">
+                        <option th:each="p : ${allPatients}"
+                                th:value="${p.patientId}"
+                                th:text="${p.patientId} + ' : ' + ${p.name}">
+                        </option>
+                    </select>
+
+                    <!-- Appointment Date/Time -->
+                    <label>Appointment Date/Time:</label>
+                    <input type="datetime-local" th:field="*{appointmentDatetime}" required />
+
+                    <!-- Notes/Reason -->
+                    <label>Notes:</label>
+                    <textarea th:field="*{notes}" rows="3" style="resize: none;"></textarea>
+
+                    <!-- Submit button -->
+                    <button type="submit" style="background-color: #2D9BF0; color: #fff; border: none; padding: 10px; border-radius: 4px; cursor: pointer;">
+                        Create
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

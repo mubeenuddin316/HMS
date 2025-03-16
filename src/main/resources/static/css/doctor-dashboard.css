@@ -1,0 +1,298 @@
+@charset "UTF-8";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #f0f4fa; /* Pastel base background */
+}
+
+/* Fixed Gradient Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(220.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    color: #fff;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+.header-buttons .btn {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+}
+.logout {
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Curved Sidebar */
+.sidebar {
+    position: fixed;
+    top: 60px; /* below header */
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    background: linear-gradient(45.82deg, #6D60AA 13.7%, #2C2644 101.63%);
+    padding-top: 20px;
+    border-top-right-radius: 50px; /* big curve */
+    overflow: hidden;
+    overflow-y: auto;
+}
+.sidebar-btn {
+    display: block;
+    width: 100%;
+    background: none;
+    color: #fff;
+    border: none;
+    text-align: left;
+    padding: 15px 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.sidebar-btn:hover {
+    background-color: #fff;
+    color: black;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+/* Main Content Area */
+.dashboard-content {
+    margin-left: 220px; /* space for sidebar */
+    padding: 20px;
+    padding-top: 80px; /* push content below the fixed header */
+    min-height: 100vh; 
+    background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%, rgba(56, 13, 227, 0.55) 91.44%);
+    box-shadow: 0px 4px 15px rgba(216, 210, 252, 0.64);
+}
+
+/* Intro Section */
+.intro-section {
+    margin-bottom: 20px;
+}
+.intro-section h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 8px;
+}
+.intro-section p {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Stats Row for big pastel “cards” */
+.stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 24px;
+    width: 280px;
+    height: 152px;
+    background: linear-gradient(102.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    border-radius: 12px;
+    color: #fff; /* White text inside the card */
+}
+.stat-card:hover {
+    background: radial-gradient(circle, #6D60AA -60.7%, #2C2644 101.63%);
+}
+.stat-card h2 {
+    margin-bottom: 5px;
+    font-size: 34px;
+    font-weight: 600;
+}
+.stat-card p {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Utility Bar */
+.utility-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.search-bar {
+    width: 300px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.notifications {
+    cursor: pointer;
+}
+
+/* Appointments Section */
+.appointments-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%);
+    box-shadow: 0px 4px 15px rgba(216, 210, 252, 0.64);
+}
+.appointments-section h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: #0000FF;
+    padding-left: 20px;
+}
+
+/* Container for the pastel table */
+.table-container {
+    background: rgba(185, 178, 226, 0.64);
+    border: 1px solid #3F779B;
+    border-radius: 12px;
+    padding: 8px 0;
+    max-width: 1800px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* The actual table */
+.appointments-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.appointments-table thead th {
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+    padding-bottom: 8px;
+    font-weight: 600;
+}
+.appointments-table td, .appointments-table th {
+    padding: 16px 24px;
+    vertical-align: middle;
+    border: none;
+}
+.appointments-table tbody tr {
+    height: 72px;
+}
+
+/* Pastel row striping */
+.appointments-table tbody tr:nth-child(odd) {
+    background: #B0AAD4;
+    transition: font-weight 0.5s ease, text-decoration 1s ease;
+}
+.appointments-table tbody tr:nth-child(even) {
+    background: #EDF4FC;
+    transition: font-weight 0.5s ease, text-decoration 1s ease;
+}
+.appointments-table tbody tr:hover {
+    opacity: 0.95;
+}
+
+/* Status Badge for different statuses */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    display: inline-block;
+}
+.status-badge.SCHEDULED {
+    background-color: #8E72F1; /* purple */
+}
+.status-badge.PENDING {
+    background-color: #2D9BF0; /* blue */
+}
+.status-badge.CANCELLED {
+    background-color: #EB5757; /* red */
+}
+.status-badge.RESCHEDULED {
+    background-color: #F0912B; /* orange */
+}
+.status-badge.COMPLETED {
+    background-color: #27AE60; /* green */
+}
+
+/* Action links: reschedule/cancel */
+.appointments-table a {
+    color: #7721a5;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.appointments-table a:hover {
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* Pastel form fields for the create appointment form */
+.appointments-section form input[type="datetime-local"],
+.appointments-section form select,
+.appointments-section form textarea {
+    width: 90%;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+
+    font-size: 16px;
+    color: #333;
+    background-color: #fdfaff; /* Soft pastel background */
+    border: 2px solid #B69AD9; /* Pastel purple border */
+    border-radius: 8px;
+
+    /* Subtle inner shadow for depth */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none; /* We handle focus styles below */
+}
+
+.appointments-section form input[type="datetime-local"]:focus,
+.appointments-section form select:focus,
+.appointments-section form textarea:focus {
+    border-color: #8E72F1; /* darker purple on focus */
+    box-shadow: 0 0 0 3px rgba(142, 114, 241, 0.2); /* glow */
+}
+
+.appointments-section form textarea {
+    resize: none; /* keep text area size fixed if you like */
+    min-height: 80px;
+}
+
+/* Style the Create button (or any button in that form) */
+.appointments-section form button {
+    background: #2D9BF0; /* same blue as your schedule link if you want */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+}
+.appointments-section form button:hover {
+    background: #1b84d6;
+}
