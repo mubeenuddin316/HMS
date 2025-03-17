@@ -7,6 +7,7 @@ import com.medorb.HMS.model.OpdQueue;
 import com.medorb.HMS.model.OpdQueue.QueueStatus;
 import com.medorb.HMS.model.Patient;
 import com.medorb.HMS.repository.AppointmentRepository;
+import com.medorb.HMS.repository.DoctorRepository;
 import com.medorb.HMS.repository.OpdQueueRepository;
 import com.medorb.HMS.repository.PatientRepository;
 
@@ -32,15 +33,18 @@ public class DoctorDashboardViewController {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final OpdQueueRepository opdQueueRepository;
+    private final DoctorRepository doctorRepository;
     
     @Autowired
     public DoctorDashboardViewController (AppointmentRepository appointmentRepository,
     		                              PatientRepository patientRepository,
-    		                              OpdQueueRepository opdQueueRepository
+    		                              OpdQueueRepository opdQueueRepository,
+    		                              DoctorRepository doctorRepository
     ) {
     	this.appointmentRepository = appointmentRepository;
     	this.patientRepository = patientRepository;
     	this.opdQueueRepository = opdQueueRepository;
+    	this.doctorRepository = doctorRepository;
     	
     }
 	
@@ -161,32 +165,6 @@ public class DoctorDashboardViewController {
         return "redirect:/doctor/dashboard";
     }
     
-//    // 1) GET /doctor/appointments - Show all appointments for this doctor, sorted by date/time ascending
-//    @GetMapping("/doctor/appointments")
-//    public String showDoctorAppointments(HttpServletRequest request, Model model) {
-//        // Check if doctor is logged in
-//        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
-//        if (loggedInDoctor == null) {
-//            return "redirect:/"; // Not logged in
-//        }
-//        Integer doctorId = loggedInDoctor.getDoctorId();
-//
-//        // Fetch all appointments for that doctor (example: in ascending date/time)
-//        // If you want to filter out COMPLETED or CANCELLED, you can do it in code or a custom repo method
-//        List<Appointment> doctorAppointments = appointmentRepository.findByDoctor_DoctorId(doctorId);
-//
-//        // (Optional) sort by ascending date/time if your repo doesn't already do so
-//        // Could do a custom query, or we can do a simple .stream() approach:
-//        doctorAppointments = doctorAppointments.stream()
-//            .sorted((a, b) -> a.getAppointmentDatetime().compareTo(b.getAppointmentDatetime()))
-//            .toList();
-//
-//        model.addAttribute("doctor", loggedInDoctor);
-//        model.addAttribute("doctorAppointments", doctorAppointments);
-//
-//        return "doctor-appointments"; // The Thymeleaf page we'll create
-//    }
-
     // 2) GET /doctor/appointments/complete/{id} - Mark an appointment as COMPLETED
     @GetMapping("/doctor/appointments/complete/{appointmentId}")
     public String completeAppointment(@PathVariable("appointmentId") Integer appointmentId,
@@ -382,6 +360,66 @@ public class DoctorDashboardViewController {
             }
         }
         return "redirect:/doctor/opdQueue";
+    }
+    
+    
+    /**
+     * GET /doctor/profile
+     * Show the doctor's own profile in a form.
+     */
+    @GetMapping("/doctor/profile")
+    public String showDoctorProfile(HttpServletRequest request, Model model) {
+        // 1) Check if doctor is logged in
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/"; // Not logged in
+        }
+
+        // 2) Re-fetch from DB if you want to ensure fresh data
+        Optional<Doctor> optionalDoc = doctorRepository.findById(loggedInDoctor.getDoctorId());
+        Doctor dbDoctor = optionalDoc.orElse(loggedInDoctor);
+
+        // 3) Put the doctor in the model for the form
+        model.addAttribute("doctor", dbDoctor);
+
+        // Return a Thymeleaf template "doctor-profile"
+        return "doctor-profile";
+    }
+
+    /**
+     * POST /doctor/profile
+     * Process profile updates (name, email, password, etc.).
+     */
+    @PostMapping("/doctor/profile")
+    public String updateDoctorProfile(@ModelAttribute("doctor") Doctor formDoctor,
+                                      HttpServletRequest request) {
+        // 1) Check session
+        Doctor loggedInDoctor = (Doctor) request.getSession().getAttribute("loggedInDoctor");
+        if (loggedInDoctor == null) {
+            return "redirect:/";
+        }
+
+        // 2) Re-fetch from DB to ensure we update the correct record
+        Optional<Doctor> optionalDoc = doctorRepository.findById(loggedInDoctor.getDoctorId());
+        if (optionalDoc.isPresent()) {
+            Doctor dbDoctor = optionalDoc.get();
+
+            // 3) Update fields you allow the doctor to change
+            dbDoctor.setName(formDoctor.getName());
+            dbDoctor.setEmail(formDoctor.getEmail());
+            dbDoctor.setPassword(formDoctor.getPassword()); 
+            dbDoctor.setSpecialization(formDoctor.getSpecialization());
+            // etc. If you have a "profileImagePath", handle it as well.
+
+            // 4) Save
+            doctorRepository.save(dbDoctor);
+
+            // 5) Update session object if you want the changes to reflect immediately
+            request.getSession().setAttribute("loggedInDoctor", dbDoctor);
+        }
+
+        // 6) Redirect back to /doctor/profile or /doctor/dashboard
+        return "redirect:/doctor/profile";
     }
 
 

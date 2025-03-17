@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.medorb.HMS.model.Patient; // Import Patient entity
 import com.medorb.HMS.service.PatientService; // Import PatientService
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RestController // Marks this class as a REST Controller
 @RequestMapping("/api/patients") // Base URL path for all endpoints in this controller
 public class PatientController {
@@ -83,9 +85,9 @@ public class PatientController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
- // ✅ API Endpoint for Patient Login
     @PostMapping("/login")
-    public ResponseEntity<?> loginPatient(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<?> loginPatient(@RequestBody Map<String, String> credentials,
+                                          HttpServletRequest request) {
         String email = credentials.get("email");
         String password = credentials.get("password");
 
@@ -99,6 +101,10 @@ public class PatientController {
         Optional<Patient> patientOptional = patientService.getPatientByEmail(email);
 
         if (patientOptional.isPresent() && patientOptional.get().getPassword().equals(password)) {
+            // 1) Store in session
+            request.getSession().setAttribute("loggedInPatient", patientOptional.get());
+
+            // 2) Return JSON success + redirect path
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "Login successful",

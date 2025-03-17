@@ -1,6 +1,8 @@
  package com.medorb.HMS.model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,8 +37,18 @@ public class Appointment {
     private AppointmentStatus status = AppointmentStatus.SCHEDULED; // Default
 
     @Lob
-    private String notes; // For optional large text
+    private String notes;
+    
+    private BigDecimal charges; // or double, int, etc.
 
+    public BigDecimal getCharges() {
+        return charges;
+    }
+
+    public void setCharges(BigDecimal charges) {
+        this.charges = charges;
+    }
+    
     public enum AppointmentStatus {
         SCHEDULED,
         RESCHEDULED,

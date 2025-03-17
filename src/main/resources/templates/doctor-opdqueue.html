@@ -23,9 +23,18 @@
 
     <!-- Curved Sidebar -->
     <aside class="sidebar">
-        <button class="sidebar-btn">My Profile</button>
-        <button class="sidebar-btn">Appointments</button>
-        <button class="sidebar-btn">Patients</button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/doctor/profile'">
+            My Profile
+        </button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/doctor/appointments'">
+            Appointments
+        </button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/doctor/patients'">
+            Patients
+        </button>
         <!-- Highlight OPD Queue in the sidebar -->
         <button class="sidebar-btn" style="background-color: rgba(255,255,255,0.3); font-weight: 600;">
             OPD Queue

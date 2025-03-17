@@ -1,15 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard-style.css}">
+    <link rel="stylesheet" th:href="@{/css/p-dash.css}">
 </head>
 <body>
-    <h1>Welcome to Patient Dashboard</h1>
-    <p th:text="'Logged in as: ' + ${patient.name}"></p>
-    <p th:text="'Email: ' + ${patient.email}"></p>
-    <p><a href="/">Logout</a></p>
+    <div class="container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">MedOrb</div>
+            <ul>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/patient/dashboard}">Dashboard</a></li>
+                <li><a th:href="@{/hospitalList}">Hospitals</a></li>
+                <li><a th:href="@{/patient/bookAppointment}">Book Appointment</a></li>
+                <li><a th:href="@{/about}">About Us</a></li>
+                <li><a th:href="@{/contact}">Contact Us</a></li>
+            </ul>
+            <div class="user-info" th:text="${patient != null ? patient.name : 'Guest'}">habibi admin</div>
+        </nav>
+        
+        <!-- Patient Information -->
+        <div class="patient-info">
+            <div class="profile">
+                <img src="profile.jpg" alt="Patient Image">
+            </div>
+            <div class="details">
+                <h2>
+                  Patient Name: 
+                  <span th:text="${patient.name}">Habibi</span>
+                </h2>
+                <p>
+                  <strong>Patient Detail:</strong> 
+                  Lorem Ipsum is simply dummy text of the printing...
+                </p>
+                <p>
+                  <strong>Email:</strong> 
+                  <span th:text="${patient.email}">johnsmith@gmail.com</span>
+                </p>
+                <p>
+                  <strong>Phone Number:</strong> 
+                  <span th:text="${patient.contactNumber}">+91 8548525124</span>
+                </p>
+                <p>
+                  <strong>Address:</strong> 
+                  <span th:text="${patient.address}">345, Sarju Appt...</span>
+                </p>
+                <button class="book-btn"
+                        th:onclick="'location.href=\'/patient/bookAppointment\''">
+                  Book Appointment
+                </button>
+            </div>
+        </div>
+        
+        <!-- History and Calendar -->
+        <div class="history-calendar">
+            <!-- Visit History -->
+            <div class="visit-history">
+                <h3>Past Visit History</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Doctor</th>
+                            <th>Treatment</th>
+                            <th>Charges</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="visit : ${pastVisits}">
+                            <td th:text="${#temporals.format(visit.appointmentDatetime, 'yyyy-MM-dd')}">
+                                2025-03-15
+                            </td>
+                            <td th:text="${visit.doctor != null ? visit.doctor.name : 'N/A'}">Dr. Example</td>
+                            <td th:text="${visit.notes}">Check-up</td>
+                            <td th:text="${visit.charges}">500</td>
+                            <td th:text="${visit.status}">COMPLETED</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Live Calendar -->
+            <div class="calendar">
+                <h3 id="monthYear"></h3>
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Sun</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Sat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calendar-body">
+                        <!-- p-dash.js script will fill -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/p-dash.js}"></script>
 </body>
 </html>

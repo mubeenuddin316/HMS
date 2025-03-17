@@ -112,19 +112,24 @@ public class ViewController {
         }
     }
 
-    // ✅ Patient Login
     @PostMapping("/patient/login")
-    public String loginPatient(@RequestParam String email, @RequestParam String password, Model model) {
+    public String loginPatient(@RequestParam String email,
+                               @RequestParam String password,
+                               HttpServletRequest request,
+                               Model model) {
         Optional<Patient> patientOptional = patientService.getPatientByEmail(email);
 
         if (patientOptional.isPresent() && patientOptional.get().getPassword().equals(password)) {
-            model.addAttribute("patient", patientOptional.get());
-            return "patient-dashboard";
+            // 1) Store in session
+            request.getSession().setAttribute("loggedInPatient", patientOptional.get());
+            // 2) Redirect to patient dashboard
+            return "redirect:/patient/dashboard";
         } else {
             model.addAttribute("patientError", "Invalid email or password");
             return "index";
         }
     }
+
     
     @GetMapping("/patient/register")
     public String showPatientRegistrationForm(Model model) {

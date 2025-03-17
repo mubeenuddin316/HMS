@@ -51,6 +51,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     long countByDoctor_DoctorIdAndStatus(Integer doctorId, AppointmentStatus status);
     
     List<Appointment> findByDoctor_DoctorIdAndAppointmentDatetimeBetween(Integer doctorId, LocalDateTime start, LocalDateTime end);
+    
+    @Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId AND a.status = 'COMPLETED'")
+    List<Appointment> findPastVisitsByPatientId(@Param("pId") Integer patientId);
+
 
 
 }

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Profile</title>
+    <link rel="stylesheet" th:href="@{/css/doctor-dashboard.css}" />
+</head>
+<body>
+
+    <!-- Fixed Header -->
+    <header class="header">
+        <div class="logo-container">
+            <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
+            <span>MedOrb Group</span>
+        </div>
+        <div class="welcome-message">
+            Welcome, <span th:text="${doctor != null ? doctor.name : 'Doctor'}">Doctor</span>
+        </div>
+        <div class="header-buttons">
+            <a th:href="@{/logout}" class="btn logout">Logout</a>
+        </div>
+    </header>
+
+    <!-- Curved Sidebar -->
+    <aside class="sidebar">
+        <button class="sidebar-btn" style="background-color: rgba(255,255,255,0.3); font-weight: 600;">
+            My Profile
+        </button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/doctor/appointments'">
+            Appointments
+        </button>
+        <button class="sidebar-btn"
+            onclick="window.location.href='/HMS/doctor/patients'">
+            Patients
+        </button>
+        <button class="sidebar-btn" 
+            onclick="window.location.href='/HMS/doctor/opdQueue'">
+            OPD Queue
+        </button>
+        <button class="sidebar-btn">Reports</button>
+    </aside>
+
+    <main class="dashboard-content">
+
+        <p>
+            <a th:href="@{/doctor/dashboard}"
+               style="color: #fff; background-color: #007bff; padding: 8px 12px; border-radius: 4px; text-decoration: none;">
+               ← Back to Dashboard
+            </a>
+        </p>
+
+        <h1 style="margin-bottom: 20px; color: #333;">My Profile</h1>
+
+        <!-- Profile Form Section -->
+        <div class="appointments-section" style="margin-top: 20px;">
+            <h2>Update Your Profile</h2>
+            <div class="table-container" style="padding: 20px;">
+                <form th:action="@{/doctor/profile}"
+                      th:object="${doctor}"
+                      method="post"
+                      style="display: flex; flex-direction: column; gap: 15px; width: 400px;">
+
+                    <label>Name:</label>
+                    <input type="text" th:field="*{name}" />
+
+                    <label>Email:</label>
+                    <input type="email" th:field="*{email}" />
+
+                    <label>Specialization:</label>
+                    <input type="text" th:field="*{specialization}" />
+
+                    <label>Password:</label>
+                    <input type="password" th:field="*{password}" />
+
+                    <!-- If you have a 'profileImagePath' field in Doctor, you can add it:
+                    <label>Profile Image Path:</label>
+                    <input type="text" th:field="*{profileImagePath}" />
+                    -->
+
+                    <button type="submit"
+                            style="background-color: #2D9BF0; color: #fff; border: none; padding: 10px; border-radius: 4px; cursor: pointer;">
+                        Save
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
