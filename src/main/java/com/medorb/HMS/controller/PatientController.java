@@ -1,5 +1,9 @@
 package com.medorb.HMS.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List; // Import List
 import java.util.Map;
 import java.util.Optional; // Import Optional
@@ -19,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Patient; // Import Patient entity
+import com.medorb.HMS.repository.AppointmentRepository;
 import com.medorb.HMS.service.PatientService; // Import PatientService
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +35,12 @@ import jakarta.servlet.http.HttpServletRequest;
 public class PatientController {
 
     private final PatientService patientService; // Inject PatientService
+    private final AppointmentRepository appointmentRepository;
 
     @Autowired // Constructor injection of PatientService
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, AppointmentRepository appointmentRepository) {
         this.patientService = patientService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     // 1. POST /api/patients - Create a new patient
@@ -136,5 +144,6 @@ public class PatientController {
                 "message", "Registration successful! Please login."
         ));
     }
+    
 
 }

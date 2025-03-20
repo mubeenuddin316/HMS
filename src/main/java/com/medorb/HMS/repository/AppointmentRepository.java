@@ -52,9 +52,42 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     
     List<Appointment> findByDoctor_DoctorIdAndAppointmentDatetimeBetween(Integer doctorId, LocalDateTime start, LocalDateTime end);
     
-    @Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId AND a.status = 'COMPLETED'")
+   //  @Query("SELECT a FROM Appointment a WHERE a.patient.patientId = :pId AND a.status = 'COMPLETED'")
+    // List<Appointment> findPastVisitsByPatientId(@Param("pId") Integer patientId);
+    
+ // Example: find all appointments for a patient in a given date range
+    @Query("""
+           SELECT a 
+             FROM Appointment a
+            WHERE a.patient.patientId = :patientId
+              AND a.appointmentDatetime BETWEEN :startDate AND :endDate
+           ORDER BY a.appointmentDatetime ASC
+           """)
+    List<Appointment> findAppointmentsByPatientAndDateRange(
+        @Param("patientId") Integer patientId,
+        @Param("startDate") LocalDateTime startDate,
+        @Param("endDate") LocalDateTime endDate
+    );
+
+ // Or date-based approach:
+    @Query("""
+           SELECT a
+             FROM Appointment a
+            WHERE a.patient.patientId = :pId
+              AND a.appointmentDatetime < CURRENT_TIMESTAMP
+           ORDER BY a.appointmentDatetime DESC
+           """)
     List<Appointment> findPastVisitsByPatientId(@Param("pId") Integer patientId);
 
+    // Upcoming:
+    @Query("""
+           SELECT a
+             FROM Appointment a
+            WHERE a.patient.patientId = :pId
+              AND a.appointmentDatetime >= CURRENT_TIMESTAMP
+           ORDER BY a.appointmentDatetime ASC
+           """)
+    List<Appointment> findUpcomingVisitsByPatientId(@Param("pId") Integer patientId);
 
-
+    
 }

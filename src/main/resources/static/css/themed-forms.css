@@ -1,0 +1,98 @@
+@charset "UTF-8";
+
+/* 
+   Pastel purple gradient filling the entire viewport. 
+   Adjust RGBA stops if you want slightly different intensities.
+*/
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(
+        116.21deg,
+        rgba(216, 210, 252, 0.352) 1.56%,
+        rgba(151, 71, 255, 0.374) 43.54%,
+        rgba(56, 13, 227, 0.55) 91.44%
+    );
+}
+
+/* 
+   Container to center the form 
+   both horizontally and vertically.
+*/
+.themed-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* ensures full vertical center */
+    box-sizing: border-box;
+}
+
+/* 
+   The translucent pastel box for the form:
+   - Slightly translucent purple background
+   - Rounded corners
+   - Centered text
+*/
+.themed-form {
+    background: rgba(185, 178, 226, 0.64); /* pastel purple block */
+    border: 1px solid #3F779B;
+    border-radius: 12px;
+    padding: 20px;
+    width: 450px; /* or 400px, your choice */
+    box-sizing: border-box;
+    text-align: center; /* center heading & button */
+}
+
+/* Heading styling */
+.themed-form h1 {
+    margin-bottom: 16px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Label styling */
+.themed-form label {
+    display: block;
+    text-align: left;
+    margin: 12px 0 4px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Inputs & selects & textareas */
+.themed-form input,
+.themed-form select,
+.themed-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Submit button styling */
+.themed-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #7721a5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+    transition: background-color 0.3s ease;
+}
+.themed-form button:hover {
+    background-color: #5a1484;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}

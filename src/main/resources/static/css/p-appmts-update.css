@@ -1,0 +1,79 @@
+
+@charset "UTF-8";
+
+/* Make the entire page use the same gradient background */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(
+        116.21deg,
+        rgba(216, 210, 252, 0.352) 1.56%,
+        rgba(151, 71, 255, 0.374) 43.54%,
+        rgba(56, 13, 227, 0.55) 91.44%
+    );
+}
+
+/* Parent container to center form both horizontally & vertically */
+.edit-doctor-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* ensures we fill screen height for vertical centering */
+    box-sizing: border-box;
+}
+
+/* The pastel box for the edit form */
+.edit-doctor-form {
+    background: rgba(185, 178, 226, 0.64); /* pastel purple */
+    border: 1px solid #3F779B;
+    border-radius: 12px;
+    padding: 20px;
+    width: 400px; /* fixed form width */
+    box-sizing: border-box;
+    text-align: center; /* center the heading & button */
+}
+
+/* Heading styling */
+.edit-doctor-form h1 {
+    margin-bottom: 16px;
+    color: #333;
+}
+
+/* Label styling */
+.edit-doctor-form label {
+    display: block;
+    text-align: left;
+    margin: 12px 0 4px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Input styling */
+.edit-doctor-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Submit button styling */
+.edit-doctor-form button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #7721a5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 8px;
+    transition: background-color 0.3s ease;
+}
+.edit-doctor-form button:hover {
+    background-color: #5a1484;
+}

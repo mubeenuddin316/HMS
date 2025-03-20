@@ -2,6 +2,9 @@ package com.medorb.HMS.repository;
 
 import com.medorb.HMS.model.OpdQueue;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface OpdQueueRepository extends JpaRepository<OpdQueue, Integer> {
@@ -14,5 +17,15 @@ public interface OpdQueueRepository extends JpaRepository<OpdQueue, Integer> {
     List<OpdQueue> findByQueueStatus(String queueStatus);
 
     // Example custom method: Find current queue for a doctor (Pending and In Progress statuses)
-    List<OpdQueue> findByDoctor_DoctorIdAndQueueStatusIn(Integer doctorId, List<String> statuses); // If you keep Doctor relationship
+    List<OpdQueue> findByDoctor_DoctorIdAndQueueStatusIn(Integer doctorId, List<String> statuses);
+       
+    @Query("""
+    	       SELECT q
+    	         FROM OpdQueue q
+    	        WHERE q.patient.patientId = :patientId
+    	          AND q.queueStatus = 'COMPLETED'
+    	       ORDER BY q.registrationTime DESC
+    	       """)
+    List<OpdQueue> findCompletedQueueByPatientId(@Param("patientId") Integer patientId);
+
 }

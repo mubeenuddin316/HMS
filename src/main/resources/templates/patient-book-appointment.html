@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Book Appointment</title>
+    <!-- Link to the same pastel theme CSS -->
+    <link rel="stylesheet" th:href="@{/css/themed-forms.css}" />
+</head>
+<body>
+
+<div class="themed-container">
+  <div class="themed-form">
+    <h1>Book an Appointment</h1>
+
+    <!-- Step 1: pick hospital, re-submit GET with ?hospitalId=xxx -->
+    <form th:action="@{/patient/bookAppointment}" method="get">
+        <label>Choose Hospital:</label>
+        <select name="hospitalId">
+            <option value="">-- Select a Hospital --</option>
+            <option th:each="h : ${allHospitals}"
+                    th:value="${h.hospitalId}"
+                    th:text="${h.name}"
+                    th:selected="${h.hospitalId} == ${selectedHospitalId}">
+            </option>
+        </select>
+        <button type="submit">Pick Hospital</button>
+    </form>
+
+    <hr />
+
+    <!-- Step 2: confirm doctor/date/time => POST to /patient/bookAppointment/confirm -->
+    <form th:action="@{/patient/bookAppointment/confirm}" 
+          th:object="${appointmentForm}"
+          method="post">
+
+        <!-- Keep chosen hospital in hidden field -->
+        <input type="hidden" th:field="*{hospitalId}" th:value="${selectedHospitalId}"/>
+        
+        <label>Choose Doctor:</label>
+        <select th:field="*{doctorId}">
+            <option value="">-- Select a Hospital first --</option>
+            <option th:each="d : ${doctorList}"
+                    th:value="${d.doctorId}"
+                    th:text="${d.name}">
+            </option>
+        </select>
+
+        <label>Date/Time:</label>
+        <input type="datetime-local" th:field="*{appointmentDatetime}" required/>
+
+        <label>Notes (reason for visit):</label>
+        <textarea th:field="*{notes}" rows="3" cols="30"></textarea>
+
+        <button type="submit">Confirm Appointment</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

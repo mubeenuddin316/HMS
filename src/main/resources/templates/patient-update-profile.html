@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Update Profile</title>
+    <link rel="stylesheet" th:href="@{/css/themed-forms.css}" />
+</head>
+<body>
+
+<div class="themed-container">
+  <div class="themed-form">
+    <h1>Update Profile</h1>
+
+    <form th:action="@{/patient/updateProfile}"
+          th:object="${patientForm}"
+          method="post">
+
+        <label>Name:</label>
+        <input type="text" th:field="*{name}" required/>
+
+        <label>Date of Birth:</label>
+        <input type="date" th:field="*{dob}" required/>
+
+        <label>Gender:</label>
+        <select th:field="*{gender}" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <label>Email:</label>
+        <input type="email" th:field="*{email}" required/>
+
+        <label>Phone:</label>
+        <input type="text" th:field="*{contactNumber}"/>
+
+        <label>Password:</label>
+        <input type="password" th:field="*{password}"/>
+
+        <label>Address:</label>
+        <textarea th:field="*{address}" rows="3" cols="30"></textarea>
+
+        <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>

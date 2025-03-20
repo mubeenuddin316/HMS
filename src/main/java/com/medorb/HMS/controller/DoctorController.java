@@ -1,15 +1,24 @@
 package com.medorb.HMS.controller;
 
-import com.medorb.HMS.model.Doctor; // Import Doctor entity
-import com.medorb.HMS.service.DoctorService; // Import DoctorService
-import org.springframework.beans.factory.annotation.Autowired; // Import Autowired
-import org.springframework.http.HttpStatus; // Import HttpStatus
-import org.springframework.http.ResponseEntity; // Import ResponseEntity
-import org.springframework.web.bind.annotation.*; // Import Controller annotations
-
 import java.util.List; // Import List
 import java.util.Map;
 import java.util.Optional; // Import Optional
+
+import org.springframework.beans.factory.annotation.Autowired; // Import Autowired
+import org.springframework.http.HttpStatus; // Import HttpStatus
+import org.springframework.http.ResponseEntity; // Import ResponseEntity
+// Import Controller annotations
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.medorb.HMS.model.Doctor; // Import Doctor entity
+import com.medorb.HMS.service.DoctorService; // Import DoctorService
 
 @RestController // Marks this class as a REST Controller
 @RequestMapping("/api/doctors") // Base URL path for all endpoints in this controller
@@ -78,6 +87,7 @@ public class DoctorController {
         List<Doctor> doctors = doctorService.getDoctorsByHospitalId(hospitalId);
         return new ResponseEntity<>(doctors, HttpStatus.OK);
     }
+    
     
     @PostMapping("/login")
     public ResponseEntity<?> loginDoctor(@RequestBody Map<String, String> credentials) {
