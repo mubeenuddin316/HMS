@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Appointments Overview</title>
-    <link rel="stylesheet" th:href="@{/css/appointments-overview.css}"/>
+    <link rel="stylesheet" th:href="@{/css/super-admin-management.css}"/>
 </head>
 <body>
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
@@ -57,14 +57,35 @@
         <h2>Create New Appointment</h2>
         <form th:action="@{/superAdmin/appointments}" th:object="${newAppointment}" method="post">
             
-            <label>Patient ID:</label>
-            <input type="number" th:field="*{patient.patientId}" required/><br/>
+             <!-- Patient -->
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}" required>
+                <option value="">-- Select a Patient --</option>
+                <option th:each="p : ${allPatients}"
+                        th:value="${p.patientId}"
+                        th:text="|${p.patientId} : ${p.name}|">
+                </option>
+            </select><br/>
 
-            <label>Doctor ID:</label>
-            <input type="number" th:field="*{doctor.doctorId}" required/><br/>
+            <!-- Doctor -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}" required>
+                <option value="">-- Select a Doctor --</option>
+                <option th:each="d : ${doctorList}"
+                        th:value="${d.doctorId}"
+                        th:text="|${d.doctorId} : ${d.name}|">
+                </option>
+            </select><br/>
 
-            <label>Hospital ID:</label>
-            <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+            <!-- Hospital -->
+            <label>Hospital:</label>
+            <select th:field="*{hospital.hospitalId}" required>
+                <option value="">-- Select a Hospital --</option>
+                <option th:each="h : ${hospitalList}"
+                        th:value="${h.hospitalId}"
+                        th:text="|${h.hospitalId} : ${h.name}|">
+                </option>
+            </select><br/>
 
             <label>Date/Time:</label>
             <!-- Use datetime-local or text, depending on your preference -->

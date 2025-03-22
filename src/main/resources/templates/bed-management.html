@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Hospital Beds Overview</title>
-    <link rel="stylesheet" th:href="@{/css/bed-management.css}" />
+    <link rel="stylesheet" th:href="@{/css/super-admin-management.css}" />
 </head>
 <body>
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
@@ -51,8 +51,14 @@
     <div class="form-container">
         <h2>Create New Bed</h2>
         <form th:action="@{/superAdmin/beds}" th:object="${newBed}" method="post">
-            <label>Hospital ID:</label>
-            <input type="number" th:field="*{hospital.hospitalId}" required /><br/>
+            <label>Hospital:</label>
+            <select th:field="*{hospital.hospitalId}" required>
+                <option value="">-- Select a Hospital --</option>
+                <option th:each="h : ${hospitalList}"
+                        th:value="${h.hospitalId}"
+                        th:text="|${h.hospitalId} : ${h.name}|">
+                </option>
+            </select><br/>
 
             <label>Bed Number:</label>
             <input type="text" th:field="*{bedNumber}" required /><br/>
@@ -70,7 +76,11 @@
             <input type="checkbox" th:field="*{occupied}" /><br/>
 
             <label>Bed Status:</label>
-            <input type="text" th:field="*{bedStatus}" /><br/>
+            <select th:field="*{bedStatus}" required>
+                <option value="OCCUPIED">OCCUPIED</option>
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="UNDER MAINTENANCE">UNDER MAINTENANCE</option>
+            </select><br/>
 
             <button type="submit">Create</button>
         </form>

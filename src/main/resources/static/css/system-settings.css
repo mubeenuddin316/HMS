@@ -5,7 +5,7 @@
 body {
     margin: 0;
     padding: 20px;
-    background-color: #f9f9f9;
+    background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%, rgba(56, 13, 227, 0.55) 91.44%);
     font-family: "Open Sans", Arial, sans-serif;
     color: #333;
 }
@@ -41,7 +41,7 @@ h1 {
 
 /* The form itself */
 .settings-form {
-    background-color: #fff;
+    background-color: rgb(255, 179, 255);
     padding: 20px;
     border-radius: 8px;
     max-width: 500px;

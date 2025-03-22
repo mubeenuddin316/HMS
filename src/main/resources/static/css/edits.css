@@ -7,7 +7,7 @@ body {
     min-height: 100vh; /* Ensure full viewport height */
     margin: 0;
     padding: 20px;
-    background-color: #e2d992; /* Set body background to beige */
+     background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%, rgba(56, 13, 227, 0.55) 91.44%);
     font-family: Arial, sans-serif;
 }
 

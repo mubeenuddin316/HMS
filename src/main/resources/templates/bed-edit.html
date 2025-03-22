@@ -13,8 +13,14 @@
     <form th:action="@{/superAdmin/beds/edit}" th:object="${bed}" method="post">
         <input type="hidden" th:field="*{bedId}" />
 
-        <label>Hospital ID:</label>
-        <input type="number" th:field="*{hospital.hospitalId}" required /><br/>
+        <label>Hospital:</label>
+            <select th:field="*{hospital.hospitalId}" required>
+                <option value="">-- Select a Hospital --</option>
+                <option th:each="h : ${hospitalList}"
+                        th:value="${h.hospitalId}"
+                        th:text="|${h.hospitalId} : ${h.name}|">
+                </option>
+            </select><br/>
 
         <label>Bed Number:</label>
         <input type="text" th:field="*{bedNumber}" required /><br/>
@@ -32,7 +38,11 @@
         <input type="checkbox" th:field="*{occupied}" /><br/>
 
         <label>Bed Status:</label>
-        <input type="text" th:field="*{bedStatus}" /><br/>
+            <select th:field="*{bedStatus}" required>
+                <option value="OCCUPIED">OCCUPIED</option>
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="UNDER MAINTENANCE">UNDER MAINTENANCE</option>
+            </select><br/>
 
         <button type="submit">Save</button>
     </form>

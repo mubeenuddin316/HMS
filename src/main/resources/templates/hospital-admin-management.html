@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Hospital Admin Management</title>
-    <link rel="stylesheet" th:href="@{/css/hospital-admin-management.css}"/>
+    <link rel="stylesheet" th:href="@{/css/super-admin-management.css}"/>
 </head>
 <body>
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
@@ -62,7 +62,13 @@
 
             <!-- If you want to pick hospital from a dropdown, do it similarly to how we do for doctors/hospitals -->
             <label>Hospital ID:</label>
-            <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+            <select name="hospitalId" required>
+				<option value="">-- Select a Hospital --</option>
+				<option th:each="h : ${hospitalList}" 
+				        th:value="${h.hospitalId}"
+					    th:text="|${h.hospitalId} : ${h.name}|">
+			    </option>
+			</select><br/>
 
             <button type="submit">Create</button>
         </form>

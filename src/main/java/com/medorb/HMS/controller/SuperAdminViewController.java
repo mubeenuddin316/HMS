@@ -1,5 +1,17 @@
 package com.medorb.HMS.controller;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Bed;
 import com.medorb.HMS.model.Doctor;
@@ -12,20 +24,12 @@ import com.medorb.HMS.service.AppointmentService;
 import com.medorb.HMS.service.BedService;
 import com.medorb.HMS.service.DoctorService;
 import com.medorb.HMS.service.HospitalAdminService;
+import com.medorb.HMS.service.HospitalService;
 import com.medorb.HMS.service.OpdQueueService;
 import com.medorb.HMS.service.PatientService;
 import com.medorb.HMS.service.SuperAdminService;
+
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class SuperAdminViewController {
@@ -37,6 +41,7 @@ public class SuperAdminViewController {
     private final AppointmentService appointmentService;
     private final BedService bedService;
     private final PatientService patientService;
+    private final HospitalService hospitalService;
 
     @Autowired
     public SuperAdminViewController(SuperAdminService superAdminService,
@@ -45,7 +50,8 @@ public class SuperAdminViewController {
     		                        OpdQueueService opdQueueService, 
     		                        AppointmentService appointmentService, 
     		                        BedService bedService,
-    		                        PatientService patientService) {
+    		                        PatientService patientService,
+    		                        HospitalService hospitalService) {
         
     	
     	this.superAdminService = superAdminService;
@@ -55,6 +61,7 @@ public class SuperAdminViewController {
         this.appointmentService = appointmentService;
         this.bedService = bedService;
         this.patientService = patientService;
+        this.hospitalService = hospitalService;
     }
 
     @GetMapping("/superAdmin/dashboard")
@@ -70,9 +77,11 @@ public class SuperAdminViewController {
         long occupiedBeds = superAdminService.getOccupiedBeds();
         long totalBeds = superAdminService.getTotalBeds();
         long todaysAppointments = superAdminService.getTodaysAppointmentsCount();
+        
 
         // 3. Put stats in the model
         model.addAttribute("totalHospitals", totalHospitals);
+        
         model.addAttribute("totalPatients", totalPatients);
         model.addAttribute("totalDoctors", totalDoctors);
         model.addAttribute("occupiedBeds", occupiedBeds);
@@ -133,108 +142,122 @@ public class SuperAdminViewController {
         return "redirect:/superAdmin/hospitals";
     }
     
-    // ==========================
-    // Doctors Management
-    // ==========================
-    
-    @GetMapping("/superAdmin/doctors")
-    public String showDoctorManagementPage(Model model) {
-        // 1) Fetch all doctors
-        List<Doctor> doctorList = doctorService.getAllDoctors();
+ // ==========================
+ // Doctors Management
+ // ==========================
 
-        // 2) Add them to the model
-        model.addAttribute("doctors", doctorList);
+ @GetMapping("/superAdmin/doctors")
+ public String showDoctorManagementPage(Model model) {
+     // 1) Fetch all doctors
+     List<Doctor> doctorList = doctorService.getAllDoctors();
+     model.addAttribute("doctors", doctorList);
 
-        // 3) Provide a blank Doctor object for the create form
-        model.addAttribute("newDoctor", new Doctor());
+     // 2) Fetch all hospitals for the dropdown
+     List<Hospital> hospitalList = hospitalService.getAllHospitals();
+     model.addAttribute("hospitalList", hospitalList);
 
-        // 4) Return the Thymeleaf page
-        return "doctor-management";
-    }
-    
-    @PostMapping("/superAdmin/doctors")
-    public String createDoctor(@ModelAttribute Doctor newDoctor) {
-        // If user typed hospitalId manually, you must fetch the actual Hospital entity:
-        // Hospital h = hospitalService.getHospitalById(newDoctor.getHospital().getHospitalId()).orElse(null);
-        // newDoctor.setHospital(h);
+     // 3) Provide a blank Doctor object for the create form
+     model.addAttribute("newDoctor", new Doctor());
 
-        doctorService.createDoctor(newDoctor);
-        return "redirect:/superAdmin/doctors"; 
-    }
+     // 4) Return the Thymeleaf page
+     return "doctor-management";
+ }
 
-    
-    @GetMapping("/superAdmin/doctors/delete/{id}")
-    public String deleteDoctor(@PathVariable("id") Integer doctorId) {
-        doctorService.deleteDoctor(doctorId);
-        return "redirect:/superAdmin/doctors";
-    }
-    
-    @GetMapping("/superAdmin/doctors/edit/{id}")
-    public String showEditDoctorForm(@PathVariable("id") Integer doctorId, Model model) {
-        Doctor doctor = doctorService.getDoctorById(doctorId).orElse(null);
-        model.addAttribute("doctor", doctor);
-        return "doctor-edit"; 
-    }
+ @PostMapping("/superAdmin/doctors")
+ public String createDoctor(@ModelAttribute Doctor newDoctor, @RequestParam("hospitalId") Integer hospitalId) {
+     // Fetch and set the selected hospital
+     Optional<Hospital> optHosp = hospitalService.getHospitalById(hospitalId);
+     optHosp.ifPresent(newDoctor::setHospital);
 
+     doctorService.createDoctor(newDoctor);
+     return "redirect:/superAdmin/doctors";
+ }
 
-    
-    @PostMapping("/superAdmin/doctors/edit")
-    public String updateDoctor(@ModelAttribute Doctor doctor) {
-        doctorService.updateDoctor(doctor.getDoctorId(), doctor);
-        return "redirect:/superAdmin/doctors";
-    }
-    
-    @GetMapping("/superAdmin/hospitalAdmins")
-    public String showHospitalAdminManagementPage(Model model) {
-        // 1) Fetch all hospital admins
-        List<HospitalAdmin> adminList = hospitalAdminService.getAllHospitalAdmins();
+ // DELETE Doctor
+ @GetMapping("/superAdmin/doctors/delete/{id}")
+ public String deleteDoctor(@PathVariable("id") Integer doctorId) {
+     doctorService.deleteDoctor(doctorId);
+     return "redirect:/superAdmin/doctors";
+ }
 
-        // 2) Add them to the model
-        model.addAttribute("hospitalAdmins", adminList);
+ // EDIT Doctor Form
+ @GetMapping("/superAdmin/doctors/edit/{id}")
+ public String showEditDoctorForm(@PathVariable("id") Integer doctorId, Model model) {
+     Doctor doctor = doctorService.getDoctorById(doctorId).orElse(null);
+     List<Hospital> hospitalList = hospitalService.getAllHospitals(); // Fetch hospitals for dropdown
+     
+     model.addAttribute("doctor", doctor);
+     model.addAttribute("hospitalList", hospitalList);
+     return "doctor-edit";
+ }
 
-        // 3) Provide a blank HospitalAdmin object for the create form
-        model.addAttribute("newHospitalAdmin", new HospitalAdmin());
+ // UPDATE Doctor
+ @PostMapping("/superAdmin/doctors/edit")
+ public String updateDoctor(@ModelAttribute Doctor doctor, @RequestParam("hospitalId") Integer hospitalId) {
+     // Fetch and set hospital
+     Optional<Hospital> optHosp = hospitalService.getHospitalById(hospitalId);
+     optHosp.ifPresent(doctor::setHospital);
 
-        // Return the Thymeleaf page
-        return "hospital-admin-management"; // We'll create hospital-admin-management.html
-    }
+     doctorService.updateDoctor(doctor.getDoctorId(), doctor);
+     return "redirect:/superAdmin/doctors";
+ }
 
-    // ==========================
-    // HospitalAdmin Management
-    // ==========================
-    
-    // CREATE a new HospitalAdmin
-    @PostMapping("/superAdmin/hospitalAdmins")
-    public String createHospitalAdmin(@ModelAttribute HospitalAdmin newAdmin) {
-        // We assume newAdmin has a valid hospital object or ID
-        hospitalAdminService.createHospitalAdmin(newAdmin);
-        return "redirect:/superAdmin/hospitalAdmins";
-    }
+//==========================
+//HospitalAdmin Management
+//==========================
 
-    // DELETE a HospitalAdmin
-    @GetMapping("/superAdmin/hospitalAdmins/delete/{id}")
-    public String deleteHospitalAdmin(@PathVariable("id") Integer adminId) {
-        hospitalAdminService.deleteHospitalAdmin(adminId);
-        return "redirect:/superAdmin/hospitalAdmins";
-    }
+//FIXED: Show HospitalAdmin Management Page (GET)
+@GetMapping("/superAdmin/hospitalAdmins")
+public String showHospitalAdminManagementPage(Model model) {
+  // Fetch all hospital admins
+  List<HospitalAdmin> adminList = hospitalAdminService.getAllHospitalAdmins();
+  
+  // Fetch all hospitals (for dropdown selection)
+  List<Hospital> hospitalList = hospitalService.getAllHospitals();
 
-    // EDIT HospitalAdmin (show form)
-    @GetMapping("/superAdmin/hospitalAdmins/edit/{id}")
-    public String showEditHospitalAdminForm(@PathVariable("id") Integer adminId, Model model) {
-        // Fetch existing admin
-        HospitalAdmin admin = hospitalAdminService.getHospitalAdminById(adminId).orElse(null);
-        model.addAttribute("hospitalAdmin", admin);
+  // Add them to the model
+  model.addAttribute("hospitalAdmins", adminList);
+  model.addAttribute("hospitalList", hospitalList);
+  
+  // Provide an empty HospitalAdmin object for form submission
+  model.addAttribute("newHospitalAdmin", new HospitalAdmin());
 
-        // Return a new "hospital-admin-edit.html" page
-        return "hospital-admin-edit";
-    }
+  return "hospital-admin-management"; // Ensure this template exists
+}
 
-    // UPDATE HospitalAdmin
-    @PostMapping("/superAdmin/hospitalAdmins/edit")
-    public String updateHospitalAdmin(@ModelAttribute HospitalAdmin admin) {
-        hospitalAdminService.updateHospitalAdmin(admin.getHospitalAdminId(), admin);
-        return "redirect:/superAdmin/hospitalAdmins";
-    }
+//CREATE a new HospitalAdmin
+@PostMapping("/superAdmin/hospitalAdmins")
+public String createHospitalAdmin(@ModelAttribute HospitalAdmin newAdmin) {
+  hospitalAdminService.createHospitalAdmin(newAdmin);
+  return "redirect:/superAdmin/hospitalAdmins";
+}
+
+//DELETE a HospitalAdmin
+@GetMapping("/superAdmin/hospitalAdmins/delete/{id}")
+public String deleteHospitalAdmin(@PathVariable("id") Integer adminId) {
+  hospitalAdminService.deleteHospitalAdmin(adminId);
+  return "redirect:/superAdmin/hospitalAdmins";
+}
+
+//EDIT HospitalAdmin (Show Form)
+@GetMapping("/superAdmin/hospitalAdmins/edit/{id}")
+public String showEditHospitalAdminForm(@PathVariable("id") Integer adminId, Model model) {
+  HospitalAdmin admin = hospitalAdminService.getHospitalAdminById(adminId).orElse(null);
+  model.addAttribute("hospitalAdmin", admin);
+  
+  // Fetch hospitals for selection
+  List<Hospital> hospitalList = hospitalService.getAllHospitals();
+  model.addAttribute("hospitalList", hospitalList);
+
+  return "hospital-admin-edit";
+}
+
+//UPDATE HospitalAdmin
+@PostMapping("/superAdmin/hospitalAdmins/edit")
+public String updateHospitalAdmin(@ModelAttribute HospitalAdmin admin) {
+  hospitalAdminService.updateHospitalAdmin(admin.getHospitalAdminId(), admin);
+  return "redirect:/superAdmin/hospitalAdmins";
+}
     
     // ==========================
     // OpdQue Management
@@ -248,9 +271,11 @@ public class SuperAdminViewController {
 
         model.addAttribute("newOpdQueue", new OpdQueue());
 
-        // 🆕 fetch existing appointments
-        List<Appointment> appointments = appointmentService.getAllAppointments();
-        model.addAttribute("appointments", appointments);
+        // 👇 Provide patient, doctor, hospital, appointment lists
+        model.addAttribute("allPatients", patientService.getAllPatients());
+        model.addAttribute("doctorList", doctorService.getAllDoctors());
+        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
+        model.addAttribute("appointments", appointmentService.getAllAppointments());
 
         return "opd-queue-management";
     }
@@ -295,6 +320,7 @@ public class SuperAdminViewController {
 
         // 2) Add them to the model
         model.addAttribute("beds", beds);
+        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
 
         // 3) Provide a blank Bed object for the create form
         model.addAttribute("newBed", new Bed());
@@ -317,6 +343,7 @@ public class SuperAdminViewController {
 
     @GetMapping("/superAdmin/beds/edit/{id}")
     public String showEditBedForm(@PathVariable("id") Integer bedId, Model model) {
+    	model.addAttribute("hospitalList", hospitalService.getAllHospitals());
         Bed existingBed = bedService.getBedById(bedId).orElse(null);
         model.addAttribute("bed", existingBed);
         return "bed-edit"; // We'll create bed-edit.html
@@ -427,7 +454,9 @@ public class SuperAdminViewController {
     public String showAppointmentsOverview(Model model) {
         List<Appointment> appointments = appointmentService.getAllAppointments();
         model.addAttribute("appointments", appointments);
-
+        model.addAttribute("allPatients", patientService.getAllPatients());
+        model.addAttribute("doctorList", doctorService.getAllDoctors());
+        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
         // Provide a blank Appointment object for the create form
         model.addAttribute("newAppointment", new Appointment());
 
@@ -444,6 +473,9 @@ public class SuperAdminViewController {
     // 3) GET /superAdmin/appointments/edit/{id} - Show edit form
     @GetMapping("/superAdmin/appointments/edit/{id}")
     public String showEditAppointmentForm(@PathVariable("id") Integer id, Model model) {
+    	model.addAttribute("allPatients", patientService.getAllPatients());
+        model.addAttribute("doctorList", doctorService.getAllDoctors());
+        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
         Appointment existing = appointmentService.getAppointmentById(id).orElse(null);
         model.addAttribute("appointment", existing);
         return "appointment-edit"; // We'll create appointment-edit.html

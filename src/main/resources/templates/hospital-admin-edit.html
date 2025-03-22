@@ -27,8 +27,14 @@
         <label>Phone Number:</label>
         <input type="text" th:field="*{phoneNumber}"/><br/>
 
-        <label>Hospital ID:</label>
-        <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
+        <label>Hospital:</label>
+        <select name="hospitalId" required>
+				<option value="">-- Select a Hospital --</option>
+				<option th:each="h : ${hospitalList}" 
+				        th:value="${h.hospitalId}"
+					    th:text="|${h.hospitalId} : ${h.name}|">
+			    </option>
+		</select><br/>
 
         <button type="submit">Save</button>
     </form>

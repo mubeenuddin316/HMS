@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Patients Overview</title>
-    <link rel="stylesheet" th:href="@{/css/patients-overview.css}" />
+    <link rel="stylesheet" th:href="@{/css/super-admin-management.css}" />
 </head>
 <body>
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
@@ -59,7 +59,12 @@
             <input type="date" th:field="*{dob}" /><br/>
 
             <label>Gender:</label>
-            <input type="text" th:field="*{gender}" /><br/>
+            <select th:field="*{gender}" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select><br/>
+
 
             <label>Contact:</label>
             <input type="text" th:field="*{contactNumber}" /><br/>

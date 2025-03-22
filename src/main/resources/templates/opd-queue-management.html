@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>OPD Queue Management</title>
-    <link rel="stylesheet" th:href="@{/css/opd-queue-management.css}" />
+    <link rel="stylesheet" th:href="@{/css/super-admin-management.css}" />
 </head>
 <body>
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
@@ -52,27 +52,57 @@
         <h2>Create New OPD Queue Entry</h2>
         <form th:action="@{/superAdmin/opdQueues}" th:object="${newOpdQueue}" method="post">
 
-            <label>Patient ID:</label>
-            <input type="number" th:field="*{patient.patientId}" required/><br/>
-
-            <label>Doctor ID:</label>
-            <input type="number" th:field="*{doctor.doctorId}" required/><br/>
-
-            <label>Hospital ID:</label>
-            <input type="number" th:field="*{hospital.hospitalId}" required/><br/>
-
-            <label>Appointment:</label>
-            <select th:field="*{appointment.appointmentId}">
-                <option th:each="a : ${appointments}"
-                     th:value="${a.appointmentId}"
-                     th:text="${a.appointmentId}">
+            
+            <!-- Patient -->
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}" required>
+                <option value="">-- Select a Patient --</option>
+                <option th:each="p : ${allPatients}"
+                        th:value="${p.patientId}"
+                        th:text="|${p.patientId} : ${p.name}|">
                 </option>
-            </select>
+            </select><br/>
 
+            <!-- Doctor -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}" required>
+                <option value="">-- Select a Doctor --</option>
+                <option th:each="d : ${doctorList}"
+                        th:value="${d.doctorId}"
+                        th:text="|${d.doctorId} : ${d.name}|">
+                </option>
+            </select><br/>
 
+            <!-- Hospital -->
+            <label>Hospital:</label>
+            <select th:field="*{hospital.hospitalId}" required>
+                <option value="">-- Select a Hospital --</option>
+                <option th:each="h : ${hospitalList}"
+                        th:value="${h.hospitalId}"
+                        th:text="|${h.hospitalId} : ${h.name}|">
+                </option>
+            </select><br/>
+
+            <!-- Optional Appointment -->
+            <label>Appointment (Optional):</label>
+            <select th:field="*{appointment.appointmentId}">
+                <option value="">-- None --</option>
+                <option th:each="a : ${appointments}"
+                        th:value="${a.appointmentId}"
+                        th:text="|${a.appointmentId} : ${a.patient.name}|">
+                </option>
+            </select><br/>
+
+    
             <label>Queue Status:</label>
-            <input type="text" th:field="*{queueStatus}" /><br/>
+            <select th:field="*{queueStatus}" required>
+                <option value="WAITING">WAITING</option>
+                <option value="BEINGSERVED">BEINGSERVED</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="CANCELLED">CANCELLED</option>
+            </select><br/>
 
+            <!-- Token Number -->
             <label>Token Number:</label>
             <input type="number" th:field="*{tokenNumber}" /><br/>
 

@@ -13,8 +13,14 @@
     <form th:action="@{/superAdmin/doctors/edit}" th:object="${doctor}" method="post">
         <input type="hidden" th:field="*{doctorId}" />
 
-        <label>Hospital ID:</label>
-        <input type="number" th:field="*{hospital.hospitalId}" required /><br/>
+        <label>Hospital:</label>
+        <select name="hospitalId" required>
+				<option value="">-- Select a Hospital --</option>
+				<option th:each="h : ${hospitalList}" 
+				        th:value="${h.hospitalId}"
+					    th:text="|${h.hospitalId} : ${h.name}|">
+			    </option>
+		</select><br/>
 
         <label>Name:</label>
         <input type="text" th:field="*{name}" required /><br/>
