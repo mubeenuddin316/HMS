@@ -1,6 +1,8 @@
 package com.medorb.HMS.repository;
 
 import com.medorb.HMS.model.Bed;
+import com.medorb.HMS.model.Hospital;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -26,5 +28,9 @@ public interface BedRepository extends JpaRepository<Bed, Integer> {
     
     long countByHospital_HospitalId(Integer hospitalId);
     long countByHospital_HospitalIdAndIsOccupiedTrue(Integer hospitalId);
+    
+    long countByHospital(Hospital hospital);
+    long countByHospitalAndIsOccupied(Hospital hospital, boolean isOccupied);
+
 
 }

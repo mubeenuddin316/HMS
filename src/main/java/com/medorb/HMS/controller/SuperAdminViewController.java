@@ -259,26 +259,43 @@ public String updateHospitalAdmin(@ModelAttribute HospitalAdmin admin) {
   return "redirect:/superAdmin/hospitalAdmins";
 }
     
-    // ==========================
-    // OpdQue Management
-    // ==========================
-    
-    
-    @GetMapping("/superAdmin/opdQueues")
-    public String showOpdQueueManagementPage(Model model) {
-        List<OpdQueue> queueList = opdQueueService.getAllOpdQueueEntries();
-        model.addAttribute("opdQueueList", queueList);
+//=========================
+// GET /superAdmin/opdQueues (with optional filters)
+// =========================
+@GetMapping("/superAdmin/opdQueues")
+public String showOpdQueueManagementPage(
+    @RequestParam(required=false) String patientName,
+    @RequestParam(required=false) Integer doctorId,
+    @RequestParam(required=false) Integer hospitalId,
+    Model model
+) {
+    // 1) Filter the OPD queues
+    //    (You can do it via a custom repository query or by fetching all + filtering in memory.)
+    //    Example: let's do a custom service method: 
+    List<OpdQueue> queueList = opdQueueService.filterOpdQueues(patientName, doctorId, hospitalId);
 
-        model.addAttribute("newOpdQueue", new OpdQueue());
+    // 2) Add needed model attributes
+    model.addAttribute("opdQueueList", queueList);
 
-        // 👇 Provide patient, doctor, hospital, appointment lists
-        model.addAttribute("allPatients", patientService.getAllPatients());
-        model.addAttribute("doctorList", doctorService.getAllDoctors());
-        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
-        model.addAttribute("appointments", appointmentService.getAllAppointments());
+    // For the filter form
+    model.addAttribute("doctorList", doctorService.getAllDoctors());
+    model.addAttribute("hospitalList", hospitalService.getAllHospitals());
 
-        return "opd-queue-management";
-    }
+    // For the create form
+    model.addAttribute("allPatients", patientService.getAllPatients());
+    model.addAttribute("appointments", appointmentService.getAllAppointments());
+
+    // For binding a new queue entry
+    model.addAttribute("newOpdQueue", new OpdQueue());
+
+    // So the filter form can remember what was chosen
+    // (Thymeleaf automatically puts request params in `param.*`, but you can store them if needed.)
+    // model.addAttribute("chosenPatientName", patientName);
+    // model.addAttribute("chosenDoctorId", doctorId);
+    // model.addAttribute("chosenHospitalId", hospitalId);
+
+    return "opd-queue-management";
+}
 
 
     // CREATE a new OPD queue entry
@@ -451,16 +468,30 @@ public String updateHospitalAdmin(@ModelAttribute HospitalAdmin admin) {
     // ==========================
     // 1) GET /superAdmin/appointments - Show all appointments
     @GetMapping("/superAdmin/appointments")
-    public String showAppointmentsOverview(Model model) {
-        List<Appointment> appointments = appointmentService.getAllAppointments();
+    public String showAppointmentsOverview(
+        @RequestParam(required=false) String patientName,
+        @RequestParam(required=false) Integer doctorId,
+        @RequestParam(required=false) Integer hospitalId,
+        @RequestParam(required=false) String status,
+        Model model
+    ) {
+        // 1) Filter the appointments
+        //    Example: a custom service or repository method
+        List<Appointment> appointments = appointmentService.filterAppointments(patientName, doctorId, hospitalId, status);
+
+        // 2) Add them to model
         model.addAttribute("appointments", appointments);
-        model.addAttribute("allPatients", patientService.getAllPatients());
+
+        // For filter form
         model.addAttribute("doctorList", doctorService.getAllDoctors());
         model.addAttribute("hospitalList", hospitalService.getAllHospitals());
-        // Provide a blank Appointment object for the create form
+        // If you want to also show patient dropdown, or you just want to do name-based searching?
+
+        // For the create form
+        model.addAttribute("allPatients", patientService.getAllPatients());
         model.addAttribute("newAppointment", new Appointment());
 
-        return "appointments-overview"; // We'll create appointments-overview.html
+        return "appointments-overview";
     }
 
     // 2) POST /superAdmin/appointments - Create a new appointment

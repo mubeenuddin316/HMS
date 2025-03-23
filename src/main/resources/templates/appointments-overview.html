@@ -9,6 +9,49 @@
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
         ← Back to Dashboard
     </a>
+     <!-- ============== FILTER FORM ============== -->
+    <form th:action="@{/superAdmin/appointments}" method="get" style="margin-bottom: 20px;">
+        <!-- Patient Name filter -->
+        <label>Patient Name:</label>
+        <input type="text" name="patientName"
+               th:value="${param.patientName}"
+               placeholder="Search by patient name" />
+
+        <!-- Doctor filter -->
+        <label>Doctor:</label>
+        <select name="doctorId">
+            <option value="">All Doctors</option>
+            <option th:each="d : ${doctorList}"
+                    th:value="${d.doctorId}"
+                    th:text="${d.name}"
+                    th:selected="${param.doctorId} == ${d.doctorId}">
+            </option>
+        </select>
+
+        <!-- Hospital filter -->
+        <label>Hospital:</label>
+        <select name="hospitalId">
+            <option value="">All Hospitals</option>
+            <option th:each="h : ${hospitalList}"
+                    th:value="${h.hospitalId}"
+                    th:text="${h.name}"
+                    th:selected="${param.hospitalId} == ${h.hospitalId}">
+            </option>
+        </select>
+
+        <!-- Status filter (optional) -->
+        <label>Status:</label>
+        <select name="status">
+            <option value="">All Statuses</option>
+            <option value="SCHEDULED"    th:selected="${param.status}=='SCHEDULED'">SCHEDULED</option>
+            <option value="RESCHEDULED"  th:selected="${param.status}=='RESCHEDULED'">RESCHEDULED</option>
+            <option value="CANCELLED"    th:selected="${param.status}=='CANCELLED'">CANCELLED</option>
+            <option value="COMPLETED"    th:selected="${param.status}=='COMPLETED'">COMPLETED</option>
+            <option value="PENDING"      th:selected="${param.status}=='PENDING'">PENDING</option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
     <h1>Appointments Overview</h1>
 
     <!-- Table of existing appointments -->

@@ -40,8 +40,14 @@ public class ViewController {
 
     @GetMapping("/")
     public String showIndexPage() {
+        return "hero";  // Resolves to index.html
+    }
+    
+    @GetMapping("/index")
+    public String managementPage() {
         return "index";  // Resolves to index.html
     }
+
 
     // ✅ Super Admin Login with REDIRECT approach (Option A)
     @PostMapping("/login")
@@ -126,7 +132,7 @@ public class ViewController {
             return "redirect:/patient/dashboard";
         } else {
             model.addAttribute("patientError", "Invalid email or password");
-            return "index";
+            return "redirect:/hero";
         }
     }
 
@@ -149,7 +155,7 @@ public class ViewController {
         Patient savedPatient = patientService.createPatient(patient);
         model.addAttribute("successMessage", "Registration successful! Please login.");
         
-        return "index"; // Redirect to login page after registration
+        return "redirect:/hero"; // Redirect to login page after registration
     }
     
     @GetMapping("/logout")
@@ -157,7 +163,15 @@ public class ViewController {
         // Invalidate the session
         request.getSession().invalidate();
         // Redirect to home page or login page
-        return "redirect:/";
+        return "redirect:/index";
+    }
+    
+    @GetMapping("/logoutp")
+    public String logoutp(HttpServletRequest request) {
+        // Invalidate the session
+        request.getSession().invalidate();
+        // Redirect to home page or login page
+        return "redirect:/hero";
     }
 
 

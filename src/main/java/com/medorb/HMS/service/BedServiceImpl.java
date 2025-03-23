@@ -1,6 +1,7 @@
 package com.medorb.HMS.service;
 
 import com.medorb.HMS.model.Bed;
+import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.repository.BedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,5 +66,15 @@ public class BedServiceImpl implements BedService {
     @Override
     public List<Bed> getAvailableBedsByHospitalId(Integer hospitalId) {
         return bedRepository.findByHospital_HospitalIdAndIsOccupiedFalse(hospitalId);
+    }
+    
+    @Override
+    public long countByHospital(Hospital hospital) {
+        return bedRepository.countByHospital(hospital);
+    }
+    
+    @Override
+    public long countByHospitalAndIsOccupied(Hospital hospital, boolean isOccupied) {
+        return bedRepository.countByHospitalAndIsOccupied(hospital, isOccupied);
     }
 }

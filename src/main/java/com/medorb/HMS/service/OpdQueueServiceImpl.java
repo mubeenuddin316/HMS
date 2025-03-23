@@ -75,4 +75,14 @@ public class OpdQueueServiceImpl implements OpdQueueService {
         List<String> currentQueueStatuses = Arrays.asList("Waiting", "BeingServed"); // Use "Waiting" and "BeingServed" as per your ENUM
         return opdQueueRepository.findByDoctor_DoctorIdAndQueueStatusIn(doctorId, currentQueueStatuses); // If you keep Doctor relationship
     }
+    
+    @Override
+    public List<OpdQueue> filterOpdQueues(String patientName, Integer doctorId, Integer hospitalId) {
+        // If you want a custom JPA query:
+        return opdQueueRepository.filterOpdQueues(
+            (patientName == null || patientName.trim().isEmpty()) ? null : patientName.trim(),
+            doctorId,
+            hospitalId
+        );
+    }
 }

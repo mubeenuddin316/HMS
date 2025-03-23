@@ -84,5 +84,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> todays = appointmentRepository.findByAppointmentDatetimeBetween(startOfDay, endOfDay);
         return todays.size();
     }
+    
+    @Override
+    public List<Appointment> filterAppointments(String patientName, Integer doctorId, Integer hospitalId, String status) {
+        return appointmentRepository.filterAppointments(
+            (patientName == null || patientName.isBlank()) ? null : patientName.trim(),
+            doctorId,
+            hospitalId,
+            (status == null || status.isBlank()) ? null : status
+        );
+    }
 
 }

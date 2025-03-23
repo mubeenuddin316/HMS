@@ -88,6 +88,26 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
            ORDER BY a.appointmentDatetime ASC
            """)
     List<Appointment> findUpcomingVisitsByPatientId(@Param("pId") Integer patientId);
+    
+    @Query("""
+    	       SELECT a
+    	         FROM Appointment a
+    	         JOIN a.patient p
+    	         JOIN a.doctor d
+    	         JOIN a.hospital h
+    	        WHERE (:patientName IS NULL 
+    	                 OR LOWER(p.name) LIKE CONCAT('%', LOWER(:patientName), '%'))
+    	          AND (:doctorId IS NULL OR d.doctorId = :doctorId)
+    	          AND (:hospitalId IS NULL OR h.hospitalId = :hospitalId)
+    	          AND (:status IS NULL OR a.status = :status)
+    	        ORDER BY a.appointmentId DESC
+    	    """)
+    	    List<Appointment> filterAppointments(
+    	        @Param("patientName") String patientName,
+    	        @Param("doctorId") Integer doctorId,
+    	        @Param("hospitalId") Integer hospitalId,
+    	        @Param("status") String status
+    	    );
 
     
 }

@@ -65,28 +65,33 @@
     <form th:action="@{/hospitalAdmin/opdQueue}" th:object="${newQueue}" method="post">
 
         <!-- Patient dropdown -->
-        <label>Patient:</label>
-        <select th:field="*{patient.patientId}">
-            <option th:each="pat : ${patientList}"
-                    th:value="${pat.patientId}"
-                    th:text="${pat.name}">
-            </option>
-        </select>
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}">
+                <option th:each="p : ${patientList}"
+                        th:value="${p.patientId}"
+                        th:text="${p.patientId} + ' : ' + ${p.name}">
+                </option>
+            </select>
 
-        <!-- Doctor dropdown -->
-        <label>Doctor:</label>
-        <select th:field="*{doctor.doctorId}">
-            <option th:each="doc : ${doctorList}"
-                    th:value="${doc.doctorId}"
-                    th:text="${doc.name}">
-            </option>
-        </select>
+            <!-- Doctor dropdown -->
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}">
+                <option th:each="d : ${doctorList}"
+                        th:value="${d.doctorId}"
+                        th:text="${d.doctorId} + ' : ' + ${d.name}">
+                </option>
+            </select>
 
         <label>Registration Time:</label>
         <input type="datetime-local" th:field="*{registrationTime}" />
 
-        <label>Status:</label>
-        <input type="text" th:field="*{queueStatus}" />
+        <label>Queue Status:</label>
+            <select th:field="*{queueStatus}" required>
+                <option value="WAITING">WAITING</option>
+                <option value="BEINGSERVED">BEINGSERVED</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="CANCELLED">CANCELLED</option>
+            </select><br/>
 
         <label>Token #:</label>
         <input type="number" th:field="*{tokenNumber}" />

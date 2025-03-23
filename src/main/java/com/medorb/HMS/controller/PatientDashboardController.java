@@ -51,14 +51,14 @@ public class PatientDashboardController {
         Patient loggedInPatient = (Patient) request.getSession().getAttribute("loggedInPatient");
         if (loggedInPatient == null) {
             // Not logged in, redirect to home or login
-            return "redirect:/";
+            return "redirect:/patient/auth";
         }
 
         // 2) Re-fetch the patient from the DB (to ensure we have fresh data)
         Optional<Patient> optionalPatient = patientRepository.findById(loggedInPatient.getPatientId());
         if (optionalPatient.isEmpty()) {
             // If somehow the patient is missing in DB, also redirect or show error
-            return "redirect:/";
+            return "redirect:/hero";
         }
         Patient dbPatient = optionalPatient.get();
 
@@ -93,7 +93,7 @@ public class PatientDashboardController {
             // 1) Check patient session
             Patient loggedIn = (Patient) request.getSession().getAttribute("loggedInPatient");
             if (loggedIn == null) {
-                return "redirect:/"; 
+                return "redirect:/patient/auth"; 
             }
 
             // 2) All hospitals for the first dropdown
@@ -196,7 +196,7 @@ public class PatientDashboardController {
     ) {
         Patient loggedIn = (Patient) request.getSession().getAttribute("loggedInPatient");
         if (loggedIn == null) {
-            return "redirect:/";
+            return "redirect:/hero";
         }
 
         // Re-fetch from DB

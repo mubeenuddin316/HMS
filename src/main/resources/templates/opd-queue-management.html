@@ -9,6 +9,41 @@
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
         ← Back to Dashboard
     </a>
+    
+    <!-- ============== FILTER FORM ============== -->
+    <form th:action="@{/superAdmin/opdQueues}" method="get" style="margin-bottom: 20px;">
+        <!-- Patient Name filter -->
+        <label>Patient Name:</label>
+        <input type="text" name="patientName" 
+               th:value="${param.patientName}" 
+               placeholder="Search by patient name" />
+
+        <!-- Doctor filter -->
+        <label>Doctor:</label>
+        <select name="doctorId">
+            <option value="">All Doctors</option>
+            <option th:each="d : ${doctorList}"
+                    th:value="${d.doctorId}"
+                    th:text="${d.name}"
+                    th:selected="${param.doctorId} == ${d.doctorId}"> 
+            </option>
+        </select>
+
+        <!-- Hospital filter -->
+        <label>Hospital:</label>
+        <select name="hospitalId">
+            <option value="">All Hospitals</option>
+            <option th:each="h : ${hospitalList}"
+                    th:value="${h.hospitalId}"
+                    th:text="${h.name}"
+                    th:selected="${param.hospitalId} == ${h.hospitalId}">
+            </option>
+        </select>
+
+        <button type="submit">Filter</button>
+    </form>
+    
+    
     <h1>OPD Queue Management</h1>
 
     <!-- Table of existing OPD Queue entries -->
@@ -29,10 +64,10 @@
         <tbody>
             <tr th:each="q : ${opdQueueList}">
                 <td th:text="${q.opdQueueId}">ID</td>
-                <td th:text="${q.patient.patientId}">PatientID</td>
+                <td th:text="${q.patient.name}">Patient</td>
                 <!--  <td th:text="${q.appointment.appointmentId}">AppointmentID</td> -->
-                <td th:text="${q.doctor.doctorId}">DoctorID</td>
-                <td th:text="${q.hospital.hospitalId}">HospitalID</td>
+                <td th:text="${q.doctor.name}">Doctor</td>
+                <td th:text="${q.hospital.name}">Hospital</td>
                 <td th:text="${q.registrationTime}">RegTime</td>
                 <td th:text="${q.queueStatus}">Status</td>
                 <td th:text="${q.tokenNumber}">Token</td>

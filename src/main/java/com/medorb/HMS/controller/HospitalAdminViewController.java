@@ -239,6 +239,40 @@ public class HospitalAdminViewController {
         return "redirect:/hospitalAdmin/dashboard";
     }
     
+    @GetMapping("/hospitalAdmin/appointments/confirm/{appointmentId}")
+    public String confirmAppointment(
+            @PathVariable("appointmentId") Integer appointmentId,
+            HttpServletRequest request
+    ) {
+        // 1) Get the logged-in admin from session
+        HospitalAdmin hospitalAdmin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
+        if (hospitalAdmin == null || hospitalAdmin.getHospital() == null) {
+            return "redirect:/index"; // not logged in
+        }
+        Integer hospitalId = hospitalAdmin.getHospital().getHospitalId();
+
+        // 2) Fetch the appointment from DB
+        Optional<Appointment> optionalApp = appointmentRepository.findById(appointmentId);
+        if (optionalApp.isPresent()) {
+            Appointment app = optionalApp.get();
+
+            // 3) Ensure the appointment belongs to this hospital
+            if (!app.getHospital().getHospitalId().equals(hospitalId)) {
+                return "redirect:/hospitalAdmin/dashboard";
+            }
+
+            // 4) Only if status is PENDING, set to SCHEDULED (or some other status you want)
+            if (app.getStatus() == AppointmentStatus.PENDING) {
+                app.setStatus(AppointmentStatus.SCHEDULED);
+                appointmentRepository.save(app);
+            }
+        }
+
+        // 5) Redirect back to the dashboard
+        return "redirect:/hospitalAdmin/dashboard";
+    }
+
+    
     // =========================================================
     // MANAGE DOCTORS FEATURE
     // =========================================================

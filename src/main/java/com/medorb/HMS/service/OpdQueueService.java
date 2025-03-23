@@ -35,4 +35,5 @@ public interface OpdQueueService {
     List<OpdQueue> getOpdQueueEntriesByPatientId(Integer patientId);
     List<OpdQueue> getOpdQueueEntriesByStatus(String queueStatus);
     List<OpdQueue> getCurrentOpdQueueForDoctor(Integer doctorId); // If you keep Doctor relationship
+	List<OpdQueue> filterOpdQueues(String patientName, Integer doctorId, Integer hospitalId);
 }

@@ -142,6 +142,11 @@
                             <td th:text="${app.doctor != null ? app.doctor.name : 'N/A'}">Dr. Alex Ramirez</td>
                             <td>
                                 <!-- Instead of a direct GET that toggles status, we go to a "schedule form" page -->
+                                <a th:href="@{/hospitalAdmin/appointments/confirm/{id}(id=${app.appointmentId})}" 
+                                   class="confirm-link"
+                                   onclick="return confirm('Are you sure you want to confirm this appointment?');">
+                                   Confirm
+                                </a>
                                 <a th:href="@{/hospitalAdmin/appointments/schedule/form/{id}(id=${app.appointmentId})}" 
                                    class="schedule-link">
                                    Schedule

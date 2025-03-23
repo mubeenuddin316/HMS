@@ -27,5 +27,23 @@ public interface OpdQueueRepository extends JpaRepository<OpdQueue, Integer> {
     	       ORDER BY q.registrationTime DESC
     	       """)
     List<OpdQueue> findCompletedQueueByPatientId(@Param("patientId") Integer patientId);
+    
+    @Query("""
+            SELECT q 
+              FROM OpdQueue q
+              JOIN q.patient p
+              JOIN q.doctor d
+              JOIN q.hospital h
+             WHERE (:patientName IS NULL 
+                      OR LOWER(p.name) LIKE CONCAT('%', LOWER(:patientName), '%'))
+               AND (:doctorId IS NULL OR d.doctorId = :doctorId)
+               AND (:hospitalId IS NULL OR h.hospitalId = :hospitalId)
+            ORDER BY q.opdQueueId DESC
+        """)
+        List<OpdQueue> filterOpdQueues(
+            @Param("patientName") String patientName,
+            @Param("doctorId") Integer doctorId,
+            @Param("hospitalId") Integer hospitalId
+        );
 
 }

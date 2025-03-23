@@ -276,6 +276,7 @@ body {
   border: none; /* remove any default lines */
 }
 
+
 /* Row height: Figma shows ~72px tall rows */
 .appointments-table tbody tr {
   height: 72px;
@@ -352,5 +353,16 @@ body {
 .cancel-link:hover {
   text-decoration: underline;
   font-weight: 600;
+}
+
+.confirm-link {
+    color: #2D9BF0; /* or something else */
+    text-decoration: none;
+    margin-right: 10px;
+    transition: font-weight 0.5s ease, text-decoration 0.5s ease;
+}
+.confirm-link:hover {
+    text-decoration: underline;
+    font-weight: 600;
 }
 

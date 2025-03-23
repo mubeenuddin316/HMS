@@ -1,0 +1,180 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(116.21deg, rgba(216, 210, 252, 0.352) 1.56%, rgba(151, 71, 255, 0.374) 43.54%, rgba(56, 13, 227, 0.55) 91.44%);
+}
+header {
+    background: linear-gradient(220.82deg, #6D60AA 43.7%, #2C2644 101.63%);
+    color: white;
+    padding: 0 0;
+    text-align: center;
+}
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    margin-left: 50px;
+    margin-right: 50px;
+    
+}
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+nav ul {
+    list-style: none;
+    margin-left: 200px;
+    margin-right: 50px;
+    padding: 0px;
+    display: flex;
+}
+nav ul li {
+    margin: 0 15px;
+}
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+.login {
+    background: white;
+    color: #6f4bb2;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.hero {
+		
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    margin-left: 50px;
+    margin-right: 50px;
+    height: 500px;
+    width: auto;
+    position: relative;
+
+    
+}
+
+.hero-content{
+	margin-left: 200px;
+	position: relative; /* Keeps the content in its place over the SVG */
+    z-index: 2; /* Ensures it stays on top */
+	
+}
+.hero-content h1 {
+	
+    font-size: 36px;
+    color: #333;
+}
+
+.hero-image img{
+	margin-right: 150px;
+	height: 500px;
+	border-radius: 30px;
+	width:auto;
+	position: relative;
+    z-index: 2; /* Ensures it stays on top of the SVG */
+
+}
+.book-now {
+    background: #6f4bb2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#background-line {
+    position: absolute; /* Make the SVG absolute within the hero section */
+    top: 0; /* Position it at the top of the container */
+    left: 0; /* Position it at the left of the container */
+    width: 100%; /* Adjust the width to fill the container */
+    height: 90%; /* Adjust the height to fill the container */
+    z-index: 1; /* Send the SVG behind the other content */
+}
+
+.hospital-section {
+    text-align: center;
+    padding: 50px;
+    
+}
+.hospital-section h2 .highlight {
+    color: red;
+}
+.search-bar {
+    width: 50%;
+    padding: 10px;
+    margin: 20px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: rgb(255, 255, 255, 0.3);
+}
+.hospital-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.hospital {
+    background: white;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    width: 400px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+.hospital img {
+    width: 80px;
+    height: 80px;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+.beds {
+    background: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.about {
+    text-align: center;
+    
+    padding: 50px;
+    background: white;
+    height: 500px;
+}
+
+#about-us-data {
+	
+margin-right: 320px;
+margin-left: 320px;
+}
+.contact-form input {
+	
+    padding: 10px;
+    margin: 10px;
+    width: 40%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.contact-form button {
+    background: #6f4bb2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #6f4bb2;
+    color: white;
+}

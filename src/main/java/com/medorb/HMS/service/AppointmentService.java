@@ -19,6 +19,7 @@ public interface AppointmentService {
     List<Appointment> getAppointmentsByDate(LocalDate date);
     
     long countTodaysAppointments();
+	List<Appointment> filterAppointments(String patientName, Integer doctorId, Integer hospitalId, String status);
 
 
 }

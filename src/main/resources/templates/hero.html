@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Booking</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    <nav>
+        <div class="logo">MedOrb</div>
+        <ul>
+            <li><a th:href="@{/hero}">Home</a></li>
+            <li><a th:href="@{/patient/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/hero}">Hospitals</a></li>
+            <li><a th:href="@{/patient/bookAppointment}">Book Appointment</a></li>
+            <li><a th:href="@{/hero}">About Us</a></li>
+            <li><a th:href="@{/hero}">Contact Us</a></li>
+        </ul>
+        <a th:href="@{/patient/auth}"><button class="login">Login</button></a>
+
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Meet the Best Doctors</h1>
+        <p>Lorem ipsum dolor sit amet consectetur. Eu ligula aliquam ipsum ullamcorper. 
+        <br>Posuere consequat semper vulputate sed enim massa dui mollis. Nunc sed netus .</p>
+        <a th:href="@{/patient/bookAppointment}"><button class="book-now">Book Now</button></a>
+    </div>
+
+    <svg id="background-line" width="1361" height="622" viewBox="0 0 1361 622" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1362 2.95036C1303.03 2.95036 1243.96 -5.62342 1191.7 28.7334C1159.17 50.1199 1138.11 83.4638 1119.85 118.216C1096.82 162.053 1081.1 212.871 1044.98 245.615C1008.85 278.358 964.174 298.135 919.951 308.707C866.36 321.519 815.571 283.934 779.403 245.918C734.953 199.196 703.691 135.774 702.95 68.4697C702.704 46.1087 718.865 21.3777 741.464 18.5719C780.505 13.7245 786.201 136.949 787.163 160.985C788.427 192.553 790.167 226.62 780.84 257.141C761.409 320.731 668.303 343.524 654.152 347.003C640.002 350.482 543.622 376.543 450.229 392.806C356.835 409.069 248.939 399.675 155.769 431.632C108.536 447.832 59.1592 478.01 28.5862 520.053C5.14495 552.288 5.17426 581.475 2 620"
+              stroke="url(#paint0_linear_107_1043)" stroke-width="4"
+              stroke-linecap="round" stroke-dasharray="12 12"/>
+        <defs>
+            <linearGradient id="paint0_linear_107_1043" x1="2.40717" y1="520.446" x2="1333.12" y2="49.0605" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6D60AA"/>
+                <stop offset="0.445" stop-color="#00A4F4" stop-opacity="0.11"/>
+                <stop offset="0.71" stop-color="#0E0052"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <div class="hero-image">
+        <img th:src="@{/images/doctor.png}" alt="Doctor">
+    </div>
+</section>
+
+<section class="hospital-section">
+    <h2>Available <span class="highlight">Beds</span></h2>
+    <input type="text" class="search-bar" placeholder="Search hospitals...">
+    <div class="hospital-list">
+    <div class="hospital" th:each="dto : ${hospitalsWithBeds}">
+        <img th:src="@{/img/hospital-default.jpg}" alt="Hospital Image">
+        <div class="info">
+            <h3 th:text="${dto.hospital.name}">Hospital Name</h3>
+            <p th:text="${dto.hospital.address}">Hospital Address</p>
+            <span class="beds" th:text="'Available beds: ' + ${dto.availableBeds} + '/' + ${dto.totalBeds}">Available beds: 0/0</span>
+        </div>
+    </div>
+</div>
+
+</section>
+
+<section class="about">
+    <h2>About Us</h2>
+    <p id="about-us-data">Lorem ipsum dolor sit amet consectetur. In amet metus arcu pharetra tortor vel cras tincidunt pretium. Ac in eu sed quis mattis praesent sed. Augue aliquet in lacus pretium facilisi. Interdum viverra massa tortor viverra.Lorem ipsum dolor sit amet consectetur. In amet metus arcu pharetra tortor vel cras tincidunt pretium. Ac in eu sed quis mattis praesent sed. Augue aliquet in lacus pretium facilisi. Interdum viverra massa tortor viverra.</p>
+    <br><br> <br><br> <br><br>
+    <h2>Contact our help desk for support.</h2>
+    <p>Questions? Need assistance? Our dedicated support team is here to help you every step of the way:</p>
+    <div class="contact-form">
+        <input type="text" placeholder="Enter Your First Name">
+        <input type="email" placeholder="Enter Your Email Address">
+        <button>Contact us</button>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 MedOrb. All Rights Reserved.</p> <a id="management-login" th:href="@{/index}">Management Login</a>
+</footer>
+
+
+</body>
+</html>

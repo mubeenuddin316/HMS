@@ -69,7 +69,7 @@
             <select th:field="*{patient.patientId}">
                 <option th:each="p : ${patientList}"
                         th:value="${p.patientId}"
-                        th:text="${p.name}">
+                        th:text="${p.patientId} + ' : ' + ${p.name}">
                 </option>
             </select>
 
@@ -78,7 +78,7 @@
             <select th:field="*{doctor.doctorId}">
                 <option th:each="d : ${doctorList}"
                         th:value="${d.doctorId}"
-                        th:text="${d.name}">
+                        th:text="${d.doctorId} + ' : ' + ${d.name}">
                 </option>
             </select>
 
