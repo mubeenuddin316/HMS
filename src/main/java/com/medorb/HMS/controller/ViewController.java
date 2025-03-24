@@ -1,16 +1,8 @@
 package com.medorb.HMS.controller;
 
-import com.medorb.HMS.model.Doctor;
-import com.medorb.HMS.model.HospitalAdmin;
-import com.medorb.HMS.model.Patient;
-import com.medorb.HMS.model.SuperAdmin;
-import com.medorb.HMS.service.DoctorService;
-import com.medorb.HMS.service.HospitalAdminService;
-import com.medorb.HMS.service.HospitalService;
-import com.medorb.HMS.service.PatientService;
-import com.medorb.HMS.service.SuperAdminService;
-
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +12,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
+import com.medorb.HMS.dto.HospitalWithBedsDTO;
+import com.medorb.HMS.model.Doctor;
+import com.medorb.HMS.model.Hospital;
+import com.medorb.HMS.model.HospitalAdmin;
+import com.medorb.HMS.model.Patient;
+import com.medorb.HMS.model.SuperAdmin;
+import com.medorb.HMS.service.BedService;
+import com.medorb.HMS.service.DoctorService;
+import com.medorb.HMS.service.HospitalAdminService;
+import com.medorb.HMS.service.HospitalService;
+import com.medorb.HMS.service.PatientService;
+import com.medorb.HMS.service.SuperAdminService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class ViewController {
@@ -29,17 +34,42 @@ public class ViewController {
     private final HospitalAdminService hospitalAdminService;
     private final PatientService patientService;
     private final DoctorService doctorService;
+    private final HospitalService hospitalService;
+    private final BedService bedService;
 
     @Autowired
-    public ViewController(SuperAdminService superAdminService, HospitalAdminService hospitalAdminService, HospitalService hospitalService, DoctorService doctorService, PatientService patientService) {
+    public ViewController(SuperAdminService superAdminService, 
+    		              HospitalAdminService hospitalAdminService, 
+    		              HospitalService hospitalService, 
+    		              DoctorService doctorService, 
+    		              PatientService patientService,
+    		              BedService bedService
+    		) {
         this.superAdminService = superAdminService;
         this.hospitalAdminService = hospitalAdminService;
         this.doctorService = doctorService;
         this.patientService = patientService;
+        this.hospitalService = hospitalService;
+        this.bedService = bedService;
     }
 
     @GetMapping("/")
-    public String showIndexPage() {
+    public String showIndexPage(Model model) {
+    	List<Hospital> hospitals = hospitalService.getAllHospitals();
+        List<HospitalWithBedsDTO> hospitalDTOs = new ArrayList<>();
+
+        for (Hospital h : hospitals) {
+            long totalBeds = bedService.countByHospital(h);
+            long availableBeds = bedService.countByHospitalAndIsOccupied(h, false);
+            
+            HospitalWithBedsDTO dto = new HospitalWithBedsDTO();
+            dto.setHospital(h);
+            dto.setTotalBeds(totalBeds);
+            dto.setAvailableBeds(availableBeds);
+            hospitalDTOs.add(dto);
+        }
+
+        model.addAttribute("hospitalsWithBeds", hospitalDTOs);
         return "hero";  // Resolves to index.html
     }
     

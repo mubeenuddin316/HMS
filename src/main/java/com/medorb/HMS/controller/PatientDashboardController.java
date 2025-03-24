@@ -203,15 +203,12 @@ public class PatientDashboardController {
         Optional<Patient> optionalPatient = patientRepository.findById(loggedIn.getPatientId());
         if (optionalPatient.isPresent()) {
             Patient dbPatient = optionalPatient.get();
-
-            // Update the fields you allow
+            
             dbPatient.setName(formPatient.getName());
             dbPatient.setEmail(formPatient.getEmail());
             dbPatient.setContactNumber(formPatient.getContactNumber());
             dbPatient.setAddress(formPatient.getAddress());
-            // If you want to allow password change, handle it carefully (hashing, etc.)
-
-            // Save
+            
             patientRepository.save(dbPatient);
 
             // Update session
