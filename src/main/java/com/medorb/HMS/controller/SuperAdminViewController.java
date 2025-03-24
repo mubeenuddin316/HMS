@@ -146,22 +146,46 @@ public class SuperAdminViewController {
  // Doctors Management
  // ==========================
 
- @GetMapping("/superAdmin/doctors")
- public String showDoctorManagementPage(Model model) {
-     // 1) Fetch all doctors
-     List<Doctor> doctorList = doctorService.getAllDoctors();
-     model.addAttribute("doctors", doctorList);
+    @GetMapping("/superAdmin/doctors")
+    public String showDoctorManagementPage(
+        @RequestParam(required = false) Integer hospitalId,
+        @RequestParam(required = false) String name,
+        Model model
+    ) {
+        // 1) Fetch all hospitals for the dropdown
+        List<Hospital> allHospitals = hospitalService.getAllHospitals();
+        model.addAttribute("hospitalList", allHospitals);
 
-     // 2) Fetch all hospitals for the dropdown
-     List<Hospital> hospitalList = hospitalService.getAllHospitals();
-     model.addAttribute("hospitalList", hospitalList);
+        // 2) Depending on the query params, filter doctors
+        List<Doctor> doctorList;
+        if (hospitalId != null && hospitalId > 0 && name != null && !name.isBlank()) {
+            // filter by BOTH hospital & name
+            doctorList = doctorService.findByHospitalIdAndName(hospitalId, name);
+        } 
+        else if (hospitalId != null && hospitalId > 0) {
+            // filter by hospital only
+            doctorList = doctorService.findByHospitalId(hospitalId);
+        } 
+        else if (name != null && !name.isBlank()) {
+            // filter by name only
+            doctorList = doctorService.findByName(name);
+        } 
+        else {
+            // no filter => get all
+            doctorList = doctorService.getAllDoctors();
+        }
 
-     // 3) Provide a blank Doctor object for the create form
-     model.addAttribute("newDoctor", new Doctor());
+        model.addAttribute("doctors", doctorList);
 
-     // 4) Return the Thymeleaf page
-     return "doctor-management";
- }
+        // Provide a blank Doctor object for the create form
+        model.addAttribute("newDoctor", new Doctor());
+
+        // Keep track of the currently selected filters so we can show them in the UI
+        model.addAttribute("selectedHospitalId", hospitalId);
+        model.addAttribute("searchName", name);
+
+        return "doctor-management";
+    }
 
  @PostMapping("/superAdmin/doctors")
  public String createDoctor(@ModelAttribute Doctor newDoctor, @RequestParam("hospitalId") Integer hospitalId) {

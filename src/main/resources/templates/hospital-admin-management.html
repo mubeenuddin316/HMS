@@ -9,6 +9,7 @@
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
         ← Back to Dashboard
     </a>
+    
     <h1>Hospital Admin Management</h1>
 
     <!-- Table of existing hospital admins -->
@@ -19,7 +20,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Hospital ID</th>
+                <th>Hospital</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -29,7 +30,7 @@
                 <td th:text="${ha.adminName}">Name</td>
                 <td th:text="${ha.email}">Email</td>
                 <td th:text="${ha.phoneNumber}">Phone</td>
-                <td th:text="${ha.hospital.hospitalId}">HospitalID</td>
+                <td th:text="${ha.hospital.name}">HospitalID</td>
                 <td>
                     <a th:href="@{/superAdmin/hospitalAdmins/edit/{id}(id=${ha.hospitalAdminId})}">Edit</a>
                     <a th:href="@{/superAdmin/hospitalAdmins/delete/{id}(id=${ha.hospitalAdminId})}"

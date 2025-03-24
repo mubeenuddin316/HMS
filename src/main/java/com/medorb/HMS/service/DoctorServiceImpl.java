@@ -56,6 +56,23 @@ public class DoctorServiceImpl implements DoctorService { // Implements DoctorSe
     public List<Doctor> getDoctorsByHospitalId(Integer hospitalId) { // Implement getDoctorsByHospitalId method
         return doctorRepository.findByHospital_HospitalId(hospitalId); // Use custom method (add to repo)
     }
+    
+    @Override
+    public List<Doctor> findByHospitalId(Integer hospitalId) {
+        return doctorRepository.findByHospital_HospitalId(hospitalId);
+    }
+    
+    @Override
+    public List<Doctor> findByName(String name) {
+        return doctorRepository.findByNameContainingIgnoreCase(name);
+    }
+    
+    @Override
+    public List<Doctor> findByHospitalIdAndName(Integer hospitalId, String name) {
+        return doctorRepository.findByHospitalIdAndNameContainingIgnoreCase(hospitalId, name);
+    }
+    
+    
 
 	
 }

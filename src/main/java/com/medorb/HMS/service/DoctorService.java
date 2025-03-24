@@ -13,4 +13,7 @@ public interface DoctorService {
     Optional<Doctor> getDoctorByEmail(String email); // Add find by email
     List<Doctor> getDoctorsByHospitalId(Integer hospitalId); // Get doctors for a hospital
 	// long getDoctorCount();
+	List<Doctor> findByName(String name);
+	List<Doctor> findByHospitalId(Integer hospitalId);
+	List<Doctor> findByHospitalIdAndName(Integer hospitalId, String name);
 }

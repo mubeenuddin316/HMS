@@ -11,12 +11,31 @@
     </a>
     <h1>Doctor Management</h1>
 
+<!-- Filter Form -->
+<form th:action="@{/superAdmin/doctors}" method="get">
+    <label>Hospital:</label>
+    <select name="hospitalId">
+        <option value="">--All Hospitals--</option>
+        <option th:each="h : ${hospitalList}"
+                th:value="${h.hospitalId}"
+                th:text="${h.name}"
+                th:selected="${h.hospitalId} == ${selectedHospitalId}">
+        </option>
+    </select>
+
+    <label>Search by Name:</label>
+    <input type="text" name="name" th:value="${searchName}" />
+
+    <button type="submit">Filter</button>
+</form>
+
+<hr/>
     <!-- Table of existing doctors -->
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Hospital ID</th>
+                <th>Hospital</th>
                 <th>Name</th>
                 <th>Specialization</th>
                 <th>Email</th>
@@ -26,7 +45,7 @@
         <tbody>
             <tr th:each="d : ${doctors}">
                 <td th:text="${d.doctorId}">ID</td>
-                <td th:text="${d.hospital.hospitalId}">HospitalID</td>
+                <td th:text="${d.hospital.name}">HospitalID</td>
                 <td th:text="${d.name}">Name</td>
                 <td th:text="${d.specialization}">Specialization</td>
                 <td th:text="${d.email}">Email</td>
@@ -42,6 +61,8 @@
             </tr>
         </tbody>
     </table>
+    
+    <hr/>
 
     <!-- Form to create a new doctor -->
     <div class="form-container">
