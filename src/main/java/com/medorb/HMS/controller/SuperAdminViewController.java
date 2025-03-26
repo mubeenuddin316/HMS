@@ -66,31 +66,35 @@ public class SuperAdminViewController {
 
     @GetMapping("/superAdmin/dashboard")
     public String showSuperAdminDashboard(HttpServletRequest request, Model model) {
-        // 1. Retrieve SuperAdmin from session
+        // 1) Grab from session
         SuperAdmin superAdmin = (SuperAdmin) request.getSession().getAttribute("loggedInSuperAdmin");
+
+        // 2) If null => user is not logged in or session expired => redirect
+        if (superAdmin == null) {
+            return "redirect:/index"; 
+            // or "redirect:/index" or "redirect:/?error=SessionExpired"
+        }
+
+        // 3) Put in model
         model.addAttribute("superAdmin", superAdmin);
 
-        // 2. Fetch Dashboard Data from DB
+        // 4) Then fetch stats if needed
         long totalHospitals = superAdminService.getTotalHospitals();
         long totalPatients = superAdminService.getTotalPatients();
         long totalDoctors = superAdminService.getTotalDoctors();
         long occupiedBeds = superAdminService.getOccupiedBeds();
         long totalBeds = superAdminService.getTotalBeds();
         long todaysAppointments = superAdminService.getTodaysAppointmentsCount();
-        
 
-        // 3. Put stats in the model
         model.addAttribute("totalHospitals", totalHospitals);
-        
         model.addAttribute("totalPatients", totalPatients);
         model.addAttribute("totalDoctors", totalDoctors);
         model.addAttribute("occupiedBeds", occupiedBeds);
         model.addAttribute("totalBeds", totalBeds);
-        model.addAttribute("freeBeds", totalBeds - occupiedBeds);        
+        model.addAttribute("freeBeds", totalBeds - occupiedBeds);
         model.addAttribute("todaysAppointments", todaysAppointments);
 
-
-        // 4. Return the Thymeleaf template
+        // 5) Return the template
         return "super-admin-dashboard";
     }
     

@@ -6,7 +6,10 @@
     <link rel="stylesheet" th:href="@{/css/super-admin-management.css}" />
 </head>
 <body>
-    <button onclick="window.history.back();" class="back-link">Go Back</button>
+    <!-- <button onclick="window.history.back();" class="back-link">Go Back</button> -->
+    <a th:href="@{/superAdmin/dashboard}" class="back-link">
+        ← Back to Dashboard
+    </a>
     <h1>OPD Queue Management</h1>
         
     <!-- ============== FILTER FORM ============== -->

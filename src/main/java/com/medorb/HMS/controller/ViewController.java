@@ -80,25 +80,41 @@ public class ViewController {
 
 
     // ✅ Super Admin Login with REDIRECT approach (Option A)
-    @PostMapping("/login")
+//    @PostMapping("/login")
+//    public String loginSuperAdmin(@RequestParam String email,
+//                                  @RequestParam String password,
+//                                  HttpServletRequest request,
+//                                  Model model) {
+//
+//        Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
+//
+//        if (superAdminOptional.isPresent() &&
+//            superAdminOptional.get().getPassword().equals(password)) {
+//
+//            // Store the SuperAdmin object in HTTP session so it survives the redirect
+//            request.getSession().setAttribute("loggedInSuperAdmin", superAdminOptional.get());
+//
+//            // Redirect to GET /superAdmin/dashboard
+//            return "redirect:/superAdmin/dashboard";
+//        } else {
+//            model.addAttribute("error", "Invalid email or password");
+//            return "index"; // Stay on login page with error
+//        }
+//    }
+    @PostMapping("/loginSuperAdmin")
     public String loginSuperAdmin(@RequestParam String email,
                                   @RequestParam String password,
                                   HttpServletRequest request,
                                   Model model) {
-
-        Optional<SuperAdmin> superAdminOptional = superAdminService.getSuperAdminByEmail(email);
-
-        if (superAdminOptional.isPresent() &&
-            superAdminOptional.get().getPassword().equals(password)) {
-
-            // Store the SuperAdmin object in HTTP session so it survives the redirect
-            request.getSession().setAttribute("loggedInSuperAdmin", superAdminOptional.get());
-
-            // Redirect to GET /superAdmin/dashboard
+        Optional<SuperAdmin> superAdminOpt = superAdminService.getSuperAdminByEmail(email);
+        if (superAdminOpt.isPresent() && superAdminOpt.get().getPassword().equals(password)) {
+            // 1) Put the superAdmin in session
+            request.getSession().setAttribute("loggedInSuperAdmin", superAdminOpt.get());
+            // 2) Redirect to GET /superAdmin/dashboard
             return "redirect:/superAdmin/dashboard";
         } else {
             model.addAttribute("error", "Invalid email or password");
-            return "index"; // Stay on login page with error
+            return "index"; // or some login page
         }
     }
 
