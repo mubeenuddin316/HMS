@@ -17,9 +17,13 @@ public class OpdQueue {
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id", nullable = true)
     private Patient patient;
+    
+    
+    @Column(name = "pname", nullable = true)
+    private String patientName;       // Added New
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", nullable = false)
@@ -135,4 +139,14 @@ public class OpdQueue {
 	public void setTokenNumber(Integer tokenNumber) {
 		this.tokenNumber = tokenNumber;
 	}
+
+	public String getPatientName() {
+		return patientName;
+	}
+
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	
+	
 }

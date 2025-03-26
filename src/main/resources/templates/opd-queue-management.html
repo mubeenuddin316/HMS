@@ -6,10 +6,9 @@
     <link rel="stylesheet" th:href="@{/css/super-admin-management.css}" />
 </head>
 <body>
-    <a th:href="@{/superAdmin/dashboard}" class="back-link">
-        ← Back to Dashboard
-    </a>
-    
+    <button onclick="window.history.back();" class="back-link">Go Back</button>
+    <h1>OPD Queue Management</h1>
+        
     <!-- ============== FILTER FORM ============== -->
     <form th:action="@{/superAdmin/opdQueues}" method="get" style="margin-bottom: 20px;">
         <!-- Patient Name filter -->
@@ -42,10 +41,7 @@
 
         <button type="submit">Filter</button>
     </form>
-    
-    
-    <h1>OPD Queue Management</h1>
-
+    <hr/>    
     <!-- Table of existing OPD Queue entries -->
     <table>
         <thead>
@@ -64,7 +60,9 @@
         <tbody>
             <tr th:each="q : ${opdQueueList}">
                 <td th:text="${q.opdQueueId}">ID</td>
-                <td th:text="${q.patient.name}">Patient</td>
+                <td th:text="${(q.patient != null) ? q.patient.name : q.patientName}">
+                   Fallback text
+                </td>
                 <!--  <td th:text="${q.appointment.appointmentId}">AppointmentID</td> -->
                 <td th:text="${q.doctor.name}">Doctor</td>
                 <td th:text="${q.hospital.name}">Hospital</td>
@@ -89,14 +87,17 @@
 
             
             <!-- Patient -->
-            <label>Patient:</label>
-            <select th:field="*{patient.patientId}" required>
-                <option value="">-- Select a Patient --</option>
-                <option th:each="p : ${allPatients}"
-                        th:value="${p.patientId}"
-                        th:text="|${p.patientId} : ${p.name}|">
-                </option>
-            </select><br/>
+			<label>Registered Patient:(Optional)</label>
+			<select
+				th:field="*{patient.patientId}">
+				<option value="">-- None --</option>
+				<option th:each="p : ${allPatients}" 
+				        th:value="${p.patientId}"
+					    th:text="|${p.patientId} : ${p.name}|">
+			    </option>
+			</select>
+			<label>or Type Patient Name (for walk-in):</label> 
+			<input type="text" th:field="*{patientName}" placeholder="Walk-in name" /><br/>
 
             <!-- Doctor -->
             <label>Doctor:</label>

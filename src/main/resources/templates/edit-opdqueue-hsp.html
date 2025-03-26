@@ -16,14 +16,20 @@
             <input type="hidden" th:field="*{opdQueueId}" />
 
             <!-- Patient dropdown -->
-            <label>Patient:</label>
+            <label>Patient (optional):</label>
             <select th:field="*{patient.patientId}">
+                <option value=""> -- None -- </option>
                 <option th:each="p : ${patientList}"
-                    th:value="${p.patientId}"
-                    th:text="${p.name}"
-                    th:selected="${p.patientId} == *{patient.patientId}">
+                        th:value="${p.patientId}"
+                        th:text="${p.name}"
+                        th:selected="${p.patientId} == *{patient.patientId}">
                 </option>
             </select>
+
+            <!-- Or manually typed name -->
+            <label>Walk-in Name:</label>
+            <input type="text" th:field="*{patientName}" />
+              
             <!-- Doctor dropdown -->
             <label>Doctor:</label>
             <select th:field="*{doctor.doctorId}">
@@ -33,8 +39,7 @@
                     th:selected="${d.doctorId} == *{doctor.doctorId}">
                 </option>
             </select>
-
-
+            
             <label>Registration Time:</label>
             <input type="datetime-local" th:field="*{registrationTime}" />
 

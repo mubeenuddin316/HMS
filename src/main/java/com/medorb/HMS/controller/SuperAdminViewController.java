@@ -293,12 +293,8 @@ public String showOpdQueueManagementPage(
     @RequestParam(required=false) Integer hospitalId,
     Model model
 ) {
-    // 1) Filter the OPD queues
-    //    (You can do it via a custom repository query or by fetching all + filtering in memory.)
-    //    Example: let's do a custom service method: 
+    // Filter logic
     List<OpdQueue> queueList = opdQueueService.filterOpdQueues(patientName, doctorId, hospitalId);
-
-    // 2) Add needed model attributes
     model.addAttribute("opdQueueList", queueList);
 
     // For the filter form
@@ -308,26 +304,16 @@ public String showOpdQueueManagementPage(
     // For the create form
     model.addAttribute("allPatients", patientService.getAllPatients());
     model.addAttribute("appointments", appointmentService.getAllAppointments());
-
-    // For binding a new queue entry
     model.addAttribute("newOpdQueue", new OpdQueue());
-
-    // So the filter form can remember what was chosen
-    // (Thymeleaf automatically puts request params in `param.*`, but you can store them if needed.)
-    // model.addAttribute("chosenPatientName", patientName);
-    // model.addAttribute("chosenDoctorId", doctorId);
-    // model.addAttribute("chosenHospitalId", hospitalId);
 
     return "opd-queue-management";
 }
 
-
-    // CREATE a new OPD queue entry
-    @PostMapping("/superAdmin/opdQueues")
-    public String createOpdQueue(@ModelAttribute OpdQueue newOpdQueue) {
-        opdQueueService.createOpdQueueEntry(newOpdQueue);
-        return "redirect:/superAdmin/opdQueues";
-    }
+@PostMapping("/superAdmin/opdQueues")
+public String createOpdQueue(@ModelAttribute OpdQueue newOpdQueue) {
+    opdQueueService.createOpdQueueEntry(newOpdQueue);
+    return "redirect:/superAdmin/opdQueues";
+}
 
     // DELETE an OPD queue entry
     @GetMapping("/superAdmin/opdQueues/delete/{id}")
@@ -341,14 +327,78 @@ public String showOpdQueueManagementPage(
     public String showEditOpdQueueForm(@PathVariable("id") Integer queueId, Model model) {
         OpdQueue queueEntry = opdQueueService.getOpdQueueEntryById(queueId).orElse(null);
         model.addAttribute("opdQueue", queueEntry);
-        return "opd-queue-edit";
+
+        // 1) Also fetch and add all the dropdown data:
+        model.addAttribute("patientList", patientService.getAllPatients());
+        model.addAttribute("doctorList", doctorService.getAllDoctors());
+        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
+
+        // If you also want an Appointment dropdown:
+        model.addAttribute("appointments", appointmentService.getAllAppointments());
+
+        return "opd-queue-edit";  // thymeleaf template
     }
 
     @PostMapping("/superAdmin/opdQueues/edit")
-    public String updateOpdQueue(@ModelAttribute OpdQueue opdQueue) {
-        opdQueueService.updateOpdQueueEntry(opdQueue.getOpdQueueId(), opdQueue);
+    public String updateOpdQueue(@ModelAttribute OpdQueue formQueue) {
+        // 1) fetch existing queue from DB
+        Optional<OpdQueue> optionalQ = opdQueueService.getOpdQueueEntryById(formQueue.getOpdQueueId());
+        if (optionalQ.isEmpty()) {
+            // no such queue entry => redirect or show error
+            return "redirect:/superAdmin/opdQueues";
+        }
+        OpdQueue dbQueue = optionalQ.get();
+        
+        // 2) Now we carefully update its fields
+        //    We do NOT blindly set dbQueue.setPatient(formQueue.getPatient()),
+        //    because that might be a transient object.
+        //    Instead, if user selected a patient ID, we re-fetch that patient from DB:
+        
+        if (formQueue.getPatient() != null && formQueue.getPatient().getPatientId() != null) {
+            Integer patId = formQueue.getPatient().getPatientId();
+            Patient existingPatient = patientService.getPatientById(patId).orElse(null);
+            dbQueue.setPatient(existingPatient);  // This ensures the patient is a managed entity
+        } else {
+            dbQueue.setPatient(null);  // or keep existing if you want
+        }
+        
+        // 3) For the "walk-in" name:
+        dbQueue.setPatientName(formQueue.getPatientName());
+        
+        // 4) Re-fetch the Doctor from DB
+        if (formQueue.getDoctor() != null && formQueue.getDoctor().getDoctorId() != null) {
+            Integer docId = formQueue.getDoctor().getDoctorId();
+            Doctor existingDoctor = doctorService.getDoctorById(docId).orElse(null);
+            dbQueue.setDoctor(existingDoctor);
+        }
+        
+        // 5) Re-fetch the Hospital
+        if (formQueue.getHospital() != null && formQueue.getHospital().getHospitalId() != null) {
+            Integer hospId = formQueue.getHospital().getHospitalId();
+            Hospital existingHospital = hospitalService.getHospitalById(hospId).orElse(null);
+            dbQueue.setHospital(existingHospital);
+        }
+        
+        // 6) If there's an appointment ID
+        if (formQueue.getAppointment() != null && formQueue.getAppointment().getAppointmentId() != null) {
+            Integer appId = formQueue.getAppointment().getAppointmentId();
+            Appointment existingApp = appointmentService.getAppointmentById(appId).orElse(null);
+            dbQueue.setAppointment(existingApp);
+        } else {
+            dbQueue.setAppointment(null);
+        }
+        
+        // 7) Update other scalar fields
+        dbQueue.setRegistrationTime(formQueue.getRegistrationTime());
+        dbQueue.setQueueStatus(formQueue.getQueueStatus());
+        dbQueue.setTokenNumber(formQueue.getTokenNumber());
+        
+        // 8) Now save the updated entity
+        opdQueueService.updateOpdQueueEntry(dbQueue.getOpdQueueId(), dbQueue);
+
         return "redirect:/superAdmin/opdQueues";
     }
+
     
     // ==========================
     // Bed Management
@@ -558,20 +608,31 @@ public String showOpdQueueManagementPage(
 
     // 1) GET /superAdmin/patients - Show all patients
     @GetMapping("/superAdmin/patients")
-    public String showPatientsOverview(Model model) {
-        List<Patient> patients = patientService.getAllPatients();
-        model.addAttribute("patients", patients);
+    public String showPatientsManagementPage(
+            @RequestParam(required = false) String name,
+            Model model
+    ) {
+        // 1) If you have a PatientService, use it. Or call repository directly.
+        List<Patient> patientList;
 
-        // Provide a blank Patient object for the create form
+        if (name != null && !name.isBlank()) {
+            // Filter by name
+            patientList = patientService.findByName(name);
+        } else {
+            // No filter => get all
+            patientList = patientService.getAllPatients();
+        }
+
+        // 2) Put results in model
+        model.addAttribute("patients", patientList);
+
+        // 3) Keep the 'name' so we can show it in the search input
+        model.addAttribute("searchName", name);
+
+        // 4) Provide a blank Patient object for the create form
         model.addAttribute("newPatient", new Patient());
-        return "patients-overview"; // We'll create patients-overview.html
-    }
 
-    // 2) POST /superAdmin/patients - Create a new patient
-    @PostMapping("/superAdmin/patients")
-    public String createPatient(@ModelAttribute Patient newPatient) {
-        patientService.createPatient(newPatient);
-        return "redirect:/superAdmin/patients";
+        return "patients-overview";
     }
 
     // 3) GET /superAdmin/patients/edit/{id} - Show edit form

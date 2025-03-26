@@ -51,6 +51,11 @@ public class PatientServiceImpl implements PatientService {
     public Optional<Patient> getPatientByEmail(String email) {
         return patientRepository.findByEmail(email); // Use custom method from PatientRepository
     }
+    
+    @Override
+    public List<Patient> findByName(String name) {
+        return patientRepository.findByNameContainingIgnoreCase(name);
+    }
 
 	
 }

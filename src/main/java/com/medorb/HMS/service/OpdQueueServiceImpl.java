@@ -1,22 +1,32 @@
 package com.medorb.HMS.service;
 
-import com.medorb.HMS.model.OpdQueue;
-import com.medorb.HMS.repository.OpdQueueRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.medorb.HMS.model.Appointment;
+import com.medorb.HMS.model.OpdQueue;
+import com.medorb.HMS.model.Patient;
+import com.medorb.HMS.repository.AppointmentRepository;
+import com.medorb.HMS.repository.OpdQueueRepository;
+import com.medorb.HMS.repository.PatientRepository;
+
 @Service
 public class OpdQueueServiceImpl implements OpdQueueService {
 
     private final OpdQueueRepository opdQueueRepository;
+    private final PatientRepository patientRepository;
+    private final AppointmentRepository appointmentRepository;
 
     @Autowired
-    public OpdQueueServiceImpl(OpdQueueRepository opdQueueRepository) {
+    public OpdQueueServiceImpl(OpdQueueRepository opdQueueRepository, PatientRepository patientRepository, AppointmentRepository appointmentRepository) {
         this.opdQueueRepository = opdQueueRepository;
+        this.patientRepository = patientRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -31,7 +41,36 @@ public class OpdQueueServiceImpl implements OpdQueueService {
 
     @Override
     public OpdQueue createOpdQueueEntry(OpdQueue opdQueue) {
-        opdQueue.setRegistrationTime(LocalDateTime.now()); // Set registration time on creation
+        
+        // -- Fix for Appointment:
+        if (opdQueue.getAppointment() != null) {
+            Integer apptId = opdQueue.getAppointment().getAppointmentId();
+            if (apptId == null) {
+                // user selected "None"
+                opdQueue.setAppointment(null);
+            } else {
+                // re-fetch from DB
+                Appointment realAppt = appointmentRepository.findById(apptId).orElse(null);
+                opdQueue.setAppointment(realAppt); // can be null if invalid ID
+            }
+        }
+
+        // -- Fix for Patient:
+        if (opdQueue.getPatient() != null) {
+            Integer patId = opdQueue.getPatient().getPatientId();
+            if (patId == null) {
+                // no real patient chosen
+                opdQueue.setPatient(null);
+            } else {
+                Patient realPat = patientRepository.findById(patId).orElse(null);
+                opdQueue.setPatient(realPat);
+                // If realPat is null, handle or set to null
+            }
+        }
+
+        // set registration time if new
+        opdQueue.setRegistrationTime(LocalDateTime.now());
+
         return opdQueueRepository.save(opdQueue);
     }
 

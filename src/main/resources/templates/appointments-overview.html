@@ -9,6 +9,8 @@
     <a th:href="@{/superAdmin/dashboard}" class="back-link">
         ← Back to Dashboard
     </a>
+    
+    <h1>Appointments Overview</h1>
      <!-- ============== FILTER FORM ============== -->
     <form th:action="@{/superAdmin/appointments}" method="get" style="margin-bottom: 20px;">
         <!-- Patient Name filter -->
@@ -39,7 +41,7 @@
             </option>
         </select>
 
-        <!-- Status filter (optional) -->
+        <!-- Status filter (optional) 
         <label>Status:</label>
         <select name="status">
             <option value="">All Statuses</option>
@@ -48,11 +50,11 @@
             <option value="CANCELLED"    th:selected="${param.status}=='CANCELLED'">CANCELLED</option>
             <option value="COMPLETED"    th:selected="${param.status}=='COMPLETED'">COMPLETED</option>
             <option value="PENDING"      th:selected="${param.status}=='PENDING'">PENDING</option>
-        </select>
+        </select>  -->
 
         <button type="submit">Filter</button>
     </form>
-    <h1>Appointments Overview</h1>
+    <hr/>
 
     <!-- Table of existing appointments -->
     <table>
@@ -94,7 +96,7 @@
             </tr>
         </tbody>
     </table>
-
+    <hr/>
     <!-- Create New Appointment Form -->
     <div class="form-container">
         <h2>Create New Appointment</h2>

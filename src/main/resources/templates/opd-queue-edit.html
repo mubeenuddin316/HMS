@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--  <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
@@ -13,32 +13,108 @@
     <form th:action="@{/superAdmin/opdQueues/edit}"
           th:object="${opdQueue}"
           method="post">
+          
+            <input type="hidden" th:field="*{opdQueueId}" />
+            
+            <label>Patient:</label>
+            <select th:field="*{patient.patientId}">
+               <option th:value="" > --None -- </option>
+                <option th:each="p : ${patientList}"
+                    th:value="${p.patientId}"
+                    th:text="${p.name}"
+                    th:selected="${p.patientId} == *{patient.patientId}">
+                </option>
+            </select>
+            
+            <label>Name :</label>
+            <input type="text" th:field="*{patientName}" required/><br/>
+            
+            <label>Doctor:</label>
+            <select th:field="*{doctor.doctorId}">
+                <option th:each="d : ${doctorList}"
+                    th:value="${d.doctorId}"
+                    th:text="${d.name}"
+                    th:selected="${d.doctorId} == *{doctor.doctorId}">
+                </option>
+            </select>
+            
+            <label>Hospital ID:</label>
+            <select th:field="*{hospital.hospitalId}">
+                <option th:each="h : ${hospitalList}"
+                    th:value="${h.hospitalId}"
+                    th:text="|${h.hospitalId} : ${h.name}|"
+                    th:selected="${h.hospitalId} == *{hospital.hospitalId}">
+                </option>
+            </select>
+            
+            <label>Registration Time:</label>
+            <input type="datetime-local" th:field="*{registrationTime}" />
 
+            <label>Status:</label>
+            <input type="text" th:field="*{queueStatus}" />
+
+            <label>Token #:</label>
+            <input type="number" th:field="*{tokenNumber}" />
+
+            <button type="submit">Save</button>
+                    
+    </form>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit OPD Queue</title>
+    <link rel="stylesheet" th:href="@{/css/edits.css}" />
+</head>
+<body>
+    <a th:href="@{/superAdmin/opdQueues}" class="back-link">
+        ← Back to OpdQueue
+    </a>
+    <h1>Edit OPD Queue</h1>
+    <form th:action="@{/superAdmin/opdQueues/edit}" th:object="${opdQueue}" method="post">
         <input type="hidden" th:field="*{opdQueueId}" />
 
-        <label>Patient ID:</label>
-        <input type="number" th:field="*{patient.patientId}" readonly/><br/>
+        <label>Patient:</label>
+        <select th:field="*{patient.patientId}">
+            <option value="">-- Select a Patient --</option>
+            <option th:each="p : ${patientList}"
+                   th:value="|${p.patientId} : ${p.name}|"
+                   th:text="${p.name}">
+            </option>
+        </select><br/>
 
-        <label>Doctor ID:</label>
-        <input type="number" th:field="*{doctor.doctorId}" readonly/><br/>
+        <label>Name:</label>
+        <input type="text" th:field="*{patientName}" required/><br/>
+        
+        <label>Doctor:</label>
+        <select th:field="*{doctor.doctorId}" required>
+            <option value="">-- Select a Doctor --</option>
+            <option th:each="d : ${doctorList}"
+                   th:value="${d.doctorId}"
+                   th:text="${d.name}">
+            </option>
+        </select><br/>
 
         <label>Hospital ID:</label>
-        <input type="number" th:field="*{hospital.hospitalId}" readonly/><br/>
-        
-        <label>Appointment ID (Optional):</label>
-        <input type="number" th:field="*{appointment.appointmentId}" readonly/><br/>
-        
+        <select th:field="*{hospital.hospitalId}" required>
+            <option value="">-- Select a Hospital --</option>
+            <option th:each="h : ${hospitalList}"
+                   th:value="${h.hospitalId}"
+                   th:text="|${h.hospitalId} : ${h.name}|">
+            </option>
+        </select><br/>
 
-        <label>Queue Status:</label>
-            <select th:field="*{queueStatus}" required>
-                <option value="WAITING">WAITING</option>
-                <option value="BEINGSERVED">BEINGSERVED</option>
-                <option value="COMPLETED">COMPLETED</option>
-                <option value="CANCELLED">CANCELLED</option>
-            </select><br/>
+        <label>Registration Time:</label>
+        <input type="datetime-local" th:field="*{registrationTime}" required/><br/>
 
-        <label>Token Number:</label>
-        <input type="number" th:field="*{tokenNumber}" /><br/>
+        <label>Status:</label>
+        <input type="text" th:field="*{queueStatus}" required/><br/>
+
+        <label>Token #:</label>
+        <input type="number" th:field="*{tokenNumber}" required/><br/>
 
         <button type="submit">Save</button>
     </form>

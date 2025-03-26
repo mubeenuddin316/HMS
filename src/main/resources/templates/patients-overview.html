@@ -10,7 +10,14 @@
         ← Back to Dashboard
     </a>
     <h1>Patients Overview</h1>
+    <!-- Filter Form: sends GET to /superAdmin/patients with ?name=... -->
+<form th:action="@{/superAdmin/patients}" method="get">
+    <label>Search by Name:</label>
+    <input type="text" name="name" th:value="${searchName}"/>
+    <button type="submit">Filter</button>
+</form>
 
+<hr/>
     <!-- Table of existing patients -->
     <table>
         <thead>
@@ -46,7 +53,7 @@
             </tr>
         </tbody>
     </table>
-
+    <hr/>
     <!-- Create New Patient Form -->
     <div class="form-container">
         <h2>Create New Patient</h2>

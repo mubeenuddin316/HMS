@@ -11,4 +11,5 @@ public interface PatientService {
     Patient updatePatient(Integer patientId, Patient patient);
     void deletePatient(Integer patientId);
     Optional<Patient> getPatientByEmail(String email); // Add find by email
+	List<Patient> findByName(String name);
 }
