@@ -229,9 +229,15 @@ public class SuperAdminController {
 
     }
     
+//    @GetMapping("/dashboard/hospitalsAppointmentCount")
+//    public List<HospitalAppointmentCountDTO> getHospitalsAppointmentCount() {
+//        return appointmentRepository.findHospitalAppointmentCounts();
+//    }
+    
     @GetMapping("/dashboard/hospitalsAppointmentCount")
     public List<HospitalAppointmentCountDTO> getHospitalsAppointmentCount() {
-        return appointmentRepository.findHospitalAppointmentCounts();
+        return appointmentRepository.findHospitalAppointmentCountsNative();
     }
+
     
 }

@@ -26,11 +26,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="q : ${queueList}">
+                <tr th:each="q : ${opdQueueList}">
                     <td th:text="${q.opdQueueId}">1</td>
 
                     <!-- Patient Name (if you have q.patient) -->
-                    <td th:text="${q.patient != null ? q.patient.name : 'N/A'}">Patient</td>
+                    <td th:text="${(q.patient != null) ? q.patient.name : q.patientName}">
+                        N/A
+                    </td>
 
                     <!-- Doctor Name (if you have q.doctor) -->
                     <td th:text="${q.doctor != null ? q.doctor.name : 'N/A'}">Doctor</td>
@@ -60,32 +62,45 @@
     </div>
 
     <!-- Create New Queue Form -->
-<div class="create-form-container">
+    <div class="create-form-container">
     <h2>Create New Queue Entry</h2>
     <form th:action="@{/hospitalAdmin/opdQueue}" th:object="${newQueue}" method="post">
 
-        <!-- Patient dropdown -->
-            <label>Patient:</label>
-            <select th:field="*{patient.patientId}">
-                <option th:each="p : ${patientList}"
+        <!-- Patient -->
+            <label>Registered Patient:(Optional)</label>
+            <select
+                th:field="*{patient.patientId}">
+                <option value="">-- None --</option>
+                <option th:each="p : ${allPatients}" 
                         th:value="${p.patientId}"
-                        th:text="${p.patientId} + ' : ' + ${p.name}">
+                        th:text="|${p.patientId} : ${p.name}|">
                 </option>
             </select>
+            <label>or Type Patient Name (for walk-in):</label> 
+            <input type="text" th:field="*{patientName}" placeholder="Walk-in name" /><br/>
 
-            <!-- Doctor dropdown -->
+            <!-- Doctor -->
             <label>Doctor:</label>
-            <select th:field="*{doctor.doctorId}">
+            <select th:field="*{doctor.doctorId}" required>
+                <option value="">-- Select a Doctor --</option>
                 <option th:each="d : ${doctorList}"
                         th:value="${d.doctorId}"
-                        th:text="${d.doctorId} + ' : ' + ${d.name}">
+                        th:text="|${d.doctorId} : ${d.name}|">
                 </option>
-            </select>
+            </select><br/>
 
-        <label>Registration Time:</label>
-        <input type="datetime-local" th:field="*{registrationTime}" />
+        <!-- Optional Appointment -->
+            <label>Appointment (Optional):</label>
+            <select th:field="*{appointment.appointmentId}">
+                <option value="">-- None --</option>
+                <option th:each="a : ${appointments}"
+                        th:value="${a.appointmentId}"
+                        th:text="|${a.appointmentId} : ${a.patient.name}|">
+                </option>
+            </select><br/>
 
-        <label>Queue Status:</label>
+    
+            <label>Queue Status:</label>
             <select th:field="*{queueStatus}" required>
                 <option value="WAITING">WAITING</option>
                 <option value="BEINGSERVED">BEINGSERVED</option>
@@ -93,10 +108,11 @@
                 <option value="CANCELLED">CANCELLED</option>
             </select><br/>
 
-        <label>Token #:</label>
-        <input type="number" th:field="*{tokenNumber}" />
+            <!-- Token Number -->
+            <label>Token Number:</label>
+            <input type="number" th:field="*{tokenNumber}" /><br/>
 
-        <button type="submit">Create</button>
+            <button type="submit">Create</button>
     </form>
 </div>
 

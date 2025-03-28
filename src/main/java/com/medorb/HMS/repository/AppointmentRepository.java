@@ -26,10 +26,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     
     List<Appointment> findByAppointmentDatetimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
     
-    @Query("SELECT new com.medorb.HMS.dto.HospitalAppointmentCountDTO(a.hospital.name, COUNT(a)) " +
-            "FROM Appointment a " +
-            "GROUP BY a.hospital.name")
-     List<HospitalAppointmentCountDTO> findHospitalAppointmentCounts();
+//    @Query("SELECT new com.medorb.HMS.dto.HospitalAppointmentCountDTO(a.hospital.name, COUNT(a)) " +
+//            "FROM Appointment a " +
+//            "GROUP BY a.hospital.name")
+//     List<HospitalAppointmentCountDTO> findHospitalAppointmentCounts();
+    @Query(value = "SELECT h.name AS hospitalName, " +
+            "       (SELECT COUNT(*) FROM appointments a WHERE a.hospital_id = h.hospital_id) AS appointmentCount, " +
+            "       (SELECT COUNT(*) FROM opd_queue o WHERE o.hospital_id = h.hospital_id) AS opdQueueCount " +
+            "FROM hospitals h", nativeQuery = true)
+    List<HospitalAppointmentCountDTO> findHospitalAppointmentCountsNative();
+
     
     // Count how many appointments in a certain status for a given hospital
     long countByHospital_HospitalIdAndStatus(Integer hospitalId, Appointment.AppointmentStatus status);

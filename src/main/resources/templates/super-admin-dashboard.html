@@ -118,36 +118,55 @@
     </div>
     
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const ctx = document.getElementById('hospitalAppointmentsChart').getContext('2d');
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('hospitalAppointmentsChart').getContext('2d');
 
-            fetch('/HMS/api/superAdmin/dashboard/hospitalsAppointmentCount')
-                .then(response => response.json())
-                .then(data => {
-                    const labels = data.map(item => item.hospitalName);
-                    const counts = data.map(item => item.appointmentCount);
+        fetch('/HMS/api/superAdmin/dashboard/hospitalsAppointmentCount')
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => item.hospitalName);
+                const appointmentCounts = data.map(item => item.appointmentCount);
+                const opdQueueCounts = data.map(item => item.opdQueueCount);
 
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Appointment Count',
-                                data: counts,
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Appointments',
+                                data: appointmentCounts,
                                 backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                y: { beginAtZero: true }
+                            },
+                            {
+                                label: 'OPD Queues',
+                                data: opdQueueCounts,
+                                backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        // Remove the 'stacked' property so bars appear side by side
+                        scales: {
+                            x: {
+                                // stacked: true  <-- Remove or set false
+                                stacked: false
+                            },
+                            y: {
+                                beginAtZero: true,
+                                // stacked: true  <-- Remove or set false
+                                stacked: false
                             }
                         }
-                    });
-                })
-                .catch(error => console.error('Error fetching chart data:', error));
-        });
-        </script>
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    });
+
+
+    </script>
     
 </body>
 </html>

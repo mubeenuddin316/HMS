@@ -6,7 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/manage-opdqueue-hsp.css}" />
 </head>
 <body>
-<a th:href="@{/hospitalAdmin/patients}" class="button"><span>Back</span></a>
+<a th:href="@{/hospitalAdmin/opdQueue}" class="button"><span>Back</span></a>
 <div class="edit-queue-container">
     <div class="edit-queue-form">
         <h1>Edit OPD Queue</h1>
@@ -40,11 +40,23 @@
                 </option>
             </select>
             
-            <label>Registration Time:</label>
-            <input type="datetime-local" th:field="*{registrationTime}" />
-
-            <label>Status:</label>
-            <input type="text" th:field="*{queueStatus}" />
+            <!-- Optional Appointment -->
+            <label>Appointment (Optional):</label>
+            <select th:field="*{appointment.appointmentId}">
+                <option value="">-- None --</option>
+                <option th:each="a : ${appointments}"
+                        th:value="${a.appointmentId}"
+                        th:text="|${a.appointmentId} : ${a.patient.name}|">
+                </option>
+            </select><br/>
+            
+            <label>Queue Status:</label>
+            <select th:field="*{queueStatus}" required>
+                <option value="WAITING">WAITING</option>
+                <option value="BEINGSERVED">BEINGSERVED</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="CANCELLED">CANCELLED</option>
+            </select><br/>
 
             <label>Token #:</label>
             <input type="number" th:field="*{tokenNumber}" />

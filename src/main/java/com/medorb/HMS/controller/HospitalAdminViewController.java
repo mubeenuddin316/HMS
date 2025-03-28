@@ -1,11 +1,27 @@
 
 package com.medorb.HMS.controller;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Appointment.AppointmentStatus;
-import com.medorb.HMS.model.OpdQueue.QueueStatus;
 import com.medorb.HMS.model.Bed;
 import com.medorb.HMS.model.Doctor; // ADD: import Doctor
+import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.OpdQueue;
 import com.medorb.HMS.model.Patient;
@@ -15,18 +31,13 @@ import com.medorb.HMS.repository.DoctorRepository;
 import com.medorb.HMS.repository.HospitalAdminRepository;
 import com.medorb.HMS.repository.OpdQueueRepository;
 import com.medorb.HMS.repository.PatientRepository;
+import com.medorb.HMS.service.AppointmentService;
+import com.medorb.HMS.service.DoctorService;
+import com.medorb.HMS.service.HospitalService;
+import com.medorb.HMS.service.OpdQueueService;
+import com.medorb.HMS.service.PatientService;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 public class HospitalAdminViewController {
@@ -37,6 +48,11 @@ public class HospitalAdminViewController {
     private final OpdQueueRepository opdQueueRepository;
     private final PatientRepository patientRepository;
     private final HospitalAdminRepository hospitalAdminRepository;
+    private final OpdQueueService opdQueueService;
+    private final HospitalService hospitalService;
+    private final DoctorService doctorService;
+    private final PatientService patientService;
+    private final AppointmentService appointmentService;
 
     @Autowired
     public HospitalAdminViewController(
@@ -45,7 +61,12 @@ public class HospitalAdminViewController {
             AppointmentRepository appointmentRepository,
             OpdQueueRepository opdQueueRepository,
             PatientRepository patientRepository,
-            HospitalAdminRepository hospitalAdminRepository
+            HospitalAdminRepository hospitalAdminRepository,
+            OpdQueueService opdQueueService,
+            HospitalService hospitalService,
+            DoctorService doctorService,
+            PatientService patientService,
+            AppointmentService appointmentService    
     ) {
         this.doctorRepository = doctorRepository;
         this.bedRepository = bedRepository;
@@ -53,6 +74,11 @@ public class HospitalAdminViewController {
         this.opdQueueRepository = opdQueueRepository;
         this.patientRepository = patientRepository;
         this.hospitalAdminRepository = hospitalAdminRepository;
+        this.opdQueueService = opdQueueService;
+        this.hospitalService = hospitalService;
+        this.doctorService = doctorService;
+        this.patientService = patientService;
+        this.appointmentService = appointmentService;
         
     }
 
@@ -540,174 +566,192 @@ public class HospitalAdminViewController {
         return "redirect:/hospitalAdmin/beds";
     }
     
- // =========================================================
+    // =========================================================
     // MANAGE OPD QUEUE FEATURE
     // =========================================================
 
-    // 1) GET /hospitalAdmin/opdQueue - Show all queue entries + create form
     @GetMapping("/hospitalAdmin/opdQueue")
-    public String showOpdQueueManagementPage(HttpServletRequest request, Model model) {
-        HospitalAdmin hospitalAdmin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
-        if (hospitalAdmin == null || hospitalAdmin.getHospital() == null) {
-            return "redirect:/";
+    public String showOpdQueueManagementPage(
+            @RequestParam(required = false) String patientName,
+            @RequestParam(required = false) Integer doctorId,
+            Model model,
+            HttpServletRequest request) {
+        // Retrieve logged-in hospital admin from session
+        HospitalAdmin admin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
+        if (admin == null || admin.getHospital() == null) {
+            return "redirect:/index";
         }
-        Integer hospitalId = hospitalAdmin.getHospital().getHospitalId();
+        Integer hospId = admin.getHospital().getHospitalId();
 
-        // 1) OPD Queue entries
-        List<OpdQueue> queueList = opdQueueRepository.findByHospital_HospitalId(hospitalId);
-        model.addAttribute("queueList", queueList);
+        // Filter the OPD queues by patient name, doctor, and restrict to this hospital
+        List<OpdQueue> queueList = opdQueueService.filterOpdQueues(
+                (patientName == null || patientName.trim().isEmpty()) ? null : patientName.trim(),
+                doctorId,
+                hospId);
+        model.addAttribute("opdQueueList", queueList);
 
-        // 2) Blank OpdQueue for create form
+        // Add dropdown data for filter form and create form
+        model.addAttribute("doctorList", doctorService.getDoctorsByHospitalId(hospId));
+        model.addAttribute("hospitalList", hospitalService.getHospitalById(hospId)
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList()));
+        model.addAttribute("allPatients", patientService.getAllPatients());
+        model.addAttribute("appointments", appointmentService.getAppointmentsByHospitalId(hospId));
+
+        // Prepare a new blank queue entry for the create form
         OpdQueue newQueue = new OpdQueue();
         newQueue.setRegistrationTime(LocalDateTime.now());
         model.addAttribute("newQueue", newQueue);
 
-        // 3) Provide Doctor and Patient lists
-        //    (Assuming you have findByHospital_HospitalId for doctors 
-        //     and maybe all patients or same-hospital patients)
-        List<Doctor> doctorList = doctorRepository.findByHospital_HospitalId(hospitalId);
-        model.addAttribute("doctorList", doctorList);
-
-        // If you store hospital ID in patients, do findByHospitalId;
-        // else fetch all patients (depending on your logic).
-        List<Patient> patientList = patientRepository.findAll(); 
-        model.addAttribute("patientList", patientList);
-
-        return "manage-opdqueue-hsp"; // or your page name
+        return "manage-opdqueue-hsp"; // Thymeleaf view name for Hospital Admin OPD Queue management
     }
 
-    // 2) POST /hospitalAdmin/opdQueue - Create a new queue entry
+    // ========= POST: Create New OPD Queue Entry =========
     @PostMapping("/hospitalAdmin/opdQueue")
     public String createOpdQueue(@ModelAttribute OpdQueue newQueue, HttpServletRequest request) {
-        HospitalAdmin hospitalAdmin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
-        if (hospitalAdmin == null || hospitalAdmin.getHospital() == null) {
-            return "redirect:/";
+        HospitalAdmin admin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
+        if (admin == null || admin.getHospital() == null) {
+            return "redirect:/index";
         }
-        // Re-fetch actual Patient and Doctor from their IDs
+        // Set the hospital from the logged-in admin
+        newQueue.setHospital(admin.getHospital());
+
+        // Re-fetch the Patient if a patient ID was selected; otherwise leave null
         if (newQueue.getPatient() != null && newQueue.getPatient().getPatientId() != null) {
-            Patient p = patientRepository.findById(newQueue.getPatient().getPatientId()).orElse(null);
-            newQueue.setPatient(p);
+            Optional<Patient> pOpt = patientService.getPatientById(newQueue.getPatient().getPatientId());
+            newQueue.setPatient(pOpt.orElse(null));
+        } else {
+            newQueue.setPatient(null);
         }
+
+        // Re-fetch the Appointment if provided; else set to null
+        if (newQueue.getAppointment() != null && newQueue.getAppointment().getAppointmentId() != null) {
+            Optional<Appointment> aOpt = appointmentService.getAppointmentById(newQueue.getAppointment().getAppointmentId());
+            newQueue.setAppointment(aOpt.orElse(null));
+        } else {
+            newQueue.setAppointment(null);
+        }
+
+        // Re-fetch the Doctor if selected
         if (newQueue.getDoctor() != null && newQueue.getDoctor().getDoctorId() != null) {
-            Doctor d = doctorRepository.findById(newQueue.getDoctor().getDoctorId()).orElse(null);
-            newQueue.setDoctor(d);
+            Optional<Doctor> dOpt = doctorService.getDoctorById(newQueue.getDoctor().getDoctorId());
+            newQueue.setDoctor(dOpt.orElse(null));
         }
 
-        // Assign hospital
-        newQueue.setHospital(hospitalAdmin.getHospital());
-
-        // Set a default status if needed
+        // Set default queue status if not provided
         if (newQueue.getQueueStatus() == null) {
-            newQueue.setQueueStatus(QueueStatus.WAITING);
+            newQueue.setQueueStatus(OpdQueue.QueueStatus.WAITING);
         }
 
-        opdQueueRepository.save(newQueue);
+        newQueue.setRegistrationTime(LocalDateTime.now());
+        opdQueueService.createOpdQueueEntry(newQueue);
         return "redirect:/hospitalAdmin/opdQueue";
     }
 
-
-    // 3) GET /hospitalAdmin/opdQueue/edit/{id} - Show edit form
+    // ========= GET: Show Edit Form for an OPD Queue Entry =========
     @GetMapping("/hospitalAdmin/opdQueue/edit/{queueId}")
-    public String showEditOpdQueueForm(@PathVariable Integer queueId,
+    public String showEditOpdQueueForm(@PathVariable("queueId") Integer queueId,
                                        HttpServletRequest request,
                                        Model model) {
-        // 1) Check admin
-        HospitalAdmin hospitalAdmin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
-        if (hospitalAdmin == null || hospitalAdmin.getHospital() == null) {
-            return "redirect:/";
+        HospitalAdmin admin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
+        if (admin == null || admin.getHospital() == null) {
+            return "redirect:/index";
         }
-        Integer hospitalId = hospitalAdmin.getHospital().getHospitalId();
+        Integer hospId = admin.getHospital().getHospitalId();
 
-        // 2) Fetch the queue entry
-        Optional<OpdQueue> optionalQueue = opdQueueRepository.findById(queueId);
-        if (optionalQueue.isEmpty()) {
-            return "redirect:/hospitalAdmin/opdQueue"; 
+        Optional<OpdQueue> optQueue = opdQueueService.getOpdQueueEntryById(queueId);
+        if (optQueue.isEmpty()) {
+            return "redirect:/hospitalAdmin/opdQueue";
         }
-        OpdQueue opdQueue = optionalQueue.get();
-
-        // Ensure belongs to this hospital
-        if (!opdQueue.getHospital().getHospitalId().equals(hospitalId)) {
+        OpdQueue queueEntry = optQueue.get();
+        // Ensure the queue entry belongs to this hospital
+        if (!queueEntry.getHospital().getHospitalId().equals(hospId)) {
             return "redirect:/hospitalAdmin/opdQueue";
         }
 
-        // 3) Fetch patientList & doctorList
-        //    If you have a method findAll() or findByHospitalId, pick accordingly
-        List<Patient> patientList = patientRepository.findAll(); // or a custom method
-        List<Doctor> doctorList = doctorRepository.findByHospital_HospitalId(hospitalId);
+        // Add dropdown data for edit form
+        model.addAttribute("patientList", patientService.getAllPatients());
+        model.addAttribute("doctorList", doctorService.getDoctorsByHospitalId(hospId));
+        model.addAttribute("hospitalList", hospitalService.getHospitalById(hospId)
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList()));
+        model.addAttribute("appointments", appointmentService.getAppointmentsByHospitalId(hospId));
+        model.addAttribute("opdQueue", queueEntry);
 
-        model.addAttribute("patientList", patientList);
-        model.addAttribute("doctorList", doctorList);
-
-        // 4) Put queue entry in model
-        model.addAttribute("opdQueue", opdQueue);
-
-        // 5) Return edit form page
-        return "edit-opdqueue-hsp";
+        return "edit-opdqueue-hsp"; // Thymeleaf view for editing
     }
 
-    // 4) POST /hospitalAdmin/opdQueue/edit - Update an existing queue entry
+    // ========= POST: Update an OPD Queue Entry =========
     @PostMapping("/hospitalAdmin/opdQueue/edit")
-    public String updateOpdQueue(@ModelAttribute OpdQueue updatedQueue,
-                                 HttpServletRequest request) {
-        HospitalAdmin hospitalAdmin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
-        if (hospitalAdmin == null || hospitalAdmin.getHospital() == null) {
+    public String updateOpdQueue(@ModelAttribute OpdQueue formQueue, HttpServletRequest request) {
+        HospitalAdmin admin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
+        if (admin == null || admin.getHospital() == null) {
             return "redirect:/";
         }
-        Integer hospitalId = hospitalAdmin.getHospital().getHospitalId();
+        Integer hospId = admin.getHospital().getHospitalId();
 
-        Optional<OpdQueue> optionalQ = opdQueueRepository.findById(updatedQueue.getOpdQueueId());
-        if (optionalQ.isPresent()) {
-            OpdQueue dbQueue = optionalQ.get();
-
-            if (!dbQueue.getHospital().getHospitalId().equals(hospitalId)) {
+        Optional<OpdQueue> optQueue = opdQueueService.getOpdQueueEntryById(formQueue.getOpdQueueId());
+        if (optQueue.isPresent()) {
+            OpdQueue dbQueue = optQueue.get();
+            if (!dbQueue.getHospital().getHospitalId().equals(hospId)) {
                 return "redirect:/hospitalAdmin/opdQueue";
             }
 
-            // Re-fetch Patient
-            if (updatedQueue.getPatient() != null && updatedQueue.getPatient().getPatientId() != null) {
-                Patient p = patientRepository.findById(updatedQueue.getPatient().getPatientId()).orElse(null);
-                dbQueue.setPatient(p);
+            // Update Patient (from dropdown)
+            if (formQueue.getPatient() != null && formQueue.getPatient().getPatientId() != null) {
+                Optional<Patient> pOpt = patientService.getPatientById(formQueue.getPatient().getPatientId());
+                dbQueue.setPatient(pOpt.orElse(null));
+            } else {
+                dbQueue.setPatient(null);
+            }
+            // Update walk-in patient name
+            dbQueue.setPatientName(formQueue.getPatientName());
+
+            // Update Doctor
+            if (formQueue.getDoctor() != null && formQueue.getDoctor().getDoctorId() != null) {
+                Optional<Doctor> dOpt = doctorService.getDoctorById(formQueue.getDoctor().getDoctorId());
+                dbQueue.setDoctor(dOpt.orElse(null));
             }
 
-            // Re-fetch Doctor
-            if (updatedQueue.getDoctor() != null && updatedQueue.getDoctor().getDoctorId() != null) {
-                Doctor d = doctorRepository.findById(updatedQueue.getDoctor().getDoctorId()).orElse(null);
-                dbQueue.setDoctor(d);
+            // Update Hospital (should match admin's hospital)
+            if (formQueue.getHospital() != null && formQueue.getHospital().getHospitalId() != null) {
+                Optional<Hospital> hOpt = hospitalService.getHospitalById(formQueue.getHospital().getHospitalId());
+                dbQueue.setHospital(hOpt.orElse(null));
             }
 
-            dbQueue.setRegistrationTime(updatedQueue.getRegistrationTime());
-            dbQueue.setQueueStatus(updatedQueue.getQueueStatus());
-            dbQueue.setTokenNumber(updatedQueue.getTokenNumber());
+            // Update Appointment if provided
+            if (formQueue.getAppointment() != null && formQueue.getAppointment().getAppointmentId() != null) {
+                Optional<Appointment> aOpt = appointmentService.getAppointmentById(formQueue.getAppointment().getAppointmentId());
+                dbQueue.setAppointment(aOpt.orElse(null));
+            } else {
+                dbQueue.setAppointment(null);
+            }
 
-            opdQueueRepository.save(dbQueue);
+            // Update other fields
+            dbQueue.setRegistrationTime(formQueue.getRegistrationTime());
+            dbQueue.setQueueStatus(formQueue.getQueueStatus());
+            dbQueue.setTokenNumber(formQueue.getTokenNumber());
+
+            opdQueueService.updateOpdQueueEntry(dbQueue.getOpdQueueId(), dbQueue);
         }
-
         return "redirect:/hospitalAdmin/opdQueue";
     }
 
-
-    // 5) GET /hospitalAdmin/opdQueue/delete/{queueId} - Delete a queue entry
+    // ========= GET: Delete an OPD Queue Entry =========
     @GetMapping("/hospitalAdmin/opdQueue/delete/{queueId}")
-    public String deleteOpdQueue(@PathVariable Integer queueId,
-                                 HttpServletRequest request) {
-        // Check admin
-        HospitalAdmin hospitalAdmin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
-        if (hospitalAdmin == null || hospitalAdmin.getHospital() == null) {
+    public String deleteOpdQueue(@PathVariable("queueId") Integer queueId, HttpServletRequest request) {
+        HospitalAdmin admin = (HospitalAdmin) request.getSession().getAttribute("loggedInHospitalAdmin");
+        if (admin == null || admin.getHospital() == null) {
             return "redirect:/";
         }
-        Integer hospitalId = hospitalAdmin.getHospital().getHospitalId();
-
-        // Fetch
-        Optional<OpdQueue> optionalQ = opdQueueRepository.findById(queueId);
-        if (optionalQ.isPresent()) {
-            OpdQueue q = optionalQ.get();
-
-            if (q.getHospital().getHospitalId().equals(hospitalId)) {
-                // OK to delete
-                opdQueueRepository.delete(q);
+        Integer hospId = admin.getHospital().getHospitalId();
+        Optional<OpdQueue> optQueue = opdQueueService.getOpdQueueEntryById(queueId);
+        if (optQueue.isPresent()) {
+            OpdQueue queue = optQueue.get();
+            if (queue.getHospital().getHospitalId().equals(hospId)) {
+                opdQueueService.deleteOpdQueueEntry(queueId);
             }
         }
-
         return "redirect:/hospitalAdmin/opdQueue";
     }
     
