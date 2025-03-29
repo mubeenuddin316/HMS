@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Dashboard</title>
+  <!-- Link to your custom analytics CSS -->
+  <link rel="stylesheet" th:href="@{/css/analytics.css}">
+  <!-- Chart.js (for our charts) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+  <!-- Header with Back button (no sidebar here) -->
+  <header class="header">
+      <div class="logo-container">
+          <!-- Back button on top left -->
+          <a th:href="@{/HMS/superAdmin/dashboard}" class="back-button">← Back to Dashboard</a>
+          <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
+          <span>MedOrb Group</span>
+      </div>
+      <div class="welcome-message">
+          Welcome, <span th:text="${superAdmin.adminName}">Super Admin</span>
+      </div>
+      <div class="header-buttons">
+          <a th:href="@{/logout}" class="btn logout">Logout</a>
+      </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="dashboard-content">
+      <h1>Analytics Dashboard</h1>
+      <div class="analytics-cards">
+      
+          <!-- Card 1: Appointments vs. OPD Queues (Double Bar Chart) -->
+          <!-- Inside analytics dashboard -->
+          <div class="analytic-card">
+              <h2>Appointments vs. OPD Queues Over Time</h2>
+              <canvas id="apptVsQueueLineChart"></canvas>
+              <script th:src="@{/js/analytics.js}"></script>
+          </div>
+
+          <!-- Card 2: Monthly Trend (Line Chart) -->
+          <div class="analytic-card" id="chart2-container">
+              <h2>Monthly Trend</h2>
+              <canvas id="chart2"></canvas>
+          </div>
+      </div>
+  </main>
+  
+  <script src="analytics.js"></script>
+</body>
+</html>

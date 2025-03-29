@@ -19,12 +19,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medorb.HMS.dto.HospitalAppointmentCountDTO;
-
+import com.medorb.HMS.dto.TimeSeriesDTO;
 import com.medorb.HMS.model.Hospital;
 import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.SuperAdmin;
 import com.medorb.HMS.repository.AppointmentRepository;
 import com.medorb.HMS.repository.HospitalRepository;
+import com.medorb.HMS.service.AnalyticsService;
 import com.medorb.HMS.service.SuperAdminService;
 
 @RestController
@@ -33,11 +34,13 @@ public class SuperAdminController {
 
     private final SuperAdminService superAdminService;
     private final AppointmentRepository appointmentRepository;
+    private final AnalyticsService analyticsService;
 
     @Autowired
-    public SuperAdminController(SuperAdminService superAdminService, AppointmentRepository appointmentRepository) {
+    public SuperAdminController(SuperAdminService superAdminService, AppointmentRepository appointmentRepository, AnalyticsService analyticsService) {
         this.superAdminService = superAdminService;
         this.appointmentRepository = appointmentRepository;
+        this.analyticsService = analyticsService;
     }
 
     // --- Super Admin CRUD Operations ---
@@ -238,6 +241,8 @@ public class SuperAdminController {
     public List<HospitalAppointmentCountDTO> getHospitalsAppointmentCount() {
         return appointmentRepository.findHospitalAppointmentCountsNative();
     }
+    
+    
 
     
 }

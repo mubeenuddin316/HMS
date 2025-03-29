@@ -1,0 +1,78 @@
+/* analytics.css */
+
+/* Overall page background */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(116.21deg, rgba(216,210,252,0.352) 1.56%, rgba(151,71,255,0.374) 43.54%, rgba(56,13,227,0.55) 91.44%);
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(220deg, #6D60AA 43.7%, #2C2644 101.63%);
+    color: #fff;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    z-index: 1000;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+.back-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 15px;
+    font-weight: bold;
+}
+.welcome-message {
+    font-size: 16px;
+}
+.header-buttons .btn {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 15px;
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Main Dashboard Content */
+.dashboard-content {
+    margin-top: 80px; /* push content below fixed header */
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1200px;
+}
+
+/* Analytics Cards */
+.analytics-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+.analytic-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    width: 500px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.analytic-card h2 {
+    margin-bottom: 10px;
+    color: #333;
+}

@@ -663,6 +663,18 @@ public String createOpdQueue(@ModelAttribute OpdQueue newOpdQueue) {
         return "redirect:/superAdmin/patients";
     }
     
+    // This mapping assumes that the user is already logged in as a super admin.
+    @GetMapping("/superAdmin/analytics")
+    public String showAnalyticsPage(HttpServletRequest request, Model model) {
+        // Retrieve super admin from session (or add additional analytics data if needed)
+        SuperAdmin superAdmin = (SuperAdmin) request.getSession().getAttribute("loggedInSuperAdmin");
+        if (superAdmin == null) {
+            return "redirect:/index";
+        }
+        model.addAttribute("superAdmin", superAdmin);
+        return "analytics";  // This will resolve to analytics.html
+    }
+    
 }
 
 
