@@ -136,6 +136,7 @@ This project is fully developed by me @mubeenuddin316 and all rights reserved.
 
 ## Contact
 For any questions or suggestions, please contact:
-Mohammed Mubeenuddin
-Email: mubeenuddin316@gmail.com
-GitHub: https://github.com/mubeenuddin316/HMS
+
+  - Mohammed Mubeenuddin
+  - Email: ``mubeenuddin316@gmail.com``
+  - GitHub: ``https://github.com/mubeenuddin316/HMS``
