@@ -13,8 +13,6 @@
   <!-- Header with Back button (no sidebar here) -->
   <header class="header">
       <div class="logo-container">
-          <!-- Back button on top left -->
-          <a th:href="@{/HMS/superAdmin/dashboard}" class="back-button">← Back to Dashboard</a>
           <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
           <span>MedOrb Group</span>
       </div>
@@ -28,6 +26,7 @@
   
   <!-- Main Content -->
   <main class="dashboard-content">
+      <a th:href="@{/superAdmin/dashboard}" class="back-button">← Back to Dashboard</a>
       <h1>Analytics Dashboard</h1>
       <div class="analytics-cards">
       
@@ -36,14 +35,15 @@
           <div class="analytic-card">
               <h2>Appointments vs. OPD Queues Over Time</h2>
               <canvas id="apptVsQueueLineChart"></canvas>
-              <script th:src="@{/js/analytics.js}"></script>
+              
           </div>
-
-          <!-- Card 2: Monthly Trend (Line Chart) -->
-          <div class="analytic-card" id="chart2-container">
-              <h2>Monthly Trend</h2>
-              <canvas id="chart2"></canvas>
+          
+          <!-- Gender Distribution Donut Chart Card -->
+          <div class="analytic-card" id="genderDistributionChart-container">
+              <h2>Gender Distribution</h2>
+              <canvas id="genderDistributionChart"></canvas>
           </div>
+          <script th:src="@{/js/analytics.js}"></script>
       </div>
   </main>
   

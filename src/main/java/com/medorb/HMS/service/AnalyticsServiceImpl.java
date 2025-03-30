@@ -11,14 +11,24 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.medorb.HMS.dto.GenderDistributionDTO;
+import com.medorb.HMS.dto.HospitalGenderCountDTO;
 import com.medorb.HMS.dto.TimeSeriesDTO;
 import com.medorb.HMS.repository.AnalyticsRepository;
+import com.medorb.HMS.repository.AppointmentRepository;
 
 @Service
 public class AnalyticsServiceImpl implements AnalyticsService {
 	
+	private final AnalyticsRepository analyticsRepository;
+	private final AppointmentRepository appointmentRepository;
+	
 	    @Autowired
-	    private AnalyticsRepository analyticsRepository;
+	    public AnalyticsServiceImpl(AnalyticsRepository analyticsRepository, AppointmentRepository appointmentRepository) {
+	    	this.appointmentRepository = appointmentRepository;
+	    	this.analyticsRepository = analyticsRepository;
+	    
+	    }
         
 	    
 	    @Override
@@ -60,6 +70,26 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 	        result.sort(Comparator.comparing(TimeSeriesDTO::getPeriodLabel));
 
 	        return result;
+	    }
+	    
+	    @Override
+	    public List<GenderDistributionDTO> getGenderDistributionData() {
+	        List<Object[]> totalResults = analyticsRepository.findTotalAppointmentCountByGender();
+	        List<GenderDistributionDTO> distributionList = new ArrayList<>();
+	        for (Object[] row : totalResults) {
+	            String gender = (String) row[0];
+	            long totalCount = (Long) row[1];
+
+	            List<Object[]> hospitalRows = analyticsRepository.findHospitalCountsByGender(gender);
+	            List<HospitalGenderCountDTO> hospitalCounts = new ArrayList<>();
+	            for (Object[] hrow : hospitalRows) {
+	                String hospitalName = (String) hrow[0];
+	                long count = (Long) hrow[1];
+	                hospitalCounts.add(new HospitalGenderCountDTO(hospitalName, count));
+	            }
+	            distributionList.add(new GenderDistributionDTO(gender, totalCount, hospitalCounts));
+	        }
+	        return distributionList;
 	    }
 
 }

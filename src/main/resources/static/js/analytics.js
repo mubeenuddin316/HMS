@@ -104,3 +104,62 @@ document.addEventListener("DOMContentLoaded", function() {
     .catch(error => console.error('Error fetching time-series data:', error));
 });
 
+
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('genderDistributionChart').getContext('2d');
+
+    fetch('/HMS/api/superAdmin/genderDistribution')
+        .then(response => response.json())
+        .then(data => {
+            // Extract labels and counts from the returned DTO list
+            const labels = data.map(item => item.gender);
+            const totalCounts = data.map(item => item.totalCount);
+            // hospitalDetails is assumed to be an array of arrays
+            // where each inner array contains objects with hospitalName and count
+            const hospitalDetails = data.map(item => item.hospitalCounts);
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: totalCounts,
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.7)',  // Color for Male
+                            'rgba(255, 99, 132, 0.7)',  // Color for Female
+                            'rgba(255, 206, 86, 0.7)'   // Color for Other
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                // Return an array of strings so each line appears separately
+                                label: function(context) {
+                                    const gender = context.label;
+                                    const total = context.parsed;
+                                    const hospitalCounts = hospitalDetails[context.dataIndex];
+                                    let lines = [];
+                                    lines.push(`${gender}: ${total}`);
+                                    if (hospitalCounts && hospitalCounts.length > 0) {
+                                        hospitalCounts.forEach(hc => {
+                                            lines.push(`${hc.hospitalName}: ${hc.count}`);
+                                        });
+                                    }
+                                    return lines;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Gender Distribution Across Hospitals'
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching gender distribution data:', error));
+});
+

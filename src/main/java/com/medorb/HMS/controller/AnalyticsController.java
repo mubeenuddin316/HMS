@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.medorb.HMS.dto.GenderDistributionDTO;
 import com.medorb.HMS.dto.TimeSeriesDTO;
 import com.medorb.HMS.service.AnalyticsService;
 
@@ -25,6 +26,11 @@ public class AnalyticsController {
     public List<TimeSeriesDTO> getAppointmentsVsQueueTimeSeries() {
         // Return monthly or daily time-series
         return analyticsService.getMonthlyAppointmentsVsQueue();
+    }
+	
+	@GetMapping("/genderDistribution")
+    public List<GenderDistributionDTO> getGenderDistribution() {
+        return analyticsService.getGenderDistributionData();
     }
     
     

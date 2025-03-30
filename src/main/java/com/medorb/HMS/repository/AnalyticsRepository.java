@@ -3,6 +3,7 @@ package com.medorb.HMS.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.medorb.HMS.model.Appointment;
@@ -27,5 +28,13 @@ public interface AnalyticsRepository extends JpaRepository<Appointment, Integer>
         ORDER BY periodLabel
     """)
     List<Object[]> getMonthlyOpdQueueCounts();
+    
+ // In AppointmentRepository.java
+    @Query("SELECT p.gender, COUNT(a) FROM Appointment a JOIN a.patient p GROUP BY p.gender")
+    List<Object[]> findTotalAppointmentCountByGender();
+
+    @Query("SELECT h.name, COUNT(a) FROM Appointment a JOIN a.patient p JOIN a.hospital h WHERE p.gender = :gender GROUP BY h.name")
+    List<Object[]> findHospitalCountsByGender(@Param("gender") String gender);
+
 
 }
