@@ -55,7 +55,7 @@
     <input type="text" class="search-bar" placeholder="Search hospitals...">
     <div class="hospital-list">
     <div class="hospital" th:each="dto : ${hospitalsWithBeds}">
-        <img th:src="@{/img/hospital.png}" alt="Hospital Image">
+        <img th:src="@{/images/hospital.png}" alt="Hospital Image">
         <div class="info">
             <h3 th:text="${dto.hospital.name}">Hospital Name</h3>
             <p th:text="${dto.hospital.address}">Hospital Address</p>
