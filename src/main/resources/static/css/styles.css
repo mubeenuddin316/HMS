@@ -38,6 +38,12 @@ nav ul li a {
     color: white;
     font-weight: bold;
 }
+
+nav ul li a:hover {
+    
+    color: #80ffff;
+}
+
 .login {
     background: white;
     color: #6f4bb2;
@@ -45,6 +51,16 @@ nav ul li a {
     padding: 8px 15px;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.login:hover {
+    background: green;
+    color: #000000;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transform: scale (1.05);
 }
 .hero {
 		

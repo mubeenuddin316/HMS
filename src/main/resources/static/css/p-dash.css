@@ -123,7 +123,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.details a :hover {
+.details a:hover {
     background-color: #4639a0;
     transform: scale(1.05);
 }
@@ -163,6 +163,7 @@ button:hover {
     background-color: #4639a0;
     transform: scale(1.05);
 }
+
 
 /* History and Calendar Section */
 .history-calendar {
