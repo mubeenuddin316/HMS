@@ -1,5 +1,6 @@
 package com.medorb.HMS.repository;
 
+import com.medorb.HMS.dto.HospitalBedsDTO;
 import com.medorb.HMS.model.Bed;
 import com.medorb.HMS.model.Hospital;
 
@@ -31,6 +32,12 @@ public interface BedRepository extends JpaRepository<Bed, Integer> {
     
     long countByHospital(Hospital hospital);
     long countByHospitalAndIsOccupied(Hospital hospital, boolean isOccupied);
+    
+    // ... your existing methods ...
 
+//    @Query("SELECT new com.medorb.HMS.dto.HospitalBedsDTO(b.hospital.name, COUNT(b), " +
+//           "SUM(CASE WHEN b.isOccupied = true THEN 1 ELSE 0 END)) " +
+//           "FROM Bed b GROUP BY b.hospital.name")
+//    List<HospitalBedsDTO> findHospitalBedCounts();
 
 }

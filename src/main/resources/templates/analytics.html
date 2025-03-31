@@ -37,16 +37,47 @@
               <canvas id="apptVsQueueLineChart"></canvas>
               
           </div>
-          
+          <br>
           <!-- Gender Distribution Donut Chart Card -->
           <div class="analytic-card" id="genderDistributionChart-container">
               <h2>Gender Distribution</h2>
+              
               <canvas id="genderDistributionChart"></canvas>
           </div>
+          <br>
+          <!-- Card: Hospital Beds Stacked Bar Chart -->
+          <div class="analytic-card" id="hospitalBedsChart-container">
+              <h2>Hospital Beds (Occupied vs. Available)</h2>
+              <canvas id="hospitalBedsChart"></canvas>
+          </div>
+          
+          <!-- Doctor Performance & Efficiency Card -->
+          <!-- Replace the form with a simple dropdown -->
+          <!-- Doctor Performance & Efficiency Card -->
+          <div class="analytic-card">
+              <h2>Doctor Performance & Efficiency</h2>
+              
+              <div class="filter-container">
+                  <label for="hospitalFilter">Filter by Hospital:</label>
+                  <select name="hospitalId" id="hospitalFilter">
+                      <option value="">All Hospitals</option>
+                      <option th:each="h : ${hospitalList}"
+                              th:value="${h.hospitalId}"
+                              th:text="${h.name}"
+                              th:selected="${selectedHospitalId} != null and h.hospitalId == ${selectedHospitalId}">
+                      </option>
+              </select>
+              </div>
+              
+              <!-- Chart Container -->
+              <div class="chart-container">
+              <canvas id="doctorPerformanceChart"></canvas>
+              </div>
+          </div>      
           <script th:src="@{/js/analytics.js}"></script>
       </div>
   </main>
   
-  <script src="analytics.js"></script>
+  
 </body>
 </html>

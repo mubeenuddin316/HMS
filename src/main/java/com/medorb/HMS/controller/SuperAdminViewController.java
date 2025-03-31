@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.medorb.HMS.dto.DoctorPerformanceDTO;
 import com.medorb.HMS.model.Appointment;
 import com.medorb.HMS.model.Bed;
 import com.medorb.HMS.model.Doctor;
@@ -20,6 +21,7 @@ import com.medorb.HMS.model.HospitalAdmin;
 import com.medorb.HMS.model.OpdQueue;
 import com.medorb.HMS.model.Patient;
 import com.medorb.HMS.model.SuperAdmin;
+import com.medorb.HMS.repository.AnalyticsRepository;
 import com.medorb.HMS.service.AppointmentService;
 import com.medorb.HMS.service.BedService;
 import com.medorb.HMS.service.DoctorService;
@@ -30,6 +32,7 @@ import com.medorb.HMS.service.PatientService;
 import com.medorb.HMS.service.SuperAdminService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class SuperAdminViewController {
@@ -42,6 +45,7 @@ public class SuperAdminViewController {
     private final BedService bedService;
     private final PatientService patientService;
     private final HospitalService hospitalService;
+    private final AnalyticsRepository analyticsRepository;
 
     @Autowired
     public SuperAdminViewController(SuperAdminService superAdminService,
@@ -51,7 +55,8 @@ public class SuperAdminViewController {
     		                        AppointmentService appointmentService, 
     		                        BedService bedService,
     		                        PatientService patientService,
-    		                        HospitalService hospitalService) {
+    		                        HospitalService hospitalService,
+    		                        AnalyticsRepository analyticsRepository) {
         
     	
     	this.superAdminService = superAdminService;
@@ -62,6 +67,7 @@ public class SuperAdminViewController {
         this.bedService = bedService;
         this.patientService = patientService;
         this.hospitalService = hospitalService;
+        this.analyticsRepository = analyticsRepository;
     }
 
     @GetMapping("/superAdmin/dashboard")
@@ -663,16 +669,28 @@ public String createOpdQueue(@ModelAttribute OpdQueue newOpdQueue) {
         return "redirect:/superAdmin/patients";
     }
     
-    // This mapping assumes that the user is already logged in as a super admin.
     @GetMapping("/superAdmin/analytics")
-    public String showAnalyticsPage(HttpServletRequest request, Model model) {
-        // Retrieve super admin from session (or add additional analytics data if needed)
-        SuperAdmin superAdmin = (SuperAdmin) request.getSession().getAttribute("loggedInSuperAdmin");
+    public String showAnalyticsPage(
+        @RequestParam(value = "hospitalId", required = false) Integer hospitalId,
+        HttpServletRequest request,
+        Model model
+    ) {
+        // Check session validity first
+        HttpSession session = request.getSession(false);
+        SuperAdmin superAdmin = session != null 
+            ? (SuperAdmin) session.getAttribute("loggedInSuperAdmin") 
+            : null;
+
         if (superAdmin == null) {
             return "redirect:/index";
         }
+        
+        // Add essential attributes
         model.addAttribute("superAdmin", superAdmin);
-        return "analytics";  // This will resolve to analytics.html
+        model.addAttribute("hospitalList", hospitalService.getAllHospitals());
+        model.addAttribute("selectedHospitalId", hospitalId);
+
+        return "analytics";
     }
     
 }

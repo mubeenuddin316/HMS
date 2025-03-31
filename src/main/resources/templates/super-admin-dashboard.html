@@ -15,8 +15,9 @@
             <img th:src="@{/images/logo.svg}" alt="Logo" class="logo">
             <span>MedOrb Group</span>
         </div>
+        <!-- Update the welcome message to safely handle null -->
         <div class="welcome-message">
-            Welcome, <span th:text="${superAdmin.adminName}">Super Admin</span>
+            Welcome, <span th:text="${superAdmin?.adminName} ?: 'Super Admin'">Super Admin</span>
         </div>
         <div class="header-buttons">
             <a th:href="@{/logout}" class="btn logout">Logout</a>

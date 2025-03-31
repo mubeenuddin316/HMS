@@ -1,61 +1,6 @@
 /**
  * 
  */
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Example: Initialize Chart 1 (Bar Chart)
-  const ctx1 = document.getElementById('chart1').getContext('2d');
-  new Chart(ctx1, {
-      type: 'bar',
-      data: {
-          labels: ['Hospital A', 'Hospital B', 'Hospital C'],
-          datasets: [{
-              label: 'Appointments',
-              data: [12, 19, 7],
-              backgroundColor: 'rgba(54, 162, 235, 0.7)'
-          },
-          {
-              label: 'OPD Queues',
-              data: [5, 10, 3],
-              backgroundColor: 'rgba(255, 159, 64, 0.7)'
-          }]
-      },
-      options: {
-          responsive: true,
-          scales: {
-              y: {
-                  beginAtZero: true
-              }
-          }
-      }
-  });
-  
-  // Example: Initialize Chart 2 (Line Chart)
-  const ctx2 = document.getElementById('chart2').getContext('2d');
-  new Chart(ctx2, {
-      type: 'line',
-      data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr'],
-          datasets: [{
-              label: 'Monthly Trend',
-              data: [5, 15, 10, 20],
-              borderColor: 'rgba(255, 159, 64, 1)',
-              backgroundColor: 'rgba(255, 159, 64, 0.5)',
-              fill: false,
-              tension: 0.1
-          }]
-      },
-      options: {
-          responsive: true,
-          scales: {
-              y: {
-                  beginAtZero: true
-              }
-          }
-      }
-  });
-});
-
 document.addEventListener("DOMContentLoaded", function() {
   const ctx = document.getElementById('apptVsQueueLineChart').getContext('2d');
 
@@ -163,3 +108,129 @@ document.addEventListener("DOMContentLoaded", function() {
         .catch(error => console.error('Error fetching gender distribution data:', error));
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const ctx = document.getElementById('hospitalBedsChart').getContext('2d');
+
+    fetch('/HMS/api/superAdmin/hospitalBeds')
+        .then(response => response.json())
+        .then(data => {
+            // Extract labels and counts for each hospital
+            const labels = data.map(item => item.hospitalName);
+            const occupiedCounts = data.map(item => item.occupiedBeds);
+            const availableCounts = data.map(item => item.availableBeds);
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Occupied Beds',
+                            data: occupiedCounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)' // red-ish
+                        },
+                        {
+                            label: 'Available Beds',
+                            data: availableCounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.7)' // teal/greenish
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            beginAtZero: true,
+                            stacked: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error fetching hospital beds data:', error));
+});
+
+// Add chart instance reference
+let doctorPerformanceChart = null;
+
+document.addEventListener("DOMContentLoaded", function() {
+    const hospitalFilter = document.getElementById('hospitalFilter');
+    hospitalFilter.addEventListener('change', fetchDoctorPerformance);
+
+    // Add resize observer setup here
+    const resizeObserver = new ResizeObserver(entries => {
+        if (doctorPerformanceChart) {
+            doctorPerformanceChart.resize();
+        }
+    });
+    
+    // Observe the chart container
+    const chartContainer = document.querySelector('.chart-container');
+    if (chartContainer) {
+        resizeObserver.observe(chartContainer);
+    }
+
+    // Initial load
+    fetchDoctorPerformance();
+});
+
+function fetchDoctorPerformance() {
+    const hospitalId = document.getElementById('hospitalFilter').value;
+    
+    // Build URL with proper parameter handling
+    const url = new URL('/HMS/api/superAdmin/doctorPerformance', window.location.origin);
+    if (hospitalId) url.searchParams.set('hospitalId', hospitalId);
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const labels = data.map(item => item.doctorName);
+            const counts = data.map(item => item.performanceCount);
+            renderDoctorPerformanceChart(labels, counts);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function renderDoctorPerformanceChart(labels, data) {
+    const ctx = document.getElementById('doctorPerformanceChart').getContext('2d');
+    
+    // Destroy previous chart if exists
+    if (doctorPerformanceChart) {
+        doctorPerformanceChart.destroy();
+    }
+    
+    doctorPerformanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'No of Patients Attended',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false, // Crucial for fixed height
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        precision: 0
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                }
+            }
+        }
+    });
+}
