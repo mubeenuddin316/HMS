@@ -75,11 +75,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- Remove or comment out spring-boot-starter-tomcat with scope=provided
-             if you want embedded Tomcat automatically. -->
-
-        <!-- Remove or comment out JSTL if you only use Thymeleaf -->
     </dependencies>
 
     <build>
