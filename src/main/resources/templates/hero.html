@@ -27,8 +27,7 @@
 <section class="hero">
     <div class="hero-content">
         <h1>Meet the Best Doctors</h1>
-        <p>Lorem ipsum dolor sit amet consectetur. Eu ligula aliquam ipsum ullamcorper. 
-        <br>Posuere consequat semper vulputate sed enim massa dui mollis. Nunc sed netus .</p>
+        <p>Get expert medical care from the best doctors in the field. Our team is dedicated to providing top-quality healthcare tailored to your needs. Book an appointment today and experience compassionate, world-class treatment.</p>
         <a th:href="@{/patient/bookAppointment}"><button class="book-now">Book Now</button></a>
     </div>
 
@@ -52,10 +51,10 @@
 
 <section class="hospital-section">
     <h2>Available <span class="highlight">Beds</span></h2>
-    <input type="text" class="search-bar" placeholder="Search hospitals...">
+    
     <div class="hospital-list">
     <div class="hospital" th:each="dto : ${hospitalsWithBeds}">
-        <img th:src="@{/images/hospital.png}" alt="Hospital Image">
+        <!--  <img th:src="@{/images/hospital.png}" alt="Hospital Image"> -->
         <div class="info">
             <h3 th:text="${dto.hospital.name}">Hospital Name</h3>
             <p th:text="${dto.hospital.address}">Hospital Address</p>
@@ -68,10 +67,14 @@
 
 <section class="about">
     <h2>About Us</h2>
-    <p id="about-us-data">Lorem ipsum dolor sit amet consectetur. In amet metus arcu pharetra tortor vel cras tincidunt pretium. Ac in eu sed quis mattis praesent sed. Augue aliquet in lacus pretium facilisi. Interdum viverra massa tortor viverra.Lorem ipsum dolor sit amet consectetur. In amet metus arcu pharetra tortor vel cras tincidunt pretium. Ac in eu sed quis mattis praesent sed. Augue aliquet in lacus pretium facilisi. Interdum viverra massa tortor viverra.</p>
-    <br><br> <br><br> <br><br>
+    <p id="about-us-data">MedOrb Group of Hospitals is a leading healthcare provider in Hyderabad, committed to delivering world-class medical services with compassion and excellence. Our state-of-the-art facilities, advanced medical technology, and highly skilled specialists ensure the highest standards of patient care.
+<br><br>
+With a strong focus on innovation and patient well-being, we offer a wide range of healthcare services, from emergency care to specialized treatments. At MedOrb, we believe in a patient-first approach, ensuring personalized care and superior clinical outcomes.
+<br><br>
+Your health is our priority, and we are dedicated to making quality healthcare accessible to all.</p>
+    <br><br> <br><br> <br><br><hr><br><br>
     <h2>Contact our help desk for support.</h2>
-    <p>Questions? Need assistance? Our dedicated support team is here to help you every step of the way:</p>
+    <p>Questions?   Need assistance?   Our dedicated support team is here to help you every step of the way:</p>
     <div class="contact-form">
         <input type="text" placeholder="Enter Your First Name">
         <input type="email" placeholder="Enter Your Email Address">

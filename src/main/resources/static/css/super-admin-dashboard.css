@@ -12,11 +12,9 @@ body {
 .header {
     width: 100%;
     background: linear-gradient(220.82deg, #6D60AA 43.7%, #2C2644 101.63%);
-    color: #e4941b;
+    color: rgb(255, 255, 255);
     font-weight: 900;
     font-size: 22px;
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -39,17 +37,18 @@ body {
 }
 
 .header-buttons .btn {
-    background-color: white;
-    color: black;
-    padding: 8px 15px;
+    background-color: #400080;
+    color: #fff;
+    padding: 8px 15px; 
+    
     text-decoration: none;
     border-radius: 5px;
     margin-right: 50px;
 }
 
 .logout {
-    background-color: red;
-    color: white;
+    background-color: rgb(255, 128, 128);
+    color: rgb(0, 128, 255);
     font-size: 16px;
 	font-weight: normal;
 	border-radius: 50px 20px;
@@ -59,21 +58,7 @@ body {
 	
     background-color: #fe5301;
     color: white;
-    font-weight: 600;
-}
-
-/* Sidebar 
-.sidebar {
-    width: 250px;
-    background: linear-gradient(220.82deg, #6D60AA 43.7%, #2C2644 101.63%);
-    color: white;
-    padding: 20px;
-    position: fixed;
-    top: 70px;
-    left: 0;
-    height: 100vh;
-    overflow-y: auto;
-} */
+    font-weight: 600;}
 
 .sidebar {
     position: fixed;

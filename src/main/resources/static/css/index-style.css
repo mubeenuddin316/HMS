@@ -30,6 +30,23 @@ body {
     
 }
 
+.login-container div {
+    color: #fff;
+    
+}
+.login-container .login-section:hover {
+    background: blue;
+    
+}
+.login-container a{
+    color: #fff;
+    
+}
+.login-container a:hover {
+    background: blue;
+    
+}
+
 .left-section-container h2 {
 	color: white;
 	font-weight: 600;
